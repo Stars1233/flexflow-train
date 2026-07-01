@@ -36,7 +36,7 @@ bool is_isomorphic_to(Substitution const &l, Substitution const &r) {
       [&](OutputOperatorAttrsAssignment const &r_attrs) {
         std::optional<PatternNode> l_template_operator =
             transform(r_attrs.template_operator, l_from_r_pattern_node);
-        std::unordered_map<OperatorAttributeKey, OutputOperatorAttributeExpr>
+        std::map<OperatorAttributeKey, OutputOperatorAttributeExpr>
             l_assignments = map_values(
                 r_attrs.assignments,
                 [&](OutputOperatorAttributeExpr const &r_expr) {
@@ -132,10 +132,8 @@ bool is_isomorphic_to(Substitution const &l, Substitution const &r) {
 
 bool is_valid_substitution(Substitution const &sub) {
   {
-    std::unordered_set<PatternInput> pattern_inputs =
-        get_inputs(sub.pcg_pattern);
-    std::unordered_set<PatternInput> mapped_inputs =
-        left_entries(sub.inputs_mapping);
+    std::set<PatternInput> pattern_inputs = get_inputs(sub.pcg_pattern);
+    std::set<PatternInput> mapped_inputs = left_entries(sub.inputs_mapping);
 
     if (pattern_inputs != mapped_inputs) {
       return false;
@@ -143,9 +141,9 @@ bool is_valid_substitution(Substitution const &sub) {
   }
 
   {
-    std::unordered_set<OutputGraphExprInput> output_graph_inputs =
+    std::set<OutputGraphExprInput> output_graph_inputs =
         get_inputs(sub.output_graph_expr);
-    std::unordered_set<OutputGraphExprInput> mapped_inputs =
+    std::set<OutputGraphExprInput> mapped_inputs =
         right_entries(sub.inputs_mapping);
 
     if (output_graph_inputs != mapped_inputs) {

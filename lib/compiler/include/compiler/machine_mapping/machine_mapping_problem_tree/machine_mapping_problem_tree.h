@@ -19,16 +19,15 @@ GenericBinarySPDecompositionTreeImplementation<
 
 SPDecompositionTreeNodeType get_node_type(MachineMappingProblemTree const &);
 
-std::unordered_multiset<UnmappedRuntimeOnlyOpCostEstimateKey>
+std::multiset<UnmappedRuntimeOnlyOpCostEstimateKey>
     get_leaves(MachineMappingProblemTree const &);
-std::unordered_set<BinaryTreePath>
-    get_all_leaf_paths(MachineMappingProblemTree const &);
+std::set<BinaryTreePath> get_all_leaf_paths(MachineMappingProblemTree const &);
 
 std::optional<MachineMappingProblemTree>
     mm_problem_tree_get_subtree_at_path(MachineMappingProblemTree const &,
                                         BinaryTreePath const &);
 
-std::unordered_map<BinaryTreePath, UnmappedRuntimeOnlyOpCostEstimateKey>
+std::map<BinaryTreePath, UnmappedRuntimeOnlyOpCostEstimateKey>
     mm_problem_tree_get_path_to_leaf_map(MachineMappingProblemTree const &);
 
 std::string as_dot(MachineMappingProblemTree const &);

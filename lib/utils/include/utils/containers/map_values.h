@@ -1,6 +1,7 @@
 #ifndef _FLEXFLOW_LIB_UTILS_INCLUDE_UTILS_CONTAINERS_MAP_VALUES_H
 #define _FLEXFLOW_LIB_UTILS_INCLUDE_UTILS_CONTAINERS_MAP_VALUES_H
 
+#include <map>
 #include <type_traits>
 #include <unordered_map>
 
@@ -12,6 +13,18 @@ template <typename K,
           typename V2 = std::invoke_result_t<F, V>>
 std::unordered_map<K, V2> map_values(std::unordered_map<K, V> const &m, F &&f) {
   std::unordered_map<K, V2> result;
+  for (std::pair<K, V> const &kv : m) {
+    result.insert(std::pair<K, V2>{kv.first, f(kv.second)});
+  }
+  return result;
+}
+
+template <typename K,
+          typename V,
+          typename F,
+          typename V2 = std::invoke_result_t<F, V>>
+std::map<K, V2> map_values(std::map<K, V> const &m, F &&f) {
+  std::map<K, V2> result;
   for (std::pair<K, V> const &kv : m) {
     result.insert(std::pair<K, V2>{kv.first, f(kv.second)});
   }

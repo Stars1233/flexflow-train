@@ -2,13 +2,12 @@
 #define _FLEXFLOW_LIB_UTILS_INCLUDE_UTILS_CONTAINERS_IS_SUPERSETEQ_OF_H
 
 #include "utils/containers/is_subseteq_of.h"
-#include <unordered_set>
+#include <set>
 
 namespace FlexFlow {
 
 template <typename T>
-bool is_superseteq_of(std::unordered_set<T> const &super,
-                      std::unordered_set<T> const &sub) {
+bool is_superseteq_of(std::set<T> const &super, std::set<T> const &sub) {
   return is_subseteq_of<T>(sub, super);
 }
 

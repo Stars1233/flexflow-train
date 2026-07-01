@@ -130,8 +130,8 @@ PCGBinarySPDecomposition
   });
 }
 
-std::unordered_multiset<parallel_layer_guid_t>
-    get_parallel_layers(PCGBinarySPDecomposition const &tree) {
+std::multiset<parallel_layer_guid_t>
+    pcg_sp_tree_get_parallel_layers(PCGBinarySPDecomposition const &tree) {
   return get_leaves(tree, generic_impl_for_pcg_sp_tree());
 }
 
@@ -150,18 +150,18 @@ SPDecompositionTreeNodeType
   });
 }
 
-std::unordered_set<BinaryTreePath>
+std::set<BinaryTreePath>
     pcg_sp_tree_get_all_leaf_paths(PCGBinarySPDecomposition const &tree) {
   return keys(pcg_sp_tree_get_path_to_leaf_map(tree));
 }
 
-std::unordered_set<BinaryTreePath>
+std::set<BinaryTreePath>
     find_paths_to_leaf(PCGBinarySPDecomposition const &tree,
                        parallel_layer_guid_t const &leaf) {
   return find_paths_to_leaf(tree, generic_impl_for_pcg_sp_tree(), leaf);
 }
 
-std::unordered_map<BinaryTreePath, parallel_layer_guid_t>
+std::map<BinaryTreePath, parallel_layer_guid_t>
     pcg_sp_tree_get_path_to_leaf_map(PCGBinarySPDecomposition const &tree) {
   return get_path_to_leaf_map(tree, generic_impl_for_pcg_sp_tree());
 }

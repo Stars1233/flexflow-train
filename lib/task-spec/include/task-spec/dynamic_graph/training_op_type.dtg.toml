@@ -1,6 +1,7 @@
 namespace = "FlexFlow"
 name = "TrainingOpType"
 type = "variant"
+#include "task-spec/dynamic_graph/make_dynamic_open_dataflow_graph_from_mapped_pcg.h"
 features = [
   "eq",
   "hash",

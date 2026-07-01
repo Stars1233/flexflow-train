@@ -23,18 +23,17 @@ OptimizerAttrs
   }
 }
 
-std::unordered_set<OptimizerSlotName>
+std::set<OptimizerSlotName>
     get_slot_names_for_optimizer(OptimizerAttrs const &attrs) {
-  return attrs.visit<std::unordered_set<OptimizerSlotName>>(overload{
-      [](SGDOptimizerAttrs const &sgd_attrs)
-          -> std::unordered_set<OptimizerSlotName> {
+  return attrs.visit<std::set<OptimizerSlotName>>(overload{
+      [](SGDOptimizerAttrs const &sgd_attrs) -> std::set<OptimizerSlotName> {
         if (sgd_attrs.momentum > 0.0f) {
           return {OptimizerSlotName::SGD_V};
         } else {
           return {};
         }
       },
-      [](AdamOptimizerAttrs const &) -> std::unordered_set<OptimizerSlotName> {
+      [](AdamOptimizerAttrs const &) -> std::set<OptimizerSlotName> {
         return {
             OptimizerSlotName::ADAM_M,
             OptimizerSlotName::ADAM_V,

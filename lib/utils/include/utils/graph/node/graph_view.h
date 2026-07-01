@@ -8,7 +8,7 @@
 namespace FlexFlow {
 
 struct GraphView {
-  std::unordered_set<Node> query_nodes(NodeQuery const &) const;
+  std::set<Node> query_nodes(NodeQuery const &) const;
   friend bool is_ptr_equal(GraphView const &, GraphView const &);
 
   template <typename T, typename... Args>

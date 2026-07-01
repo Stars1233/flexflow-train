@@ -19,8 +19,7 @@ num_ptensor_shard_dims_t num_shard_dims(ParallelTensorShape const &s) {
   return num_shard_dims(s.dims);
 }
 
-std::unordered_set<ReplicaParallelDim>
-    replica_dims(ParallelTensorShape const &s) {
+std::set<ReplicaParallelDim> replica_dims(ParallelTensorShape const &s) {
   return replica_dims(s.dims);
 }
 
@@ -139,9 +138,9 @@ ParallelDim get_parallel_dim_at_idx(ParallelTensorShape const &shape,
       }});
 }
 
-std::unordered_set<parallel_tensor_dim_idx_t>
+std::set<parallel_tensor_dim_idx_t>
     get_parallel_tensor_dim_indices(ParallelTensorShape const &shape) {
-  std::unordered_set<parallel_tensor_dim_idx_t> indices;
+  std::set<parallel_tensor_dim_idx_t> indices;
   extend(indices,
          transform(nonnegative_range(num_shard_dims(shape.dims).value),
                    [](nonnegative_int idx) {

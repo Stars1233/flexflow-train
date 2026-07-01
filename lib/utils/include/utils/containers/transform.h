@@ -2,12 +2,14 @@
 #define _FLEXFLOW_LIB_UTILS_INCLUDE_UTILS_CONTAINERS_TRANSFORM_H
 
 #include "utils/containers/vector_transform.h"
-#include "utils/required_core.h"
 #include <algorithm>
 #include <map>
 #include <optional>
 #include <set>
+#include <string>
 #include <type_traits>
+#include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 namespace FlexFlow {
@@ -15,12 +17,6 @@ namespace FlexFlow {
 template <typename F, typename In, typename Out = std::invoke_result_t<F, In>>
 std::vector<Out> transform(std::vector<In> const &v, F const &f) {
   return vector_transform(v, f);
-}
-
-template <typename F, typename C>
-auto transform(req<C> const &c, F const &f)
-    -> decltype(transform(std::declval<C>(), std::declval<F>())) {
-  return transform(static_cast<C>(c), f);
 }
 
 template <typename F, typename In, typename Out = std::invoke_result_t<F, In>>
@@ -86,8 +82,8 @@ template <typename K,
           typename F,
           typename K2 = typename std::invoke_result_t<F, K, V>::first_type,
           typename V2 = typename std::invoke_result_t<F, K, V>::second_type>
-std::unordered_map<K2, V2> transform(std::map<K, V> const &m, F const &f) {
-  std::unordered_map<K2, V2> result;
+std::map<K2, V2> transform(std::map<K, V> const &m, F const &f) {
+  std::map<K2, V2> result;
   for (auto const &[k, v] : m) {
     result.insert(f(k, v));
   }

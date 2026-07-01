@@ -1,0 +1,22 @@
+namespace = "FlexFlow"
+name = "SerializableDynamicOpenDataflowGraph"
+type = "struct"
+features = [
+  "eq",
+	"ord",
+  "fmt",
+  "json",
+]
+
+includes = [
+  "task-spec/dynamic_graph/serializable_dynamic_node_invocation.dtg.h",
+  "<set>",
+]
+
+src_includes = [
+  "utils/fmt/set.h",
+]
+
+[[fields]]
+name = "invocations"
+type = "std::set<::FlexFlow::SerializableDynamicNodeInvocation>"

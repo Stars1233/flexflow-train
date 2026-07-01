@@ -8,7 +8,7 @@ using NodeLabel = value_type<0>;
 using OutputLabel = value_type<1>;
 using SlotName = ordered_value_type<2>;
 
-template std::unordered_map<KwargDataflowOutput<SlotName>, OutputLabel>
+template std::map<KwargDataflowOutput<SlotName>, OutputLabel>
     get_labelled_kwarg_dataflow_graph_output_label_map(
         LabelledKwargDataflowGraphView<NodeLabel, OutputLabel, SlotName> const
             &);

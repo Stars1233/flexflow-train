@@ -66,8 +66,7 @@ bool is_binary_sp_tree_right_associative(
                                              generic_impl_for_binary_sp_tree());
 }
 
-std::unordered_multiset<Node>
-    get_leaves(BinarySPDecompositionTree const &tree) {
+std::multiset<Node> get_leaves(BinarySPDecompositionTree const &tree) {
   return get_leaves(tree, generic_impl_for_binary_sp_tree());
 }
 

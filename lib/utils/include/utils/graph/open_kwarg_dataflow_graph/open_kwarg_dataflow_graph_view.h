@@ -14,14 +14,12 @@ public:
   OpenKwargDataflowGraphView &
       operator=(OpenKwargDataflowGraphView const &) = default;
 
-  std::unordered_set<KwargDataflowGraphInput<GraphInputName>>
-      get_inputs() const {
+  std::set<KwargDataflowGraphInput<GraphInputName>> get_inputs() const {
     return this->get_interface().get_inputs();
   }
 
-  std::unordered_set<OpenKwargDataflowEdge<GraphInputName, SlotName>>
-      query_edges(
-          OpenKwargDataflowEdgeQuery<GraphInputName, SlotName> const &q) const {
+  std::set<OpenKwargDataflowEdge<GraphInputName, SlotName>> query_edges(
+      OpenKwargDataflowEdgeQuery<GraphInputName, SlotName> const &q) const {
     return this->get_interface().query_edges(q);
   }
 

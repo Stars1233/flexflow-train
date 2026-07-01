@@ -7,7 +7,7 @@
 
 namespace FlexFlow {
 
-std::unordered_set<DataflowEdge> get_edges(DataflowGraphView const &g) {
+std::set<DataflowEdge> get_edges(DataflowGraphView const &g) {
   return g.query_edges(dataflow_edge_query_all());
 }
 
@@ -34,8 +34,7 @@ std::vector<DataflowOutput> get_outputs(DataflowGraphView const &g,
                    });
 }
 
-std::unordered_set<DataflowOutput>
-    get_all_dataflow_outputs(DataflowGraphView const &g) {
+std::set<DataflowOutput> get_all_dataflow_outputs(DataflowGraphView const &g) {
   return g.query_outputs(dataflow_output_query_all());
 }
 

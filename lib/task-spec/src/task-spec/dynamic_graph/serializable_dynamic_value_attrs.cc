@@ -8,6 +8,7 @@ SerializableDynamicValueAttrs
   return SerializableDynamicValueAttrs{
       /*tensor_guid=*/attrs.tensor_guid,
       /*parallel_tensor_shape=*/attrs.parallel_tensor_shape,
+      /*create_grad=*/attrs.create_grad,
       /*shard_coord=*/attrs.shard_coord,
       /*mapping=*/attrs.mapping,
       /*role=*/attrs.role,
@@ -19,6 +20,7 @@ DynamicValueAttrs dynamic_value_attrs_from_serializable(
   return DynamicValueAttrs{
       /*tensor_guid=*/attrs.tensor_guid,
       /*parallel_tensor_shape=*/attrs.parallel_tensor_shape,
+      /*create_grad=*/attrs.create_grad,
       /*shard_coord=*/attrs.shard_coord,
       /*mapping=*/attrs.mapping,
       /*accessor=*/std::nullopt,

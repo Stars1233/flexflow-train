@@ -14,8 +14,8 @@
 #include "task-spec/dynamic_graph/update_insertion.h"
 #include "task-spec/per_device_op_state.h"
 #include "task-spec/task_argument_accessor/task_argument_accessor.h"
+#include "utils/containers/map_from_pairs.h"
 #include "utils/containers/transform.h"
-#include "utils/containers/unordered_map_from_pairs.h"
 #include "utils/graph/digraph/algorithms/get_topological_ordering.h"
 #include "utils/optional.h"
 #include <optional>
@@ -62,8 +62,7 @@ ComputationGraphInstance create_computation_graph_instance(
     ComputationGraph const &cg,
     OptimizerAttrs const &optimizer_attrs,
     std::optional<LossConfig> const &loss,
-    std::unordered_map<DynamicValueAttrs, DynamicTensorAccessor> const
-        &input_tensors,
+    std::map<DynamicValueAttrs, DynamicTensorAccessor> const &input_tensors,
     Allocator &allocator,
     ProfilingSettings const &profiling_settings,
     device_handle_t const &device_handle,
@@ -71,8 +70,7 @@ ComputationGraphInstance create_computation_graph_instance(
   DynamicOpenDataflowGraph dg = make_dynamic_open_dataflow_graph_from_cg(cg);
   dg = perform_pass_expansion(dg);
 
-  std::unordered_map<DynamicValueAttrs, DynamicTensorAccessor> inputs =
-      input_tensors;
+  std::map<DynamicValueAttrs, DynamicTensorAccessor> inputs = input_tensors;
   std::optional<DynamicValueAttrs> logit_grad_value;
   if (loss.has_value()) {
     auto [loss_attrs, label_tensor, logit_tensor] = assert_unwrap(loss);
@@ -109,7 +107,7 @@ ComputationGraphInstance create_computation_graph_instance(
       invocation_topo_order, allocator, optimizer_attrs, logit_grad_tensor};
 }
 
-static std::unordered_map<dynamic_layer_guid_t, std::optional<milliseconds_t>>
+static std::map<dynamic_layer_guid_t, std::optional<milliseconds_t>>
     execute_dynamic_node_invocation_set(
         std::vector<DynamicNodeInvocation> const &invocations,
         Allocator &allocator,
@@ -117,7 +115,7 @@ static std::unordered_map<dynamic_layer_guid_t, std::optional<milliseconds_t>>
         ProfilingSettings const &profiling_settings,
         device_handle_t const &ff_handle,
         global_device_id_t device_idx) {
-  return unordered_map_from_pairs(
+  return map_from_pairs(
       transform(invocations, [&](DynamicNodeInvocation const &invocation) {
         std::optional<milliseconds_t> timing = execute_dynamic_node_invocation(
             /*invocation=*/invocation,
@@ -136,7 +134,7 @@ static std::unordered_map<dynamic_layer_guid_t, std::optional<milliseconds_t>>
       }));
 }
 
-std::unordered_map<dynamic_layer_guid_t, std::optional<milliseconds_t>>
+std::map<dynamic_layer_guid_t, std::optional<milliseconds_t>>
     perform_all_passes_for_computation_graph_instance(
         ComputationGraphInstance &instance,
         ProfilingSettings const &profiling_settings,
@@ -144,8 +142,8 @@ std::unordered_map<dynamic_layer_guid_t, std::optional<milliseconds_t>>
         global_device_id_t device_idx) {
   std::vector<DynamicNodeInvocation> execution_order =
       instance.get_execution_order();
-  std::unordered_map<dynamic_layer_guid_t, std::optional<milliseconds_t>>
-      result = execute_dynamic_node_invocation_set(
+  std::map<dynamic_layer_guid_t, std::optional<milliseconds_t>> result =
+      execute_dynamic_node_invocation_set(
           /*invocations=*/execution_order,
           /*allocator=*/instance.get_allocator(),
           /*optimizer_attrs=*/instance.get_optimizer_attrs(),
@@ -156,7 +154,7 @@ std::unordered_map<dynamic_layer_guid_t, std::optional<milliseconds_t>>
   return result;
 }
 
-std::unordered_map<dynamic_layer_guid_t, std::optional<milliseconds_t>>
+std::map<dynamic_layer_guid_t, std::optional<milliseconds_t>>
     perform_forward_pass_for_computation_graph_instance(
         ComputationGraphInstance const &instance,
         ProfilingSettings const &profiling_settings,
@@ -179,7 +177,7 @@ std::unordered_map<dynamic_layer_guid_t, std::optional<milliseconds_t>>
       /*device_idx=*/device_idx);
 }
 
-std::unordered_map<dynamic_layer_guid_t, std::optional<milliseconds_t>>
+std::map<dynamic_layer_guid_t, std::optional<milliseconds_t>>
     perform_backward_pass_for_computation_graph_instance(
         ComputationGraphInstance const &instance,
         ProfilingSettings const &profiling_settings,

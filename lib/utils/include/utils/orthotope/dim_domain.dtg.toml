@@ -14,15 +14,15 @@ template_params = [
 ]
 
 includes = [
-  "<unordered_map>",
+  "<map>",
   "utils/positive_int/positive_int.h",
 ]
 
 src_includes = [
-  "utils/fmt/unordered_map.h",
-  "utils/hash/unordered_map.h",
+  "utils/fmt/map.h",
+  "utils/hash/map.h",
 ]
 
 [[fields]]
 name = "dims"
-type = "std::unordered_map<T, ::FlexFlow::positive_int>"
+type = "std::map<T, ::FlexFlow::positive_int>"

@@ -43,9 +43,9 @@ TEST_SUITE(FF_TEST_SUITE) {
         make_series_split(make_leaf(n3), make_leaf(n4)),
     };
 
-    std::unordered_set<DataflowOutput> result =
+    std::set<DataflowOutput> result =
         get_transitive_reduced_outputs_across_split(tr_g, split);
-    std::unordered_set<DataflowOutput> correct = {o2};
+    std::set<DataflowOutput> correct = {o2};
 
     CHECK(result == correct);
   }

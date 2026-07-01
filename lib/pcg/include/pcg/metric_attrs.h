@@ -4,14 +4,14 @@
 #include "op-attrs/ops/loss_functions/loss_function.dtg.h"
 #include "pcg/metric.dtg.h"
 #include "utils/fmt.h"
-#include <unordered_set>
+#include <set>
 
 namespace FlexFlow {
 
 class MetricsAttrs {
 public:
   MetricsAttrs() = delete;
-  MetricsAttrs(LossFunction, std::unordered_set<Metric> const &);
+  MetricsAttrs(LossFunction, std::set<Metric> const &);
 
 public:
   LossFunction loss_type;

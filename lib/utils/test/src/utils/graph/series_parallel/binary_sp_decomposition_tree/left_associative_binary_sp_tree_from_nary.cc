@@ -1,5 +1,5 @@
 #include "utils/graph/series_parallel/binary_sp_decomposition_tree/left_associative_binary_sp_tree_from_nary.h"
-#include "test/utils/doctest/fmt/unordered_multiset.h"
+#include "test/utils/doctest/fmt/multiset.h"
 #include "test/utils/rapidcheck.h"
 #include "utils/graph/series_parallel/binary_sp_decomposition_tree/binary_sp_decomposition_tree.h"
 #include "utils/graph/series_parallel/binary_sp_decomposition_tree/nary_sp_tree_from_binary.h"
@@ -67,8 +67,8 @@ TEST_SUITE(FF_TEST_SUITE) {
       // left-associative binary SP trees
       CHECK(is_binary_sp_tree_left_associative(result));
 
-      std::unordered_multiset<Node> result_nodes = get_leaves(result);
-      std::unordered_multiset<Node> correct_nodes = {n1, n2, n3};
+      std::multiset<Node> result_nodes = get_leaves(result);
+      std::multiset<Node> correct_nodes = {n1, n2, n3};
 
       CHECK(result_nodes == correct_nodes);
     }
@@ -96,9 +96,8 @@ TEST_SUITE(FF_TEST_SUITE) {
 
       CHECK(is_binary_sp_tree_left_associative(result));
 
-      std::unordered_multiset<Node> result_nodes = get_leaves(result);
-      std::unordered_multiset<Node> correct_nodes = {
-          n1, n2, n3, n3, n5, n6, n4, n5};
+      std::multiset<Node> result_nodes = get_leaves(result);
+      std::multiset<Node> correct_nodes = {n1, n2, n3, n3, n5, n6, n4, n5};
 
       CHECK(result_nodes == correct_nodes);
     }

@@ -10,10 +10,10 @@
 
 namespace FlexFlow {
 
-std::unordered_set<OpenDataflowValue>
+std::set<OpenDataflowValue>
     get_subgraph_inputs(OpenDataflowGraphView const &g,
-                        std::unordered_set<Node> const &subgraph_nodes) {
-  std::unordered_set<OpenDataflowEdge> relevant_edges;
+                        std::set<Node> const &subgraph_nodes) {
+  std::set<OpenDataflowEdge> relevant_edges;
   for (std::vector<OpenDataflowEdge> const &incoming :
        values(get_incoming_edges(g, subgraph_nodes))) {
     auto comes_from_outside_subgraph = [&](OpenDataflowEdge const &e) -> bool {

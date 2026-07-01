@@ -68,6 +68,39 @@ std::set<Out> filtrans(std::set<In> const &s, F &&f) {
   return result;
 }
 
+template <typename F,
+          typename In,
+          typename Out = unwrap_optional_t<std::invoke_result_t<F, In>>>
+std::multiset<Out> filtrans(std::multiset<In> const &s, F &&f) {
+  std::multiset<Out> result;
+
+  for (In const &i : s) {
+    std::optional<Out> o = f(i);
+    if (o.has_value()) {
+      result.insert(o.value());
+    }
+  }
+
+  return result;
+}
+
+template <typename F,
+          typename In,
+          typename Out = unwrap_optional_t<std::invoke_result_t<F, In>>>
+std::unordered_multiset<Out> filtrans(std::unordered_multiset<In> const &s,
+                                      F &&f) {
+  std::unordered_multiset<Out> result;
+
+  for (In const &i : s) {
+    std::optional<Out> o = f(i);
+    if (o.has_value()) {
+      result.insert(o.value());
+    }
+  }
+
+  return result;
+}
+
 } // namespace FlexFlow
 
 #endif

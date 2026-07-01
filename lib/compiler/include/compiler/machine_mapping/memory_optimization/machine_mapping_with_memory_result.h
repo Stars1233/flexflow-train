@@ -12,16 +12,21 @@ struct MachineMappingWithMemoryResult {
   MachineMappingWithMemoryResult() = delete;
 
   explicit MachineMappingWithMemoryResult(
-      std::unordered_set<ParetoOptimalMachineMapping> const &);
+      std::set<ParetoOptimalMachineMapping> const &);
 
-  bool operator==(MachineMappingWithMemoryResult const &) const;
-  bool operator!=(MachineMappingWithMemoryResult const &) const;
+  [[nodiscard]] bool operator==(MachineMappingWithMemoryResult const &) const;
+  [[nodiscard]] bool operator!=(MachineMappingWithMemoryResult const &) const;
 
-  std::unordered_set<ParetoOptimalMachineMapping> const &
+  [[nodiscard]] bool operator<(MachineMappingWithMemoryResult const &) const;
+  [[nodiscard]] bool operator>(MachineMappingWithMemoryResult const &) const;
+  [[nodiscard]] bool operator<=(MachineMappingWithMemoryResult const &) const;
+  [[nodiscard]] bool operator>=(MachineMappingWithMemoryResult const &) const;
+
+  [[nodiscard]] std::set<ParetoOptimalMachineMapping> const &
       get_pareto_frontier() const;
 
 private:
-  std::unordered_set<ParetoOptimalMachineMapping> m_pareto_frontier;
+  std::set<ParetoOptimalMachineMapping> m_pareto_frontier;
 
 private:
   std::tuple<decltype(m_pareto_frontier) const &> tie() const;
@@ -38,7 +43,7 @@ std::ostream &operator<<(std::ostream &,
 [[nodiscard]] bool is_empty(MachineMappingWithMemoryResult const &);
 
 [[nodiscard]] MachineMappingWithMemoryResult get_mapping_with_minimal_runtime(
-    std::unordered_set<MachineMappingWithMemoryResult> const &);
+    std::set<MachineMappingWithMemoryResult> const &);
 
 [[nodiscard]] MachineMappingWithMemoryResult
     series_combine(milliseconds_t comm_cost,

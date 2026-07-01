@@ -4,7 +4,7 @@
 
 namespace FlexFlow {
 
-std::unordered_set<DataflowGraphInput>
+std::set<DataflowGraphInput>
     get_unused_open_dataflow_graph_inputs(OpenDataflowGraphView const &g) {
   return filter(
       get_open_dataflow_graph_inputs(g), [&](DataflowGraphInput const &i) {

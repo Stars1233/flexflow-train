@@ -8,8 +8,8 @@
 namespace FlexFlow {
 
 template <typename T>
-std::unordered_map<ff_dim_t, T> map_from_ff_ordered(FFOrdered<T> const &m) {
-  std::unordered_map<ff_dim_t, T> result;
+std::map<ff_dim_t, T> map_from_ff_ordered(FFOrdered<T> const &m) {
+  std::map<ff_dim_t, T> result;
 
   for (ff_dim_t d : ff_dim_range(num_elements(m))) {
     result.insert({d, m.at(d)});

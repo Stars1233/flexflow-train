@@ -6,11 +6,18 @@
 
 namespace FlexFlow {
 
+bidict<global_device_id_t, OperatorAtomicTaskShardBinding>
+    dynamic_node_mapping_get_shard_bindings(DynamicNodeMapping const &);
+
+OperatorAtomicTaskShardBinding
+    dynamic_node_mapping_get_shard_binding_for_device(
+        DynamicNodeMapping const &, global_device_id_t const &);
+
 bidict<ParallelTensorSpaceCoordinate, global_device_id_t>
     dynamic_node_mapping_bindings_for_slot_name(DynamicNodeMapping const &,
                                                 TensorSlotName const &);
 
-std::unordered_set<global_device_id_t>
+std::set<global_device_id_t>
     target_devices_of_dynamic_node_mapping(DynamicNodeMapping const &);
 
 } // namespace FlexFlow

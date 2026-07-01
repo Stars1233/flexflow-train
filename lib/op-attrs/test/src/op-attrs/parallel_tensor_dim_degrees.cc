@@ -1,8 +1,7 @@
 #include "op-attrs/parallel_tensor_dim_degrees.h"
 #include "op-attrs/parallel_tensor_dim_idx_t.h"
+#include "test/utils/doctest/fmt/map.h"
 #include "test/utils/doctest/fmt/set.h"
-#include "test/utils/doctest/fmt/unordered_map.h"
-#include "test/utils/doctest/fmt/unordered_set.h"
 #include <doctest/doctest.h>
 
 using namespace ::FlexFlow;
@@ -23,9 +22,9 @@ TEST_SUITE(FF_TEST_SUITE) {
         },
     };
 
-    std::unordered_map<parallel_tensor_dim_idx_t, positive_int> result =
+    std::map<parallel_tensor_dim_idx_t, positive_int> result =
         get_parallel_tensor_degree_map(degrees);
-    std::unordered_map<parallel_tensor_dim_idx_t, positive_int> correct = {
+    std::map<parallel_tensor_dim_idx_t, positive_int> correct = {
         {parallel_tensor_dim_idx_t{ReplicaType::SUM}, 3_p},
         {parallel_tensor_dim_idx_t{ReplicaType::DISCARD_COPY}, 1_p},
         {shard_dim_idx_from_raw(0), 1_p},
@@ -47,9 +46,9 @@ TEST_SUITE(FF_TEST_SUITE) {
         },
     };
 
-    std::unordered_set<ParallelTensorSpaceCoordinate> result =
+    std::set<ParallelTensorSpaceCoordinate> result =
         get_parallel_tensor_space_coordinates(degrees);
-    std::unordered_set<ParallelTensorSpaceCoordinate> correct = {
+    std::set<ParallelTensorSpaceCoordinate> correct = {
         ParallelTensorSpaceCoordinate{
             /*sum_idx=*/0_n,
             /*discard_copy_idx=*/0_n,

@@ -17,13 +17,13 @@
 
 namespace FlexFlow {
 
-std::unordered_set<parallel_layer_guid_t>
-    get_parallel_layers(SubParallelComputationGraph const &sub_pcg) {
+std::set<parallel_layer_guid_t>
+    spcg_get_parallel_layers(SubParallelComputationGraph const &sub_pcg) {
   return transform(get_nodes(sub_pcg.raw_graph),
                    [](Node const &n) { return parallel_layer_guid_t{n}; });
 }
 
-std::unordered_set<open_parallel_tensor_guid_t>
+std::set<open_parallel_tensor_guid_t>
     get_parallel_tensors(SubParallelComputationGraph const &sub_pcg) {
   return transform(get_all_open_kwarg_dataflow_values(sub_pcg.raw_graph),
                    [](OpenKwargDataflowValue<int, TensorSlotName> const &v)
@@ -80,7 +80,7 @@ parallel_layer_guid_t
                                     name);
 }
 
-std::unordered_map<TensorSlotName, open_parallel_tensor_guid_t>
+std::map<TensorSlotName, open_parallel_tensor_guid_t>
     get_layer_inputs(SubParallelComputationGraph const &pcg,
                      parallel_layer_guid_t const &layer) {
   return map_values(get_incoming_open_kwarg_dataflow_values_for_node(
@@ -90,7 +90,7 @@ std::unordered_map<TensorSlotName, open_parallel_tensor_guid_t>
                     });
 }
 
-std::unordered_map<TensorSlotName, parallel_tensor_guid_t>
+std::map<TensorSlotName, parallel_tensor_guid_t>
     get_outgoing_tensors(SubParallelComputationGraph const &pcg,
                          parallel_layer_guid_t const &layer) {
   return map_values(get_outgoing_kwarg_dataflow_outputs_for_node(
@@ -100,10 +100,10 @@ std::unordered_map<TensorSlotName, parallel_tensor_guid_t>
                     });
 }
 
-std::unordered_set<ParallelComputationGraphEdge> get_subgraph_outgoing_edges(
-    SubParallelComputationGraph const &spcg,
-    std::unordered_set<parallel_layer_guid_t> const &layers) {
-  std::unordered_set<KwargDataflowEdge<TensorSlotName>> raw_edges =
+std::set<ParallelComputationGraphEdge>
+    get_subgraph_outgoing_edges(SubParallelComputationGraph const &spcg,
+                                std::set<parallel_layer_guid_t> const &layers) {
+  std::set<KwargDataflowEdge<TensorSlotName>> raw_edges =
       get_kwarg_dataflow_subgraph_outgoing_edges(
           spcg.raw_graph, transform(layers, [](parallel_layer_guid_t const &l) {
             return l.raw_graph_node;
@@ -113,16 +113,16 @@ std::unordered_set<ParallelComputationGraphEdge> get_subgraph_outgoing_edges(
   });
 }
 
-std::unordered_set<SubParallelComputationGraphEdge> get_subgraph_incoming_edges(
+std::set<SubParallelComputationGraphEdge> get_subgraph_incoming_edges(
     SubParallelComputationGraph const &spcg,
-    std::unordered_set<parallel_layer_guid_t> const &subgraph) {
-  std::unordered_set<Node> raw_subgraph =
+    std::set<parallel_layer_guid_t> const &subgraph) {
+  std::set<Node> raw_subgraph =
       transform(subgraph, [](parallel_layer_guid_t const &l) {
         return l.raw_graph_node;
       });
-  std::unordered_set<OpenKwargDataflowEdge<int, TensorSlotName>>
-      raw_incoming_edges = get_open_kwarg_dataflow_subgraph_incoming_edges(
-          spcg.raw_graph, raw_subgraph);
+  std::set<OpenKwargDataflowEdge<int, TensorSlotName>> raw_incoming_edges =
+      get_open_kwarg_dataflow_subgraph_incoming_edges(spcg.raw_graph,
+                                                      raw_subgraph);
 
   return transform(raw_incoming_edges,
                    [](OpenKwargDataflowEdge<int, TensorSlotName> const &e) {
@@ -130,10 +130,10 @@ std::unordered_set<SubParallelComputationGraphEdge> get_subgraph_incoming_edges(
                    });
 }
 
-std::unordered_set<parallel_tensor_use_t>
-    get_parallel_tensor_uses(SubParallelComputationGraph const &spcg,
-                             open_parallel_tensor_guid_t const &t) {
-  std::unordered_set<KwargDataflowInput<TensorSlotName>> raw_uses =
+std::set<parallel_tensor_use_t>
+    get_open_parallel_tensor_uses(SubParallelComputationGraph const &spcg,
+                                  open_parallel_tensor_guid_t const &t) {
+  std::set<KwargDataflowInput<TensorSlotName>> raw_uses =
       get_open_kwarg_dataflow_value_uses(spcg.raw_graph,
                                          t.raw_open_dataflow_value);
   return transform(raw_uses, [](KwargDataflowInput<TensorSlotName> const &i) {

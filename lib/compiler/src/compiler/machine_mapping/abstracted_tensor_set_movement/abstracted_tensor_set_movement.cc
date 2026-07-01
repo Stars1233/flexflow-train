@@ -8,8 +8,6 @@
 #include "utils/containers/map_keys_with_value_merging.h"
 #include "utils/containers/merge_maps_with.h"
 #include "utils/containers/transform.h"
-#include "utils/containers/unordered_set_of.h"
-#include "utils/hash/unordered_map.h"
 
 namespace FlexFlow {
 
@@ -25,8 +23,7 @@ AbstractedTensorSetMovement
   };
 }
 
-std::unordered_set<BinaryTreePath>
-    get_src_layers(AbstractedTensorSetMovement const &m) {
+std::set<BinaryTreePath> get_src_layers(AbstractedTensorSetMovement const &m) {
   return transform(
       m.single_tensor_movements,
       [](AbstractedSingleTensorMovement const &e) -> BinaryTreePath {
@@ -34,20 +31,18 @@ std::unordered_set<BinaryTreePath>
       });
 }
 
-std::unordered_set<BinaryTreePath>
-    get_dst_layers(AbstractedTensorSetMovement const &m) {
-  return flatmap(m.single_tensor_movements,
-                 [](AbstractedSingleTensorMovement const &m)
-                     -> std::unordered_set<BinaryTreePath> {
-                   return abstracted_single_tensor_movement_get_dst_layers(m);
-                 });
+std::set<BinaryTreePath> get_dst_layers(AbstractedTensorSetMovement const &m) {
+  return flatmap(
+      m.single_tensor_movements,
+      [](AbstractedSingleTensorMovement const &m) -> std::set<BinaryTreePath> {
+        return abstracted_single_tensor_movement_get_dst_layers(m);
+      });
 }
 
 TensorSetMovement concretize_abstracted_tensor_set_movement(
     AbstractedTensorSetMovement const &abstracted,
-    std::unordered_map<BinaryTreePath, MachineSpaceStencil> const
-        &pre_machine_stencils,
-    std::unordered_map<BinaryTreePath, MachineSpaceStencil> const
+    std::map<BinaryTreePath, MachineSpaceStencil> const &pre_machine_stencils,
+    std::map<BinaryTreePath, MachineSpaceStencil> const
         &post_machine_stencils) {
 
   std::vector<TensorSetMovement> single_tensor_movements =

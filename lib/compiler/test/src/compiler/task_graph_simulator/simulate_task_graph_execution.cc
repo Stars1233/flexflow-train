@@ -25,10 +25,11 @@ TEST_SUITE(FF_TEST_SUITE) {
       auto cost_function = lookup_in_map<Node, float>(
           {{n.at(0), 1}, {n.at(1), 10}, {n.at(2), 100}, {n.at(3), 1000}});
 
-      auto is_allowed_to_run =
-          [&](Node const &n,
-              std::unordered_set<Node> const &in_progress_tasks,
-              std::unordered_set<Node> const &finished_tasks) { return true; };
+      auto is_allowed_to_run = [&](Node const &n,
+                                   std::set<Node> const &in_progress_tasks,
+                                   std::set<Node> const &finished_tasks) {
+        return true;
+      };
 
       TaskExecutionConstraint constraint =
           TaskExecutionConstraint{is_allowed_to_run};
@@ -57,12 +58,11 @@ TEST_SUITE(FF_TEST_SUITE) {
           {{n.at(0), 10}, {n.at(1), 15}, {n.at(2), 20}, {n.at(3), 25}});
 
       SUBCASE("no processing constraints") {
-        auto is_allowed_to_run =
-            [&](Node const &n,
-                std::unordered_set<Node> const &in_progress_tasks,
-                std::unordered_set<Node> const &finished_tasks) {
-              return true;
-            };
+        auto is_allowed_to_run = [&](Node const &n,
+                                     std::set<Node> const &in_progress_tasks,
+                                     std::set<Node> const &finished_tasks) {
+          return true;
+        };
 
         TaskExecutionConstraint constraint =
             TaskExecutionConstraint{is_allowed_to_run};
@@ -78,12 +78,11 @@ TEST_SUITE(FF_TEST_SUITE) {
       }
 
       SUBCASE("one node at a time") {
-        auto is_allowed_to_run =
-            [&](Node const &n,
-                std::unordered_set<Node> const &in_progress_tasks,
-                std::unordered_set<Node> const &finished_tasks) {
-              return in_progress_tasks.size() == 0;
-            };
+        auto is_allowed_to_run = [&](Node const &n,
+                                     std::set<Node> const &in_progress_tasks,
+                                     std::set<Node> const &finished_tasks) {
+          return in_progress_tasks.size() == 0;
+        };
 
         TaskExecutionConstraint constraint =
             TaskExecutionConstraint{is_allowed_to_run};
@@ -121,12 +120,11 @@ TEST_SUITE(FF_TEST_SUITE) {
                                                        {n.at(5), 35}});
 
       SUBCASE("no processing constraints") {
-        auto is_allowed_to_run =
-            [&](Node const &n,
-                std::unordered_set<Node> const &in_progress_tasks,
-                std::unordered_set<Node> const &finished_tasks) {
-              return true;
-            };
+        auto is_allowed_to_run = [&](Node const &n,
+                                     std::set<Node> const &in_progress_tasks,
+                                     std::set<Node> const &finished_tasks) {
+          return true;
+        };
 
         TaskExecutionConstraint constraint =
             TaskExecutionConstraint{is_allowed_to_run};
@@ -144,12 +142,11 @@ TEST_SUITE(FF_TEST_SUITE) {
       }
 
       SUBCASE("one node at a time") {
-        auto is_allowed_to_run =
-            [&](Node const &n,
-                std::unordered_set<Node> const &in_progress_tasks,
-                std::unordered_set<Node> const &finished_tasks) {
-              return in_progress_tasks.size() == 0;
-            };
+        auto is_allowed_to_run = [&](Node const &n,
+                                     std::set<Node> const &in_progress_tasks,
+                                     std::set<Node> const &finished_tasks) {
+          return in_progress_tasks.size() == 0;
+        };
 
         TaskExecutionConstraint constraint =
             TaskExecutionConstraint{is_allowed_to_run};
@@ -185,12 +182,11 @@ TEST_SUITE(FF_TEST_SUITE) {
                                                        {n.at(4), 20}});
 
       SUBCASE("at most two nodes at a time") {
-        auto is_allowed_to_run =
-            [&](Node const &n,
-                std::unordered_set<Node> const &in_progress_tasks,
-                std::unordered_set<Node> const &finished_tasks) {
-              return in_progress_tasks.size() < 2;
-            };
+        auto is_allowed_to_run = [&](Node const &n,
+                                     std::set<Node> const &in_progress_tasks,
+                                     std::set<Node> const &finished_tasks) {
+          return in_progress_tasks.size() < 2;
+        };
 
         TaskExecutionConstraint constraint =
             TaskExecutionConstraint{is_allowed_to_run};

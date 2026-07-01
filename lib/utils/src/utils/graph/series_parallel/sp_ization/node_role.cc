@@ -8,8 +8,7 @@
 
 namespace FlexFlow {
 
-std::unordered_map<Node, NodeRole>
-    get_initial_node_role_map(DiGraphView const &g) {
+std::map<Node, NodeRole> get_initial_node_role_map(DiGraphView const &g) {
   return generate_map(get_nodes(g),
                       [](Node const &) { return NodeRole::PURE; });
 }
@@ -17,7 +16,7 @@ std::unordered_map<Node, NodeRole>
 DiGraph contract_out_nodes_of_given_role(
     DiGraph g,
     NodeRole const &role,
-    std::unordered_map<Node, NodeRole> const &node_roles) {
+    std::map<Node, NodeRole> const &node_roles) {
   for (Node const &n : get_nodes(g)) {
     if (node_roles.at(n) == role) {
       for (Node const &pred : get_predecessors(g, n)) {

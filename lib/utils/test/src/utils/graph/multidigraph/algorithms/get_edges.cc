@@ -20,8 +20,8 @@ TEST_SUITE(FF_TEST_SUITE) {
                                                {n.at(0), n.at(0)},
                                            });
 
-    std::unordered_set<MultiDiEdge> result = get_edges(g);
-    std::unordered_set<MultiDiEdge> correct = unordered_set_of(e);
+    std::set<MultiDiEdge> result = get_edges(g);
+    std::set<MultiDiEdge> correct = set_of(e);
 
     CHECK(result == correct);
   }

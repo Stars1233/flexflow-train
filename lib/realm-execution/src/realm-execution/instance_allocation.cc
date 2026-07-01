@@ -14,7 +14,7 @@
 #include "utils/containers/contains_key.h"
 #include "utils/containers/make.h"
 #include "utils/containers/map_values.h"
-#include "utils/containers/unordered_set_of.h"
+#include "utils/containers/set_of.h"
 #include "utils/containers/values.h"
 #include "utils/exception.h"
 #include "utils/optional.h"
@@ -36,8 +36,7 @@ std::pair<Realm::RegionInstance, Realm::Event>
 
 TensorInstanceBacking perform_instance_allocation(
     DynamicOpenDataflowGraph const &g,
-    std::unordered_map<DynamicValueAttrs, DynamicTensorAccessor> const
-        &preallocated,
+    std::map<DynamicValueAttrs, DynamicTensorAccessor> const &preallocated,
     RealmContext &ctx) {
   ASSERT(no_tensors_are_allocated(g));
   ASSERT(tensors_are_ready_for_allocation(g));
@@ -46,15 +45,16 @@ TensorInstanceBacking perform_instance_allocation(
   }
 
   TensorInstanceBacking result = make_empty_tensor_instance_backing();
-  auto allocate = [&](DynamicNodeAttrs const &n, DynamicValueAttrs const &v) {
+  auto allocate = [&](DynamicValueAttrs const &v) {
     if (contains_key(preallocated, v)) {
       // FIXME: Attach external instance to existing allocation and use that
       NOT_IMPLEMENTED();
     } else {
       if (!contains_key(result.backing, v)) {
-        global_device_id_t device = assert_unwrap(n.device_id);
+        global_device_id_t device_id =
+            assert_unwrap(v.mapping).raw.at_l(assert_unwrap(v.shard_coord));
         result.backing.insert(std::pair{
-            v, perform_instance_allocation_for_value(device, v, ctx)});
+            v, perform_instance_allocation_for_value(device_id, v, ctx)});
       }
       return result.backing.at(v);
     }
@@ -62,10 +62,10 @@ TensorInstanceBacking perform_instance_allocation(
 
   for (DynamicNodeInvocation const &invocation : g.invocations) {
     for (DynamicValueAttrs const &input : values(invocation.inputs)) {
-      allocate(invocation.node_attrs, input);
+      allocate(input);
     }
     for (DynamicValueAttrs const &output : values(invocation.outputs)) {
-      allocate(invocation.node_attrs, output);
+      allocate(output);
     }
   }
 

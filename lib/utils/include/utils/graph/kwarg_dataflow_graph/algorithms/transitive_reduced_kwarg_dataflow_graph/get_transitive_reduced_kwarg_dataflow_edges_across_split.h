@@ -11,19 +11,16 @@
 namespace FlexFlow {
 
 template <typename SlotName>
-std::unordered_set<KwargDataflowEdge<SlotName>>
+std::set<KwargDataflowEdge<SlotName>>
     get_transitive_reduced_kwarg_dataflow_edges_across_split(
         TransitiveReducedKwargDataflowGraphView<SlotName> const &tr_g,
         BinarySeriesSplit const &split) {
 
-  std::unordered_set<Node> src_subgraph =
-      unordered_set_of(get_leaves(split.get_left_child()));
-  std::unordered_set<Node> dst_subgraph =
-      unordered_set_of(get_leaves(split.get_right_child()));
+  std::set<Node> src_subgraph = set_of(get_leaves(split.get_left_child()));
+  std::set<Node> dst_subgraph = set_of(get_leaves(split.get_right_child()));
 
-  std::unordered_set<DirectedEdge> raw_edges =
-      get_edges_from_subgraph_to_subgraph(
-          tr_g.transitive_reduction, src_subgraph, dst_subgraph);
+  std::set<DirectedEdge> raw_edges = get_edges_from_subgraph_to_subgraph(
+      tr_g.transitive_reduction, src_subgraph, dst_subgraph);
 
   return flatmap(raw_edges, [&](DirectedEdge const &e) {
     return get_kwarg_dataflow_edges_from_node_to_node(

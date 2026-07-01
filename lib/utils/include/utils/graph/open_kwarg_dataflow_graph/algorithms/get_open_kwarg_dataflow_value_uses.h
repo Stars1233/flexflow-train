@@ -11,10 +11,9 @@
 namespace FlexFlow {
 
 template <typename GraphInputName, typename SlotName>
-std::unordered_set<KwargDataflowInput<SlotName>>
-    get_open_kwarg_dataflow_value_uses(
-        OpenKwargDataflowGraphView<GraphInputName, SlotName> const &g,
-        OpenKwargDataflowValue<GraphInputName, SlotName> const &v) {
+std::set<KwargDataflowInput<SlotName>> get_open_kwarg_dataflow_value_uses(
+    OpenKwargDataflowGraphView<GraphInputName, SlotName> const &g,
+    OpenKwargDataflowValue<GraphInputName, SlotName> const &v) {
 
   OpenKwargDataflowEdgeQuery<GraphInputName, SlotName> query = v.template visit<
       OpenKwargDataflowEdgeQuery<GraphInputName, SlotName>>(overload{
@@ -41,7 +40,7 @@ std::unordered_set<KwargDataflowInput<SlotName>>
         };
       }});
 
-  std::unordered_set<OpenKwargDataflowEdge<GraphInputName, SlotName>> edges =
+  std::set<OpenKwargDataflowEdge<GraphInputName, SlotName>> edges =
       g.query_edges(query);
 
   return transform(

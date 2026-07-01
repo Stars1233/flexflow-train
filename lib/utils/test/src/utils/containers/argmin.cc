@@ -1,7 +1,7 @@
 #include "utils/containers/argmin.h"
 #include "utils/containers/contains.h"
 #include <doctest/doctest.h>
-#include <unordered_set>
+#include <set>
 #include <vector>
 
 using namespace FlexFlow;
@@ -20,9 +20,9 @@ TEST_SUITE(FF_TEST_SUITE) {
     }
 
     SUBCASE("ties") {
-      std::unordered_set<int> input = {-1, 1, 2};
+      std::set<int> input = {-1, 1, 2};
       int result = argmin(input, [](int x) { return x * x; });
-      CHECK(contains(std::unordered_set<int>{-1, 1}, result));
+      CHECK(contains(std::set<int>{-1, 1}, result));
     }
   }
 }

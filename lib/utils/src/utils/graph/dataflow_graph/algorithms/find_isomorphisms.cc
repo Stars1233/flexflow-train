@@ -5,12 +5,11 @@
 
 namespace FlexFlow {
 
-std::unordered_set<DataflowGraphIsomorphism>
+std::set<DataflowGraphIsomorphism>
     find_isomorphisms(DataflowGraphView const &src,
                       DataflowGraphView const &dst) {
-  std::unordered_set<OpenDataflowGraphIsomorphism> open_isomorphisms =
-      find_isomorphisms(view_as_open_dataflow_graph(src),
-                        view_as_open_dataflow_graph(dst));
+  std::set<OpenDataflowGraphIsomorphism> open_isomorphisms = find_isomorphisms(
+      view_as_open_dataflow_graph(src), view_as_open_dataflow_graph(dst));
 
   return transform(open_isomorphisms,
                    [](OpenDataflowGraphIsomorphism const &open) {

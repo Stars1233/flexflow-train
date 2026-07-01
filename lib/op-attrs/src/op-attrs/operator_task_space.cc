@@ -10,10 +10,10 @@
 #include "utils/containers/maximum.h"
 #include "utils/containers/product.h"
 #include "utils/containers/range.h"
+#include "utils/containers/set_of.h"
 #include "utils/containers/transform.h"
-#include "utils/containers/unordered_set_of.h"
 #include "utils/containers/vector_of.h"
-#include "utils/fmt/unordered_set.h"
+#include "utils/fmt/set.h"
 #include "utils/nonnegative_int/nonnegative_range.h"
 #include "utils/nonnegative_int/num_elements.h"
 #include "utils/orthotope/dim_domain.h"
@@ -29,13 +29,13 @@ OperatorTaskSpace trivial_op_task_space() {
   return OperatorTaskSpace{MinimalOrthotope{{}}};
 }
 
-std::unordered_set<operator_task_space_dim_idx_t>
+std::set<operator_task_space_dim_idx_t>
     operator_task_space_get_dim_idxs(OperatorTaskSpace const &op_task_space) {
   return get_minimal_domain_dims(
       minimal_dim_domain_from_operator_task_space(op_task_space));
 }
 
-std::unordered_set<TaskSpaceCoordinate>
+std::set<TaskSpaceCoordinate>
     get_task_space_coordinates(OperatorTaskSpace const &task) {
 
   std::vector<std::vector<nonnegative_int>> coordinate_ranges =
@@ -43,9 +43,9 @@ std::unordered_set<TaskSpaceCoordinate>
         return nonnegative_range(num_points.nonnegative_int_from_int_ge_two());
       });
 
-  std::unordered_set<std::vector<nonnegative_int>> raw_coordinates =
-      unordered_set_of(cartesian_product(coordinate_ranges));
-  std::unordered_set<TaskSpaceCoordinate> task_space_coordinates =
+  std::set<std::vector<nonnegative_int>> raw_coordinates =
+      set_of(cartesian_product(coordinate_ranges));
+  std::set<TaskSpaceCoordinate> task_space_coordinates =
       transform(raw_coordinates, [](std::vector<nonnegative_int> const &point) {
         return TaskSpaceCoordinate{OrthotopeCoord{point}};
       });
@@ -78,7 +78,7 @@ MinimalDimDomain<operator_task_space_dim_idx_t>
 
   return minimal_dim_domain_from_minimal_orthotope(
       minimal_orthotope,
-      unordered_set_of(operator_task_space_dim_idx_range(
+      set_of(operator_task_space_dim_idx_range(
           minimal_orthotope_get_num_dims(minimal_orthotope))),
       get_operator_task_space_dim_ordering());
 }

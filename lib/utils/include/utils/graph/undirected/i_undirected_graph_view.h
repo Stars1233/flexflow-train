@@ -14,8 +14,7 @@ struct IUndirectedGraphView : public IGraphView {
   IUndirectedGraphView(IUndirectedGraphView const &) = delete;
   IUndirectedGraphView &operator=(IUndirectedGraphView const &) = delete;
 
-  virtual std::unordered_set<Edge>
-      query_edges(UndirectedEdgeQuery const &) const = 0;
+  virtual std::set<Edge> query_edges(UndirectedEdgeQuery const &) const = 0;
   virtual ~IUndirectedGraphView() = default;
 
   IUndirectedGraphView *clone() const override = 0;

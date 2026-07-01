@@ -11,12 +11,12 @@ features = [
 ]
 
 includes = [
-  "<unordered_set>",
-  "utils/fmt/unordered_set.h",
+  "<set>",
+  "utils/fmt/set.h",
   "substitutions/operator_pattern/operator_attribute_constraint.dtg.h",
-  "utils/hash/unordered_set.h",
+  "utils/hash/set.h",
 ]
 
 [[fields]]
 name = "attribute_constraints"
-type = "std::unordered_set<::FlexFlow::OperatorAttributeConstraint>"
+type = "std::set<::FlexFlow::OperatorAttributeConstraint>"

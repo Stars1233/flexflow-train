@@ -12,7 +12,7 @@ namespace FlexFlow {
 static std::vector<Node> get_unchecked_topological_ordering_from_starting_node(
     DiGraphView const &g, Node const &starting_node) {
 
-  std::unordered_set<Node> descendants = get_descendants(g, starting_node);
+  std::set<Node> descendants = get_descendants(g, starting_node);
   descendants.insert(starting_node);
   return get_topological_ordering(get_subgraph(g, descendants));
 }

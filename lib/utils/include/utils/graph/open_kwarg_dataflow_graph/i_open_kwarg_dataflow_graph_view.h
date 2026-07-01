@@ -12,13 +12,12 @@ namespace FlexFlow {
 template <typename GraphInputName, typename SlotName>
 struct IOpenKwargDataflowGraphView
     : virtual public IKwargDataflowGraphView<SlotName> {
-  virtual std::unordered_set<KwargDataflowGraphInput<GraphInputName>>
+  virtual std::set<KwargDataflowGraphInput<GraphInputName>>
       get_inputs() const = 0;
-  virtual std::unordered_set<OpenKwargDataflowEdge<GraphInputName, SlotName>>
-      query_edges(OpenKwargDataflowEdgeQuery<GraphInputName, SlotName> const &)
-          const = 0;
+  virtual std::set<OpenKwargDataflowEdge<GraphInputName, SlotName>> query_edges(
+      OpenKwargDataflowEdgeQuery<GraphInputName, SlotName> const &) const = 0;
 
-  std::unordered_set<KwargDataflowEdge<SlotName>> query_edges(
+  std::set<KwargDataflowEdge<SlotName>> query_edges(
       KwargDataflowEdgeQuery<SlotName> const &query) const override final {
     OpenKwargDataflowEdgeQuery<GraphInputName, SlotName> open_query =
         OpenKwargDataflowEdgeQuery<GraphInputName, SlotName>{
@@ -28,8 +27,8 @@ struct IOpenKwargDataflowGraphView
             /*standard_edge_query=*/query,
         };
 
-    std::unordered_set<OpenKwargDataflowEdge<GraphInputName, SlotName>>
-        open_edges = this->query_edges(open_query);
+    std::set<OpenKwargDataflowEdge<GraphInputName, SlotName>> open_edges =
+        this->query_edges(open_query);
 
     return transform(
         open_edges,

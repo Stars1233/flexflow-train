@@ -13,11 +13,11 @@ public:
   KwargDataflowGraphAsOpenView(KwargDataflowGraphView<SlotName> const &g)
       : g(g) {}
 
-  std::unordered_set<Node> query_nodes(NodeQuery const &q) const override {
+  std::set<Node> query_nodes(NodeQuery const &q) const override {
     return this->g.query_nodes(q);
   }
 
-  std::unordered_set<OpenKwargDataflowEdge<GraphInputName, SlotName>>
+  std::set<OpenKwargDataflowEdge<GraphInputName, SlotName>>
       query_edges(OpenKwargDataflowEdgeQuery<GraphInputName, SlotName> const &q)
           const override {
     return transform(this->g.query_edges(q.standard_edge_query),
@@ -27,12 +27,12 @@ public:
                      });
   }
 
-  std::unordered_set<KwargDataflowOutput<SlotName>> query_outputs(
+  std::set<KwargDataflowOutput<SlotName>> query_outputs(
       KwargDataflowOutputQuery<SlotName> const &q) const override {
     return this->g.query_outputs(q);
   }
 
-  std::unordered_set<KwargDataflowGraphInput<GraphInputName>>
+  std::set<KwargDataflowGraphInput<GraphInputName>>
       get_inputs() const override {
     return {};
   }

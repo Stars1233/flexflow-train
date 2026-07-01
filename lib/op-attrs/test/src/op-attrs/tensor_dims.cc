@@ -1,6 +1,6 @@
 #include "op-attrs/tensor_dims.h"
 #include "test/utils/doctest/fmt/optional.h"
-#include "test/utils/doctest/fmt/unordered_set.h"
+#include "test/utils/doctest/fmt/set.h"
 #include <doctest/doctest.h>
 
 using namespace ::FlexFlow;
@@ -121,9 +121,8 @@ TEST_SUITE(FF_TEST_SUITE) {
           FFOrdered{3_p, 1_p, 2_p},
       };
 
-      std::unordered_set<TensorDimsCoord> result =
-          get_tensor_dims_coord_set(input);
-      std::unordered_set<TensorDimsCoord> correct = {
+      std::set<TensorDimsCoord> result = get_tensor_dims_coord_set(input);
+      std::set<TensorDimsCoord> correct = {
           TensorDimsCoord{FFOrdered{0_n, 0_n, 0_n}},
           TensorDimsCoord{FFOrdered{0_n, 0_n, 1_n}},
           TensorDimsCoord{FFOrdered{1_n, 0_n, 0_n}},
@@ -138,9 +137,8 @@ TEST_SUITE(FF_TEST_SUITE) {
     SUBCASE("TensorDims is zero-dimensional") {
       TensorDims input = TensorDims{FFOrdered<positive_int>{}};
 
-      std::unordered_set<TensorDimsCoord> result =
-          get_tensor_dims_coord_set(input);
-      std::unordered_set<TensorDimsCoord> correct = {
+      std::set<TensorDimsCoord> result = get_tensor_dims_coord_set(input);
+      std::set<TensorDimsCoord> correct = {
           TensorDimsCoord{FFOrdered<nonnegative_int>{}},
       };
 
@@ -148,7 +146,7 @@ TEST_SUITE(FF_TEST_SUITE) {
     }
   }
 
-  TEST_CASE("get_broadcast_target_dims(std::unordered_set<TensorDims>)") {
+  TEST_CASE("get_broadcast_target_dims(std::set<TensorDims>)") {
     TensorDims d1 = TensorDims{FFOrdered{1_p, 10_p, 4_p, 3_p}};
 
     TensorDims d2 = TensorDims{FFOrdered{10_p, 4_p, 1_p}};

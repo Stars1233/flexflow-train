@@ -1,16 +1,12 @@
 #include "utils/containers/binary_cartesian_product.h"
-#include "utils/archetypes/value_type.h"
+#include "utils/archetypes/ordered_value_type.h"
 
 namespace FlexFlow {
 
-using A = value_type<0>;
-using B = value_type<1>;
+using A = ordered_value_type<0>;
+using B = ordered_value_type<1>;
 
-template std::unordered_set<std::pair<A, B>>
-    binary_cartesian_product(std::unordered_set<A> const &,
-                             std::unordered_set<B> const &);
-template std::unordered_set<std::pair<A, A>>
-    binary_cartesian_product(std::unordered_set<A> const &,
-                             std::unordered_set<A> const &);
+template std::set<std::pair<A, B>>
+    binary_cartesian_product(std::set<A> const &, std::set<B> const &);
 
 } // namespace FlexFlow

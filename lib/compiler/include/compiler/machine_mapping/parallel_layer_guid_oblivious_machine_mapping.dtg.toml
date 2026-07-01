@@ -3,6 +3,7 @@ name = "ParallelLayerGuidObliviousMachineMapping"
 type = "struct"
 features = [
   "eq",
+  "ord",
   "hash",
   "fmt",
   "rapidcheck",
@@ -14,10 +15,10 @@ includes = [
 ]
 
 src_includes = [
-  "utils/fmt/unordered_map.h",
-  "utils/hash/unordered_map.h",
+  "utils/fmt/map.h",
+  "utils/hash/map.h",
 ]
 
 [[fields]]
 name = "raw_mapping"
-type = "std::unordered_map<::FlexFlow::BinaryTreePath, ::FlexFlow::MachineView>"
+type = "std::map<::FlexFlow::BinaryTreePath, ::FlexFlow::MachineView>"

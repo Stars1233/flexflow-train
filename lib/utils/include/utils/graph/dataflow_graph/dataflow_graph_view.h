@@ -12,10 +12,9 @@ struct DataflowGraphView : virtual public DiGraphView {
   DataflowGraphView(DataflowGraphView const &) = default;
   DataflowGraphView &operator=(DataflowGraphView const &) = default;
 
-  std::unordered_set<Node> query_nodes(NodeQuery const &) const;
-  std::unordered_set<DataflowEdge> query_edges(DataflowEdgeQuery const &) const;
-  std::unordered_set<DataflowOutput>
-      query_outputs(DataflowOutputQuery const &) const;
+  std::set<Node> query_nodes(NodeQuery const &) const;
+  std::set<DataflowEdge> query_edges(DataflowEdgeQuery const &) const;
+  std::set<DataflowOutput> query_outputs(DataflowOutputQuery const &) const;
 
   template <typename T, typename... Args>
   static typename std::enable_if<std::is_base_of<IDataflowGraphView, T>::value,

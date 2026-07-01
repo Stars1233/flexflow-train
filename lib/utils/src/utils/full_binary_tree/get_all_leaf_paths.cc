@@ -3,7 +3,7 @@
 
 namespace FlexFlow {
 
-template std::unordered_set<BinaryTreePath>
+template std::set<BinaryTreePath>
     get_all_leaf_paths(value_type<0> const &,
                        FullBinaryTreeImplementation<value_type<0>,
                                                     value_type<1>,

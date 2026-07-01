@@ -10,8 +10,7 @@ nonnegative_int orthotope_get_num_dims(Orthotope const &);
 
 positive_int orthotope_get_volume(Orthotope const &);
 
-std::unordered_set<OrthotopeCoord>
-    get_all_coords_in_orthotope(Orthotope const &);
+std::set<OrthotopeCoord> get_all_coords_in_orthotope(Orthotope const &);
 
 bool orthotope_contains_coord(Orthotope const &, OrthotopeCoord const &);
 

@@ -1,5 +1,5 @@
 #include "utils/graph/series_parallel/binary_sp_decomposition_tree/generic_binary_sp_decomposition_tree/get_leaves.h"
-#include "test/utils/doctest/fmt/unordered_multiset.h"
+#include "test/utils/doctest/fmt/multiset.h"
 #include "utils/graph/series_parallel/binary_sp_decomposition_tree/binary_sp_decomposition_tree.dtg.h"
 #include "utils/graph/series_parallel/binary_sp_decomposition_tree/binary_sp_decomposition_tree.h"
 #include <doctest/doctest.h>
@@ -25,8 +25,8 @@ TEST_SUITE(FF_TEST_SUITE) {
     SUBCASE("leaf") {
       BinarySPDecompositionTree input = BinarySPDecompositionTree{n1};
 
-      std::unordered_multiset<Node> result = generic_get_leaves(input);
-      std::unordered_multiset<Node> correct = {n1};
+      std::multiset<Node> result = generic_get_leaves(input);
+      std::multiset<Node> correct = {n1};
 
       CHECK(result == correct);
     }
@@ -40,8 +40,8 @@ TEST_SUITE(FF_TEST_SUITE) {
             },
         };
 
-        std::unordered_multiset<Node> result = generic_get_leaves(input);
-        std::unordered_multiset<Node> correct = {n1, n2};
+        std::multiset<Node> result = generic_get_leaves(input);
+        std::multiset<Node> correct = {n1, n2};
 
         CHECK(result == correct);
       }
@@ -54,8 +54,8 @@ TEST_SUITE(FF_TEST_SUITE) {
             },
         };
 
-        std::unordered_multiset<Node> result = generic_get_leaves(input);
-        std::unordered_multiset<Node> correct = {n1, n1};
+        std::multiset<Node> result = generic_get_leaves(input);
+        std::multiset<Node> correct = {n1, n1};
 
         CHECK(result == correct);
       }
@@ -70,8 +70,8 @@ TEST_SUITE(FF_TEST_SUITE) {
             },
         };
 
-        std::unordered_multiset<Node> result = generic_get_leaves(input);
-        std::unordered_multiset<Node> correct = {n1, n2};
+        std::multiset<Node> result = generic_get_leaves(input);
+        std::multiset<Node> correct = {n1, n2};
 
         CHECK(result == correct);
       }
@@ -84,8 +84,8 @@ TEST_SUITE(FF_TEST_SUITE) {
             },
         };
 
-        std::unordered_multiset<Node> result = generic_get_leaves(input);
-        std::unordered_multiset<Node> correct = {n1, n1};
+        std::multiset<Node> result = generic_get_leaves(input);
+        std::multiset<Node> correct = {n1, n1};
 
         CHECK(result == correct);
       }
@@ -109,8 +109,8 @@ TEST_SUITE(FF_TEST_SUITE) {
                             make_series_split(make_leaf(n2), make_leaf(n3))),
           make_parallel_split(make_leaf(n2), make_leaf(n1)));
 
-      std::unordered_multiset<Node> result = generic_get_leaves(input);
-      std::unordered_multiset<Node> correct = {n1, n1, n2, n2, n3};
+      std::multiset<Node> result = generic_get_leaves(input);
+      std::multiset<Node> correct = {n1, n1, n2, n2, n3};
 
       CHECK(result == correct);
     }

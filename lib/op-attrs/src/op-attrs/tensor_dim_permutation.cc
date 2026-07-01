@@ -11,13 +11,12 @@
 #include "utils/containers/minimum.h"
 #include "utils/containers/permute_with_key.h"
 #include "utils/containers/require_same.h"
-#include "utils/fmt/unordered_set.h"
+#include "utils/fmt/set.h"
 #include "utils/hash/tuple.h"
 
 namespace FlexFlow {
 
-static void
-    check_are_contiguous_from_one(std::unordered_set<ff_dim_t> const &idxs) {
+static void check_are_contiguous_from_one(std::set<ff_dim_t> const &idxs) {
   if (idxs.empty()) {
     return;
   }

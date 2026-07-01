@@ -1,5 +1,5 @@
 #include "utils/graph/digraph/algorithms/get_edges.h"
-#include "utils/containers/unordered_set_of.h"
+#include "utils/containers/set_of.h"
 #include "utils/graph/algorithms.h"
 #include "utils/graph/digraph/digraph.h"
 #include "utils/graph/instances/adjacency_digraph.h"
@@ -21,32 +21,32 @@ TEST_SUITE(FF_TEST_SUITE) {
     add_edges(g, e);
 
     SUBCASE("Base") {
-      std::unordered_set<DirectedEdge> correct = unordered_set_of(e);
-      std::unordered_set<DirectedEdge> result = get_edges(g);
+      std::set<DirectedEdge> correct = set_of(e);
+      std::set<DirectedEdge> result = get_edges(g);
       CHECK(result == correct);
     }
 
     SUBCASE("Adding an edge") {
       g.add_edge(DirectedEdge{n.at(3), n.at(1)});
-      std::unordered_set<DirectedEdge> correct = {
+      std::set<DirectedEdge> correct = {
           DirectedEdge{n.at(0), n.at(1)},
           DirectedEdge{n.at(0), n.at(2)},
           DirectedEdge{n.at(0), n.at(3)},
           DirectedEdge{n.at(1), n.at(2)},
           DirectedEdge{n.at(3), n.at(1)},
       };
-      std::unordered_set<DirectedEdge> result = get_edges(g);
+      std::set<DirectedEdge> result = get_edges(g);
       CHECK(result == correct);
     }
 
     SUBCASE("Removing an edge") {
       g.remove_edge(DirectedEdge{n.at(0), n.at(3)});
-      std::unordered_set<DirectedEdge> correct = {
+      std::set<DirectedEdge> correct = {
           DirectedEdge{n.at(0), n.at(1)},
           DirectedEdge{n.at(0), n.at(2)},
           DirectedEdge{n.at(1), n.at(2)},
       };
-      std::unordered_set<DirectedEdge> result = get_edges(g);
+      std::set<DirectedEdge> result = get_edges(g);
       CHECK(result == correct);
     }
   }

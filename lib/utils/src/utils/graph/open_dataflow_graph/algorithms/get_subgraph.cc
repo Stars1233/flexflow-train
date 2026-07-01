@@ -2,7 +2,7 @@
 #include "utils/bidict/generate_bidict.h"
 #include "utils/containers/enumerate_vector.h"
 #include "utils/containers/is_subseteq_of.h"
-#include "utils/containers/unordered_set_of.h"
+#include "utils/containers/set_of.h"
 #include "utils/containers/values.h"
 #include "utils/graph/dataflow_graph/dataflow_output_query.h"
 #include "utils/graph/node/algorithms.h"
@@ -17,9 +17,8 @@
 
 namespace FlexFlow {
 
-OpenDataflowSubgraphResult
-    get_subgraph(OpenDataflowGraphView const &g,
-                 std::unordered_set<Node> const &subgraph_nodes) {
+OpenDataflowSubgraphResult get_subgraph(OpenDataflowGraphView const &g,
+                                        std::set<Node> const &subgraph_nodes) {
   bidict<OpenDataflowValue, DataflowGraphInput>
       full_graph_values_to_subgraph_inputs =
           get_full_graph_values_to_subgraph_inputs(g, subgraph_nodes);
@@ -34,8 +33,7 @@ OpenDataflowSubgraphResult
 
 bidict<OpenDataflowValue, DataflowGraphInput>
     get_full_graph_values_to_subgraph_inputs(
-        OpenDataflowGraphView const &g,
-        std::unordered_set<Node> const &subgraph_nodes) {
+        OpenDataflowGraphView const &g, std::set<Node> const &subgraph_nodes) {
   DataflowGraphInputSource input_source;
   return generate_bidict(get_subgraph_inputs(g, subgraph_nodes),
                          [&](OpenDataflowValue const &v) -> DataflowGraphInput {
@@ -50,10 +48,10 @@ bidict<OpenDataflowValue, DataflowGraphInput>
 
 OpenDataflowGraphData
     get_subgraph_data(OpenDataflowGraphView const &g,
-                      std::unordered_set<Node> const &subgraph_nodes,
+                      std::set<Node> const &subgraph_nodes,
                       bidict<OpenDataflowValue, DataflowGraphInput> const
                           &full_graph_values_to_subgraph_inputs) {
-  std::unordered_set<OpenDataflowEdge> subgraph_input_edges =
+  std::set<OpenDataflowEdge> subgraph_input_edges =
       transform(get_subgraph_incoming_edges(g, subgraph_nodes),
                 [&](OpenDataflowEdge const &edge) {
                   return edge.visit<OpenDataflowEdge>(
@@ -84,12 +82,12 @@ OpenDataflowGraphData
           query_set<nonnegative_int>::matchall(),
       },
   };
-  std::unordered_set<OpenDataflowEdge> subgraph_interior_edges =
+  std::set<OpenDataflowEdge> subgraph_interior_edges =
       g.query_edges(subgraph_interior_edges_query);
 
-  std::unordered_set<DataflowGraphInput> subgraph_inputs =
-      unordered_set_of(values(full_graph_values_to_subgraph_inputs));
-  std::unordered_set<DataflowOutput> subgraph_outputs =
+  std::set<DataflowGraphInput> subgraph_inputs =
+      set_of(values(full_graph_values_to_subgraph_inputs));
+  std::set<DataflowOutput> subgraph_outputs =
       filter(g.query_outputs(dataflow_output_query_all()),
              [&](DataflowOutput const &o) {
                return contains(subgraph_nodes, o.node);

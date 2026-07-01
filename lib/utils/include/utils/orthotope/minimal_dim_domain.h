@@ -59,9 +59,8 @@ MinimalDimDomain<T>
 template <typename T>
 DimDomain<T> dim_domain_from_minimal_dim_domain(
     MinimalDimDomain<T> const &minimal_dim_domain,
-    std::unordered_set<T> const &trivial_dims) {
-  std::unordered_set<T> nontrivial_dims =
-      get_minimal_domain_dims(minimal_dim_domain);
+    std::set<T> const &trivial_dims) {
+  std::set<T> nontrivial_dims = get_minimal_domain_dims(minimal_dim_domain);
 
   ASSERT(are_disjoint(nontrivial_dims, trivial_dims));
 
@@ -75,15 +74,14 @@ DimDomain<T> dim_domain_from_minimal_dim_domain(
 }
 
 template <typename T>
-std::unordered_set<T>
-    get_minimal_domain_dims(MinimalDimDomain<T> const &domain) {
+std::set<T> get_minimal_domain_dims(MinimalDimDomain<T> const &domain) {
   return keys(domain.dims);
 }
 
 template <typename T>
 MinimalDimDomain<T>
     restrict_minimal_domain_to_dims(MinimalDimDomain<T> const &domain,
-                                    std::unordered_set<T> const &allowed) {
+                                    std::set<T> const &allowed) {
   return MinimalDimDomain<T>{restrict_keys(domain.dims, allowed)};
 }
 
@@ -100,7 +98,7 @@ MinimalOrthotope minimal_orthotope_from_minimal_dim_domain(
 template <typename T>
 MinimalDimDomain<T> minimal_dim_domain_from_minimal_orthotope(
     MinimalOrthotope const &orthotope,
-    std::unordered_set<T> const &dims,
+    std::set<T> const &dims,
     DimOrdering<T> const &dim_ordering) {
 
   return MinimalDimDomain<T>{

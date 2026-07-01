@@ -12,7 +12,7 @@ bool is_valid_machine_view(MachineView const &mv,
                            OperatorTaskSpace const &task,
                            MachineComputeResourceSlice const &ms);
 
-std::unordered_set<MachineView>
+std::set<MachineView>
     get_allowed_machine_views(MachineComputeResourceSlice const &machine_spec,
                               OperatorTaskSpace const &task);
 

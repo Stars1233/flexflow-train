@@ -1,8 +1,8 @@
 #include "utils/graph/views/views.h"
+#include "utils/containers/set_of.h"
 #include "utils/containers/set_union.h"
-#include "utils/containers/unordered_set_of.h"
-#include "utils/fmt/unordered_map.h"
-#include "utils/fmt/unordered_set.h"
+#include "utils/fmt/map.h"
+#include "utils/fmt/set.h"
 #include "utils/graph/algorithms.h"
 #include "utils/graph/digraph/algorithms/get_edges.h"
 #include "utils/graph/instances/adjacency_digraph.h"
@@ -26,25 +26,25 @@ TEST_SUITE(FF_TEST_SUITE) {
                make_undirected_edge(n.at(1), n.at(3)),
                make_undirected_edge(n.at(2), n.at(3)),
                make_undirected_edge(n.at(2), n.at(4))});
-    std::unordered_set<Node> sub_nodes = {n.at(0), n.at(1), n.at(3)};
+    std::set<Node> sub_nodes = {n.at(0), n.at(1), n.at(3)};
     UndirectedGraphView view = view_subgraph(g, sub_nodes);
 
     SUBCASE("get_nodes") {
-      std::unordered_set<Node> expected = {n.at(0), n.at(1), n.at(3)};
+      std::set<Node> expected = {n.at(0), n.at(1), n.at(3)};
 
-      std::unordered_set<Node> result = get_nodes(view);
+      std::set<Node> result = get_nodes(view);
 
       CHECK(result == expected);
     }
 
     SUBCASE("get_edges") {
-      std::unordered_set<UndirectedEdge> expected = {
+      std::set<UndirectedEdge> expected = {
           make_undirected_edge(n.at(0), n.at(3)),
           make_undirected_edge(n.at(1), n.at(1)),
           make_undirected_edge(n.at(1), n.at(3)),
       };
 
-      std::unordered_set<UndirectedEdge> result = get_edges(view);
+      std::set<UndirectedEdge> result = get_edges(view);
 
       CHECK(result == expected);
     }
@@ -62,26 +62,26 @@ TEST_SUITE(FF_TEST_SUITE) {
                DirectedEdge{n.at(2), n.at(3)},
                DirectedEdge{n.at(3), n.at(2)},
                DirectedEdge{n.at(2), n.at(4)}});
-    std::unordered_set<Node> sub_nodes = {n.at(0), n.at(1), n.at(3)};
+    std::set<Node> sub_nodes = {n.at(0), n.at(1), n.at(3)};
     DiGraphView view = view_subgraph(g, sub_nodes);
 
     SUBCASE("get_nodes") {
-      std::unordered_set<Node> expected = {n.at(0), n.at(1), n.at(3)};
+      std::set<Node> expected = {n.at(0), n.at(1), n.at(3)};
 
-      std::unordered_set<Node> result = get_nodes(view);
+      std::set<Node> result = get_nodes(view);
 
       CHECK(result == expected);
     }
 
     SUBCASE("get_edges") {
-      std::unordered_set<DirectedEdge> expected = {
+      std::set<DirectedEdge> expected = {
           DirectedEdge{n.at(0), n.at(3)},
           DirectedEdge{n.at(3), n.at(0)},
           DirectedEdge{n.at(1), n.at(1)},
           DirectedEdge{n.at(1), n.at(3)},
       };
 
-      std::unordered_set<DirectedEdge> result = get_edges(view);
+      std::set<DirectedEdge> result = get_edges(view);
 
       CHECK(result == expected);
     }
@@ -99,20 +99,20 @@ TEST_SUITE(FF_TEST_SUITE) {
     UndirectedGraphView view = as_undirected(g);
 
     SUBCASE("get_nodes") {
-      std::unordered_set<Node> expected = unordered_set_of(n);
+      std::set<Node> expected = set_of(n);
 
-      std::unordered_set<Node> result = get_nodes(view);
+      std::set<Node> result = get_nodes(view);
 
       CHECK(result == expected);
     }
 
     SUBCASE("get_edges") {
-      std::unordered_set<UndirectedEdge> expected = {
+      std::set<UndirectedEdge> expected = {
           make_undirected_edge(n.at(0), n.at(1)),
           make_undirected_edge(n.at(1), n.at(2)),
           make_undirected_edge(n.at(2), n.at(0))};
 
-      std::unordered_set<UndirectedEdge> result = get_edges(view);
+      std::set<UndirectedEdge> result = get_edges(view);
 
       CHECK(result == expected);
     }
@@ -130,24 +130,23 @@ TEST_SUITE(FF_TEST_SUITE) {
     DiGraphView view = as_digraph(g);
 
     SUBCASE("get_nodes") {
-      std::unordered_set<Node> expected = unordered_set_of(n);
+      std::set<Node> expected = set_of(n);
 
-      std::unordered_set<Node> result = get_nodes(view);
+      std::set<Node> result = get_nodes(view);
 
       CHECK(result == expected);
     }
 
     SUBCASE("get_edges") {
-      std::unordered_set<DirectedEdge> expected = {
-          DirectedEdge{n.at(0), n.at(0)},
-          DirectedEdge{n.at(0), n.at(1)},
-          DirectedEdge{n.at(1), n.at(0)},
-          DirectedEdge{n.at(1), n.at(2)},
-          DirectedEdge{n.at(2), n.at(1)},
-          DirectedEdge{n.at(2), n.at(0)},
-          DirectedEdge{n.at(0), n.at(2)}};
+      std::set<DirectedEdge> expected = {DirectedEdge{n.at(0), n.at(0)},
+                                         DirectedEdge{n.at(0), n.at(1)},
+                                         DirectedEdge{n.at(1), n.at(0)},
+                                         DirectedEdge{n.at(1), n.at(2)},
+                                         DirectedEdge{n.at(2), n.at(1)},
+                                         DirectedEdge{n.at(2), n.at(0)},
+                                         DirectedEdge{n.at(0), n.at(2)}};
 
-      std::unordered_set<DirectedEdge> result = get_edges(view);
+      std::set<DirectedEdge> result = get_edges(view);
 
       CHECK(result == expected);
     }

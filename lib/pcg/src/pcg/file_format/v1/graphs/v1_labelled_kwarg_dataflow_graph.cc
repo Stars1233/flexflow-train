@@ -5,7 +5,7 @@
 namespace FlexFlow {
 
 using NodeLabel = value_type<0>;
-using OutputLabel = value_type<1>;
+using OutputLabel = ordered_value_type<1>;
 using SlotName = ordered_value_type<2>;
 
 template std::pair<
@@ -20,7 +20,7 @@ template V1LabelledKwargDataflowGraph<NodeLabel, OutputLabel, SlotName> to_v1(
 
 template std::pair<
     LabelledKwargDataflowGraphView<NodeLabel, OutputLabel, SlotName>,
-    std::unordered_map<nonnegative_int, Node>>
+    std::map<nonnegative_int, Node>>
     from_v1_including_node_numbering(
         V1LabelledKwargDataflowGraph<NodeLabel, OutputLabel, SlotName> const &);
 

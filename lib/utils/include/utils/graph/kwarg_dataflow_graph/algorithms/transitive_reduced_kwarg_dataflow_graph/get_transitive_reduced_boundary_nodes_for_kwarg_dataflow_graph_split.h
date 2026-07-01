@@ -14,13 +14,13 @@ SplitBoundaryNodes
         TransitiveReducedKwargDataflowGraphView<SlotName> const &tr_g,
         BinarySeriesSplit const &split) {
 
-  std::unordered_set<KwargDataflowEdge<SlotName>> edges =
+  std::set<KwargDataflowEdge<SlotName>> edges =
       get_transitive_reduced_kwarg_dataflow_edges_across_split(tr_g, split);
 
-  std::unordered_set<Node> src_boundary_nodes = transform(
+  std::set<Node> src_boundary_nodes = transform(
       edges, [](KwargDataflowEdge<SlotName> const &e) { return e.src.node; });
 
-  std::unordered_set<Node> dst_boundary_nodes = transform(
+  std::set<Node> dst_boundary_nodes = transform(
       edges, [](KwargDataflowEdge<SlotName> const &e) { return e.dst.node; });
 
   return SplitBoundaryNodes{

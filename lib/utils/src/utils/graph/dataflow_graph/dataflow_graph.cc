@@ -15,16 +15,16 @@ void DataflowGraph::add_node_unsafe(
   return this->get_interface().add_node_unsafe(node, inputs, outputs);
 }
 
-std::unordered_set<Node> DataflowGraph::query_nodes(NodeQuery const &q) const {
+std::set<Node> DataflowGraph::query_nodes(NodeQuery const &q) const {
   return this->get_interface().query_nodes(q);
 }
 
-std::unordered_set<DataflowEdge>
+std::set<DataflowEdge>
     DataflowGraph::query_edges(DataflowEdgeQuery const &q) const {
   return this->get_interface().query_edges(q);
 }
 
-std::unordered_set<DataflowOutput>
+std::set<DataflowOutput>
     DataflowGraph::query_outputs(DataflowOutputQuery const &q) const {
   return this->get_interface().query_outputs(q);
 }

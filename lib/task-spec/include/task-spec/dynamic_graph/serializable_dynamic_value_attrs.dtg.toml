@@ -3,6 +3,7 @@ name = "SerializableDynamicValueAttrs"
 type = "struct"
 features = [
   "eq",
+  "ord",
   "hash",
   "fmt",
   "json",
@@ -31,6 +32,10 @@ type = "::FlexFlow::dynamic_tensor_guid_t"
 [[fields]]
 name = "parallel_tensor_shape"
 type = "std::optional<::FlexFlow::ParallelTensorShape>"
+
+[[fields]]
+name = "create_grad"
+type = "std::optional<bool>"
 
 [[fields]]
 name = "shard_coord"

@@ -13,12 +13,12 @@ includes = [
   "substitutions/operator_pattern/operator_attribute_key.dtg.h",
   "substitutions/output_graph/output_operator_attribute_expr.dtg.h",
   "substitutions/unlabelled/pattern_node.dtg.h",
-  "<unordered_map>",
+  "<map>",
 ]
 
 src_includes = [
-  "utils/hash/unordered_map.h",
-  "utils/fmt/unordered_map.h",
+  "utils/hash/map.h",
+  "utils/fmt/map.h",
   "utils/fmt/optional.h",
 ]
 
@@ -30,4 +30,4 @@ type = "std::optional<::FlexFlow::PatternNode>"
 # define the assignment for each operator type.
 [[fields]]
 name = "assignments"
-type = "std::unordered_map<::FlexFlow::OperatorAttributeKey, ::FlexFlow::OutputOperatorAttributeExpr>"
+type = "std::map<::FlexFlow::OperatorAttributeKey, ::FlexFlow::OutputOperatorAttributeExpr>"

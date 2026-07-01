@@ -9,23 +9,21 @@
 
 namespace FlexFlow {
 
-std::unordered_map<TensorSlotName, TensorShape> get_output_shapes(
+std::map<TensorSlotName, TensorShape> get_output_shapes(
     ComputationGraphOpAttrs const &,
-    std::unordered_map<TensorSlotName, TensorShape> const &input_shapes);
+    std::map<TensorSlotName, TensorShape> const &input_shapes);
 
-std::unordered_map<TensorSlotName, TensorShape> get_weight_shapes(
+std::map<TensorSlotName, TensorShape> get_weight_shapes(
     ComputationGraphOpAttrs const &,
-    std::unordered_map<TensorSlotName, TensorShape> const &input_shapes);
+    std::map<TensorSlotName, TensorShape> const &input_shapes);
 
-std::unordered_map<TensorSlotName, ParallelTensorShape> get_output_shapes(
+std::map<TensorSlotName, ParallelTensorShape> get_output_shapes(
     PCGOperatorAttrs const &,
-    std::unordered_map<TensorSlotName, ParallelTensorShape> const
-        &input_shapes);
+    std::map<TensorSlotName, ParallelTensorShape> const &input_shapes);
 
-std::unordered_map<TensorSlotName, ParallelTensorShape> get_weight_shapes(
+std::map<TensorSlotName, ParallelTensorShape> get_weight_shapes(
     PCGOperatorAttrs const &,
-    std::unordered_map<TensorSlotName, ParallelTensorShape> const
-        &input_shapes);
+    std::map<TensorSlotName, ParallelTensorShape> const &input_shapes);
 
 } // namespace FlexFlow
 

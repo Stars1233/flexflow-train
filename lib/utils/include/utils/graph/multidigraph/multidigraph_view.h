@@ -10,8 +10,8 @@ struct MultiDiGraphView : virtual public DiGraphView {
   MultiDiGraphView(MultiDiGraphView const &) = default;
   MultiDiGraphView &operator=(MultiDiGraphView const &) = default;
 
-  std::unordered_set<Node> query_nodes(NodeQuery const &) const;
-  std::unordered_set<MultiDiEdge> query_edges(MultiDiEdgeQuery const &) const;
+  std::set<Node> query_nodes(NodeQuery const &) const;
+  std::set<MultiDiEdge> query_edges(MultiDiEdgeQuery const &) const;
   Node get_multidiedge_src(MultiDiEdge const &) const;
   Node get_multidiedge_dst(MultiDiEdge const &) const;
 

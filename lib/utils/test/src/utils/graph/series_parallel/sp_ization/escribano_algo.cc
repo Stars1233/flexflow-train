@@ -1,5 +1,5 @@
 #include "utils/graph/series_parallel/sp_ization/escribano_algo.h"
-#include "test/utils/doctest/fmt/unordered_multiset.h"
+#include "test/utils/doctest/fmt/multiset.h"
 #include "utils/containers/values.h"
 #include "utils/graph/algorithms.h"
 #include "utils/graph/digraph/algorithms/get_edges.h"
@@ -17,7 +17,7 @@
 #include "utils/graph/series_parallel/sp_ization/dependencies_are_maintained.h"
 #include "utils/graph/series_parallel/sp_ization/node_role.h"
 #include <doctest/doctest.h>
-#include <unordered_set>
+#include <set>
 
 using namespace FlexFlow;
 
@@ -33,7 +33,7 @@ TEST_SUITE(FF_TEST_SUITE) {
                     DirectedEdge{n.at(1), n.at(2)},
                     DirectedEdge{n.at(2), n.at(3)},
                 });
-      std::unordered_map<Node, NodeRole> node_types = {
+      std::map<Node, NodeRole> node_types = {
           {n.at(0), NodeRole::PURE},
           {n.at(1), NodeRole::PURE},
           {n.at(2), NodeRole::PURE},
@@ -47,13 +47,12 @@ TEST_SUITE(FF_TEST_SUITE) {
       CHECK(get_outgoing_edges(g, n.at(0)).size() == 2);
 
       CHECK(node_types.size() == 6);
-      CHECK(values(node_types) ==
-            std::unordered_multiset<NodeRole>{NodeRole::PURE,
-                                              NodeRole::PURE,
-                                              NodeRole::PURE,
-                                              NodeRole::PURE,
-                                              NodeRole::DUMMY,
-                                              NodeRole::DUMMY});
+      CHECK(values(node_types) == std::multiset<NodeRole>{NodeRole::PURE,
+                                                          NodeRole::PURE,
+                                                          NodeRole::PURE,
+                                                          NodeRole::PURE,
+                                                          NodeRole::DUMMY,
+                                                          NodeRole::DUMMY});
 
       DiGraph restored =
           contract_out_nodes_of_given_role(result, NodeRole::DUMMY, node_types);
@@ -69,19 +68,19 @@ TEST_SUITE(FF_TEST_SUITE) {
                   {DirectedEdge{n.at(0), n.at(1)},
                    DirectedEdge{n.at(1), n.at(2)},
                    DirectedEdge{n.at(1), n.at(3)}});
-        std::unordered_map<Node, NodeRole> node_roles = {
+        std::map<Node, NodeRole> node_roles = {
             {n.at(0), NodeRole::PURE},
             {n.at(1), NodeRole::SYNC},
             {n.at(2), NodeRole::PURE},
             {n.at(3), NodeRole::PURE},
         };
-        std::unordered_map<Node, nonnegative_int> depth_map = {
+        std::map<Node, nonnegative_int> depth_map = {
             {n.at(0), 0_n},
             {n.at(2), 1_n},
             {n.at(3), 1_n},
         };
-        std::unordered_set<Node> correct = {n.at(0), n.at(2), n.at(3)};
-        std::unordered_set<Node> result =
+        std::set<Node> correct = {n.at(0), n.at(2), n.at(3)};
+        std::set<Node> result =
             get_component(g, n.at(2), depth_map, node_roles);
         CHECK(correct == result);
       }
@@ -94,7 +93,7 @@ TEST_SUITE(FF_TEST_SUITE) {
                    DirectedEdge{n.at(2), n.at(4)},
                    DirectedEdge{n.at(3), n.at(4)},
                    DirectedEdge{n.at(3), n.at(5)}});
-        std::unordered_map<Node, NodeRole> node_roles = {
+        std::map<Node, NodeRole> node_roles = {
             {n.at(0), NodeRole::PURE},
             {n.at(1), NodeRole::PURE},
             {n.at(2), NodeRole::SYNC},
@@ -102,23 +101,21 @@ TEST_SUITE(FF_TEST_SUITE) {
             {n.at(4), NodeRole::PURE},
             {n.at(5), NodeRole::PURE},
         };
-        std::unordered_map<Node, nonnegative_int> depth_map = {
+        std::map<Node, nonnegative_int> depth_map = {
             {n.at(0), 0_n},
             {n.at(1), 0_n},
             {n.at(4), 1_n},
             {n.at(5), 1_n},
         };
         SUBCASE("n.at(4)'s component") {
-          std::unordered_set<Node> correct = {
-              n.at(0), n.at(1), n.at(4), n.at(5)};
-          std::unordered_set<Node> result =
+          std::set<Node> correct = {n.at(0), n.at(1), n.at(4), n.at(5)};
+          std::set<Node> result =
               get_component(g, n.at(4), depth_map, node_roles);
           CHECK(correct == result);
         }
         SUBCASE("n.at(5)'s component") {
-          std::unordered_set<Node> correct = {
-              n.at(0), n.at(1), n.at(4), n.at(5)};
-          std::unordered_set<Node> result =
+          std::set<Node> correct = {n.at(0), n.at(1), n.at(4), n.at(5)};
+          std::set<Node> result =
               get_component(g, n.at(5), depth_map, node_roles);
           CHECK(correct == result);
         }
@@ -134,32 +131,29 @@ TEST_SUITE(FF_TEST_SUITE) {
                    DirectedEdge{n.at(3), n.at(4)},
                    DirectedEdge{n.at(4), n.at(5)},
                    DirectedEdge{n.at(4), n.at(6)}});
-        std::unordered_map<Node, NodeRole> node_roles = {
-            {n.at(0), NodeRole::PURE},
-            {n.at(1), NodeRole::SYNC},
-            {n.at(2), NodeRole::PURE},
-            {n.at(3), NodeRole::PURE},
-            {n.at(4), NodeRole::SYNC},
-            {n.at(5), NodeRole::PURE},
-            {n.at(6), NodeRole::PURE}};
+        std::map<Node, NodeRole> node_roles = {{n.at(0), NodeRole::PURE},
+                                               {n.at(1), NodeRole::SYNC},
+                                               {n.at(2), NodeRole::PURE},
+                                               {n.at(3), NodeRole::PURE},
+                                               {n.at(4), NodeRole::SYNC},
+                                               {n.at(5), NodeRole::PURE},
+                                               {n.at(6), NodeRole::PURE}};
 
-        std::unordered_map<Node, nonnegative_int> depth_map = {{n.at(0), 0_n},
-                                                               {n.at(2), 1_n},
-                                                               {n.at(3), 1_n},
-                                                               {n.at(5), 2_n},
-                                                               {n.at(6), 2_n}};
+        std::map<Node, nonnegative_int> depth_map = {{n.at(0), 0_n},
+                                                     {n.at(2), 1_n},
+                                                     {n.at(3), 1_n},
+                                                     {n.at(5), 2_n},
+                                                     {n.at(6), 2_n}};
         SUBCASE("n.at(5)'s component") {
-          std::unordered_set<Node> correct = {
-              n.at(2), n.at(3), n.at(5), n.at(6)};
-          std::unordered_set<Node> result =
+          std::set<Node> correct = {n.at(2), n.at(3), n.at(5), n.at(6)};
+          std::set<Node> result =
               get_component(g, n.at(5), depth_map, node_roles);
           CHECK(correct == result);
         }
 
         SUBCASE("n.at(6)'s component") {
-          std::unordered_set<Node> correct = {
-              n.at(2), n.at(3), n.at(5), n.at(6)};
-          std::unordered_set<Node> result =
+          std::set<Node> correct = {n.at(2), n.at(3), n.at(5), n.at(6)};
+          std::set<Node> result =
               get_component(g, n.at(6), depth_map, node_roles);
           CHECK(correct == result);
         }
@@ -180,7 +174,7 @@ TEST_SUITE(FF_TEST_SUITE) {
                       DirectedEdge{n.at(5), n.at(8)},
                       DirectedEdge{n.at(6), n.at(9)},
                   });
-        std::unordered_map<Node, NodeRole> node_roles = {
+        std::map<Node, NodeRole> node_roles = {
             {n.at(0), NodeRole::PURE},
             {n.at(1), NodeRole::SYNC},
             {n.at(2), NodeRole::PURE},
@@ -193,28 +187,28 @@ TEST_SUITE(FF_TEST_SUITE) {
             {n.at(9), NodeRole::PURE},
         };
 
-        std::unordered_map<Node, nonnegative_int> depth_map = {{n.at(0), 0_n},
-                                                               {n.at(2), 1_n},
-                                                               {n.at(3), 1_n},
-                                                               {n.at(4), 1_n},
-                                                               {n.at(7), 2_n},
-                                                               {n.at(8), 2_n},
-                                                               {n.at(9), 2_n}};
+        std::map<Node, nonnegative_int> depth_map = {{n.at(0), 0_n},
+                                                     {n.at(2), 1_n},
+                                                     {n.at(3), 1_n},
+                                                     {n.at(4), 1_n},
+                                                     {n.at(7), 2_n},
+                                                     {n.at(8), 2_n},
+                                                     {n.at(9), 2_n}};
         SUBCASE("n.at(7)'s component") {
-          std::unordered_set<Node> correct = {n.at(2), n.at(7), n.at(8)};
-          std::unordered_set<Node> result =
+          std::set<Node> correct = {n.at(2), n.at(7), n.at(8)};
+          std::set<Node> result =
               get_component(g, n.at(7), depth_map, node_roles);
           CHECK(correct == result);
         }
         SUBCASE("n.at(8)'s component") {
-          std::unordered_set<Node> correct = {n.at(2), n.at(7), n.at(8)};
-          std::unordered_set<Node> result =
+          std::set<Node> correct = {n.at(2), n.at(7), n.at(8)};
+          std::set<Node> result =
               get_component(g, n.at(8), depth_map, node_roles);
           CHECK(correct == result);
         }
         SUBCASE("n.at(9)'s component") {
-          std::unordered_set<Node> correct = {n.at(3), n.at(4), n.at(9)};
-          std::unordered_set<Node> result =
+          std::set<Node> correct = {n.at(3), n.at(4), n.at(9)};
+          std::set<Node> result =
               get_component(g, n.at(9), depth_map, node_roles);
           CHECK(correct == result);
         }

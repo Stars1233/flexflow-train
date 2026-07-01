@@ -26,6 +26,22 @@ struct DeviceSpecific {
     return this->tie() != other.tie();
   }
 
+  bool operator<(DeviceSpecific const &other) const {
+    return this->tie() < other.tie();
+  }
+
+  bool operator<=(DeviceSpecific const &other) const {
+    return this->tie() <= other.tie();
+  }
+
+  bool operator>(DeviceSpecific const &other) const {
+    return this->tie() > other.tie();
+  }
+
+  bool operator>=(DeviceSpecific const &other) const {
+    return this->tie() >= other.tie();
+  }
+
   T const *get(global_device_id_t const &curr_device_idx) const {
     ASSERT(curr_device_idx == this->device_idx);
     return (T const *)this->ptr.get();

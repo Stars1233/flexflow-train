@@ -22,8 +22,8 @@ GenericBinarySPDecompositionTreeImplementation<PCGBinarySPDecomposition,
 BinarySPDecompositionTree
     binary_sp_tree_from_pcg_sp_tree(PCGBinarySPDecomposition const &);
 
-std::unordered_multiset<parallel_layer_guid_t>
-    get_parallel_layers(PCGBinarySPDecomposition const &);
+std::multiset<parallel_layer_guid_t>
+    pcg_sp_tree_get_parallel_layers(PCGBinarySPDecomposition const &);
 
 PCGBinarySPDecomposition
     pcg_binary_sp_decomposition_from_binary_sp_decomposition_tree(
@@ -31,14 +31,13 @@ PCGBinarySPDecomposition
 
 SPDecompositionTreeNodeType get_node_type(PCGBinarySPDecomposition const &);
 
-std::unordered_set<BinaryTreePath>
+std::set<BinaryTreePath>
     pcg_sp_tree_get_all_leaf_paths(PCGBinarySPDecomposition const &);
 
-std::unordered_set<BinaryTreePath>
-    find_paths_to_leaf(PCGBinarySPDecomposition const &,
-                       parallel_layer_guid_t const &);
+std::set<BinaryTreePath> find_paths_to_leaf(PCGBinarySPDecomposition const &,
+                                            parallel_layer_guid_t const &);
 
-std::unordered_map<BinaryTreePath, parallel_layer_guid_t>
+std::map<BinaryTreePath, parallel_layer_guid_t>
     pcg_sp_tree_get_path_to_leaf_map(PCGBinarySPDecomposition const &);
 
 } // namespace FlexFlow

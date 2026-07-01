@@ -12,12 +12,12 @@ namespace FlexFlow {
 
 template <typename SlotName>
 struct IKwargDataflowGraphView : virtual public IDiGraphView {
-  virtual std::unordered_set<KwargDataflowEdge<SlotName>>
+  virtual std::set<KwargDataflowEdge<SlotName>>
       query_edges(KwargDataflowEdgeQuery<SlotName> const &) const = 0;
-  virtual std::unordered_set<KwargDataflowOutput<SlotName>>
+  virtual std::set<KwargDataflowOutput<SlotName>>
       query_outputs(KwargDataflowOutputQuery<SlotName> const &) const = 0;
 
-  std::unordered_set<DirectedEdge>
+  std::set<DirectedEdge>
       query_edges(DirectedEdgeQuery const &q) const override final {
     KwargDataflowEdgeQuery dataflow_query = KwargDataflowEdgeQuery{
         q.srcs,
@@ -25,7 +25,7 @@ struct IKwargDataflowGraphView : virtual public IDiGraphView {
         q.dsts,
         matchall<SlotName>(),
     };
-    std::unordered_set<KwargDataflowEdge<SlotName>> dataflow_edges =
+    std::set<KwargDataflowEdge<SlotName>> dataflow_edges =
         this->query_edges(dataflow_query);
 
     return transform(dataflow_edges, [](KwargDataflowEdge<SlotName> const &e) {

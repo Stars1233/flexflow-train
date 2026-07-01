@@ -80,19 +80,19 @@ public:
     return new_input;
   }
 
-  std::unordered_set<Node> query_nodes(NodeQuery const &q) const override {
+  std::set<Node> query_nodes(NodeQuery const &q) const override {
     return filter(keys(this->nodes),
                   [&](Node const &n) { return includes(q.nodes, n); });
   }
 
-  std::unordered_set<OpenDataflowEdge>
+  std::set<OpenDataflowEdge>
       query_edges(OpenDataflowEdgeQuery const &q) const override {
     return filter(this->edges, [&](OpenDataflowEdge const &e) {
       return open_dataflow_edge_query_includes(q, e);
     });
   }
 
-  std::unordered_set<DataflowOutput>
+  std::set<DataflowOutput>
       query_outputs(DataflowOutputQuery const &q) const override {
     return without_nullopts(transform(
         keys(this->values),
@@ -110,7 +110,7 @@ public:
         }));
   }
 
-  std::unordered_set<DataflowGraphInput> get_inputs() const override {
+  std::set<DataflowGraphInput> get_inputs() const override {
     return this->inputs;
   }
 
@@ -124,12 +124,11 @@ public:
 
   virtual void inplace_materialize_from(
       LabelledDataflowGraphView<NodeLabel, ValueLabel> const &view) override {
-    std::unordered_set<Node> nodes = get_nodes(view);
-    std::unordered_set<DataflowOutput> outputs = get_all_dataflow_outputs(view);
-    std::unordered_set<DataflowEdge> edges = get_edges(view);
-    std::unordered_map<DataflowOutput, ValueLabel> labelled_outputs =
-        generate_map(outputs,
-                     [&](DataflowOutput const &o) { return view.at(o); });
+    std::set<Node> nodes = get_nodes(view);
+    std::set<DataflowOutput> outputs = get_all_dataflow_outputs(view);
+    std::set<DataflowEdge> edges = get_edges(view);
+    std::map<DataflowOutput, ValueLabel> labelled_outputs = generate_map(
+        outputs, [&](DataflowOutput const &o) { return view.at(o); });
 
     this->inputs.clear();
     this->nodes =
@@ -145,13 +144,13 @@ public:
       LabelledOpenDataflowGraphView<NodeLabel, ValueLabel> const &view)
       override {
 
-    std::unordered_map<Node, NodeLabel> nodes = generate_map(
+    std::map<Node, NodeLabel> nodes = generate_map(
         get_nodes(view), [&](Node const &n) { return view.at(n); });
-    std::unordered_set<OpenDataflowEdge> edges = get_edges(view);
-    std::unordered_set<DataflowGraphInput> inputs =
+    std::set<OpenDataflowEdge> edges = get_edges(view);
+    std::set<DataflowGraphInput> inputs =
         ::FlexFlow::get_open_dataflow_graph_inputs(view);
 
-    std::unordered_map<OpenDataflowValue, ValueLabel> values =
+    std::map<OpenDataflowValue, ValueLabel> values =
         generate_map(get_open_dataflow_values(view),
                      [&](OpenDataflowValue const &v) { return view.at(v); });
 
@@ -176,20 +175,20 @@ private:
   UnorderedSetLabelledOpenDataflowGraph(
       NodeSource const &node_source,
       DataflowGraphInputSource const &input_source,
-      std::unordered_set<DataflowGraphInput> const &inputs,
-      std::unordered_map<Node, NodeLabel> const &nodes,
-      std::unordered_set<OpenDataflowEdge> const &edges,
-      std::unordered_map<OpenDataflowValue, ValueLabel> const &values)
+      std::set<DataflowGraphInput> const &inputs,
+      std::map<Node, NodeLabel> const &nodes,
+      std::set<OpenDataflowEdge> const &edges,
+      std::map<OpenDataflowValue, ValueLabel> const &values)
       : node_source(node_source), input_source(input_source), inputs(inputs),
         nodes(nodes), edges(edges), values(values) {}
 
 private:
   NodeSource node_source;
   DataflowGraphInputSource input_source;
-  std::unordered_set<DataflowGraphInput> inputs;
-  std::unordered_map<Node, NodeLabel> nodes;
-  std::unordered_set<OpenDataflowEdge> edges;
-  std::unordered_map<OpenDataflowValue, ValueLabel> values;
+  std::set<DataflowGraphInput> inputs;
+  std::map<Node, NodeLabel> nodes;
+  std::set<OpenDataflowEdge> edges;
+  std::map<OpenDataflowValue, ValueLabel> values;
 };
 CHECK_RC_COPY_VIRTUAL_COMPLIANT(
     UnorderedSetLabelledOpenDataflowGraph<int, int>);

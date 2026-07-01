@@ -15,20 +15,21 @@ struct ViewFromKwargDataflowGraphData final
       KwargDataflowGraphData<SlotName> const &data)
       : data(data) {}
 
-  std::unordered_set<Node> query_nodes(NodeQuery const &query) const override {
-    return apply_node_query(query, this->data.nodes);
+  std::set<Node> query_nodes(NodeQuery const &query) const override {
+    return apply_node_query(query, set_of(this->data.nodes));
   }
 
-  std::unordered_set<KwargDataflowEdge<SlotName>> query_edges(
+  std::set<KwargDataflowEdge<SlotName>> query_edges(
       KwargDataflowEdgeQuery<SlotName> const &query) const override {
-    return filter(this->data.edges, [&](KwargDataflowEdge<SlotName> const &e) {
-      return kwarg_dataflow_edge_query_includes(query, e);
-    });
+    return filter(set_of(this->data.edges),
+                  [&](KwargDataflowEdge<SlotName> const &e) {
+                    return kwarg_dataflow_edge_query_includes(query, e);
+                  });
   }
 
-  std::unordered_set<KwargDataflowOutput<SlotName>> query_outputs(
+  std::set<KwargDataflowOutput<SlotName>> query_outputs(
       KwargDataflowOutputQuery<SlotName> const &query) const override {
-    return filter(this->data.outputs,
+    return filter(set_of(this->data.outputs),
                   [&](KwargDataflowOutput<SlotName> const &o) {
                     return kwarg_dataflow_output_query_includes(query, o);
                   });

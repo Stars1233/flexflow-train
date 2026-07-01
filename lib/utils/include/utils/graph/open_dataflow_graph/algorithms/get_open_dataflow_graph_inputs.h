@@ -5,7 +5,7 @@
 
 namespace FlexFlow {
 
-std::unordered_set<DataflowGraphInput>
+std::set<DataflowGraphInput>
     get_open_dataflow_graph_inputs(OpenDataflowGraphView const &);
 
 } // namespace FlexFlow

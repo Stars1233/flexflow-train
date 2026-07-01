@@ -16,20 +16,20 @@ public:
   void add_edge(UndirectedEdge const &) override;
   void remove_edge(UndirectedEdge const &) override;
 
-  std::unordered_set<Node> query_nodes(NodeQuery const &) const override;
-  std::unordered_set<UndirectedEdge>
+  std::set<Node> query_nodes(NodeQuery const &) const override;
+  std::set<UndirectedEdge>
       query_edges(UndirectedEdgeQuery const &) const override;
 
   UnorderedSetUndirectedGraph *clone() const override;
 
 private:
   UnorderedSetUndirectedGraph(NodeSource const &,
-                              std::unordered_set<Node> const &,
-                              std::unordered_set<UndirectedEdge> const &);
+                              std::set<Node> const &,
+                              std::set<UndirectedEdge> const &);
 
   NodeSource node_source;
-  std::unordered_set<Node> nodes;
-  std::unordered_set<UndirectedEdge> edges;
+  std::set<Node> nodes;
+  std::set<UndirectedEdge> edges;
 };
 
 } // namespace FlexFlow

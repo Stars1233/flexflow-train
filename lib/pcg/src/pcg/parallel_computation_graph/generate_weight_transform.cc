@@ -5,10 +5,10 @@
 
 namespace FlexFlow {
 
-std::unordered_set<ParallelOpAttrs>
+std::set<ParallelOpAttrs>
     generate_weight_transform(TensorShape const &current,
                               ParallelTensorShape const &goal) {
-  std::unordered_set<ParallelOpAttrs> result;
+  std::set<ParallelOpAttrs> result;
 
   positive_int sum_degree = get_sum_degree(goal);
   ASSERT(sum_degree == 1,

@@ -11,9 +11,8 @@ public:
   OpenDataflowGraphView(OpenDataflowGraphView const &) = default;
   OpenDataflowGraphView &operator=(OpenDataflowGraphView const &) = default;
 
-  std::unordered_set<DataflowGraphInput> get_inputs() const;
-  std::unordered_set<OpenDataflowEdge>
-      query_edges(OpenDataflowEdgeQuery const &) const;
+  std::set<DataflowGraphInput> get_inputs() const;
+  std::set<OpenDataflowEdge> query_edges(OpenDataflowEdgeQuery const &) const;
 
   template <typename T, typename... Args>
   static

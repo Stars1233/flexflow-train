@@ -3,7 +3,7 @@
 
 namespace FlexFlow {
 
-std::unordered_set<MultiDiEdge> get_edges(MultiDiGraphView const &g) {
+std::set<MultiDiEdge> get_edges(MultiDiGraphView const &g) {
   return g.query_edges(multidiedge_query_all());
 }
 

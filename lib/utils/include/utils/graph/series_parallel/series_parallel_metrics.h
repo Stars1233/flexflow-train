@@ -4,7 +4,7 @@
 #include "utils/graph/digraph/digraph_view.h"
 #include "utils/graph/series_parallel/series_parallel_decomposition.dtg.h"
 #include "utils/nonnegative_int/nonnegative_int.h"
-#include <unordered_map>
+#include <map>
 
 namespace FlexFlow {
 
@@ -12,7 +12,7 @@ namespace FlexFlow {
  * @brief Maps each node to the number of times it appears in the decomposition.
  *
  */
-std::unordered_map<Node, nonnegative_int>
+std::map<Node, nonnegative_int>
     get_num_occurrences_of_nodes(SeriesParallelDecomposition const &sp);
 
 /**
@@ -21,10 +21,9 @@ std::unordered_map<Node, nonnegative_int>
  *
  */
 float work_cost(SeriesParallelDecomposition const &sp,
-                std::unordered_map<Node, float> cost_map);
+                std::map<Node, float> cost_map);
 
-float work_cost(DiGraphView const &g,
-                std::unordered_map<Node, float> const &cost_map);
+float work_cost(DiGraphView const &g, std::map<Node, float> const &cost_map);
 
 /**
  * @brief Computes the total number of edges the decomposition has when viewed
@@ -36,10 +35,10 @@ nonnegative_int num_dependencies(SeriesParallelDecomposition const &sp);
 nonnegative_int num_dependencies(DiGraphView const &g);
 
 float critical_path_cost(SeriesParallelDecomposition const &sp,
-                         std::unordered_map<Node, float> const &cost_map);
+                         std::map<Node, float> const &cost_map);
 
 float critical_path_cost(DiGraphView const &g,
-                         std::unordered_map<Node, float> const &cost_map);
+                         std::map<Node, float> const &cost_map);
 
 /**
  * @brief Calculates the relative increase in total work cost between  the
@@ -48,7 +47,7 @@ float critical_path_cost(DiGraphView const &g,
  */
 float relative_work_increase(DiGraphView const &g,
                              SeriesParallelDecomposition const &sp,
-                             std::unordered_map<Node, float> const &cost_map);
+                             std::map<Node, float> const &cost_map);
 
 /**
  * @brief Calculates the relative increase in critical path cost between the
@@ -58,7 +57,7 @@ float relative_work_increase(DiGraphView const &g,
 float relative_critical_path_cost_increase(
     DiGraphView const &g,
     SeriesParallelDecomposition const &sp,
-    std::unordered_map<Node, float> const &cost_map);
+    std::map<Node, float> const &cost_map);
 
 /**
  * @brief Calculates the relative increase in the number of dependencies between

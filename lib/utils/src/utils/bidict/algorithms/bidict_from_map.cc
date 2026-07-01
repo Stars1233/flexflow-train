@@ -4,10 +4,11 @@
 
 namespace FlexFlow {
 
-template bidict<value_type<0>, value_type<1>>
-    bidict_from_map(std::unordered_map<value_type<0>, value_type<1>> const &);
+using K = ordered_value_type<0>;
+using V = ordered_value_type<1>;
 
-template bidict<ordered_value_type<0>, value_type<1>>
-    bidict_from_map(std::map<ordered_value_type<0>, value_type<1>> const &);
+template bidict<K, V> bidict_from_map(std::map<K, V> const &);
+
+template bidict<K, V> bidict_from_map(std::unordered_map<K, V> const &);
 
 } // namespace FlexFlow

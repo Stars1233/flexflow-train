@@ -6,7 +6,7 @@ namespace FlexFlow {
 using GraphInputName = ordered_value_type<0>;
 using SlotName = ordered_value_type<1>;
 
-template std::unordered_set<KwargDataflowInput<SlotName>>
+template std::set<KwargDataflowInput<SlotName>>
     get_open_kwarg_dataflow_value_uses(
         OpenKwargDataflowGraphView<GraphInputName, SlotName> const &,
         OpenKwargDataflowValue<GraphInputName, SlotName> const &);

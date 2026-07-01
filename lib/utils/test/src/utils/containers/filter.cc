@@ -1,9 +1,7 @@
 #include "utils/containers/filter.h"
 #include "test/utils/doctest/fmt/map.h"
+#include "test/utils/doctest/fmt/multiset.h"
 #include "test/utils/doctest/fmt/set.h"
-#include "test/utils/doctest/fmt/unordered_map.h"
-#include "test/utils/doctest/fmt/unordered_multiset.h"
-#include "test/utils/doctest/fmt/unordered_set.h"
 #include "test/utils/doctest/fmt/vector.h"
 #include "test/utils/rapidcheck.h"
 
@@ -13,9 +11,9 @@ TEST_SUITE(FF_TEST_SUITE) {
   TEST_CASE_TEMPLATE("filter(T, F)",
                      T,
                      std::vector<int>,
-                     std::unordered_set<std::string>,
                      std::set<std::string>,
-                     std::unordered_map<int, int>,
+                     std::set<std::string>,
+                     std::map<int, int>,
                      std::map<int, std::string>) {
     RC_SUBCASE("filter returns empty for predicate always_false",
                [](T const &t) {
@@ -41,12 +39,12 @@ TEST_SUITE(FF_TEST_SUITE) {
     CHECK(result == correct);
   }
 
-  TEST_CASE("filter(std::unordered_set, F)") {
-    std::unordered_set<int> input = {1, 2, 3, 4, 5, 6, 7, 8};
+  TEST_CASE("filter(std::set, F)") {
+    std::set<int> input = {1, 2, 3, 4, 5, 6, 7, 8};
     auto predicate = [](int x) { return x % 2 == 0; };
 
-    std::unordered_set<int> result = filter(input, predicate);
-    std::unordered_set<int> correct = {2, 4, 6, 8};
+    std::set<int> result = filter(input, predicate);
+    std::set<int> correct = {2, 4, 6, 8};
     CHECK(result == correct);
   }
 
@@ -59,8 +57,8 @@ TEST_SUITE(FF_TEST_SUITE) {
     CHECK(result == correct);
   }
 
-  TEST_CASE("filter(std::unordered_map, F)") {
-    std::unordered_map<int, std::string> input = {
+  TEST_CASE("filter(std::map, F)") {
+    std::map<int, std::string> input = {
         {3, "4"},
         {1, "1"},
         {2, "9"},
@@ -70,8 +68,8 @@ TEST_SUITE(FF_TEST_SUITE) {
       return std::to_string(x.first) == x.second;
     };
 
-    std::unordered_map<int, std::string> result = filter(input, predicate);
-    std::unordered_map<int, std::string> correct = {
+    std::map<int, std::string> result = filter(input, predicate);
+    std::map<int, std::string> correct = {
         {1, "1"},
         {4, "4"},
     };
@@ -97,12 +95,12 @@ TEST_SUITE(FF_TEST_SUITE) {
     CHECK(result == correct);
   }
 
-  TEST_CASE("filter(std::unordered_multiset, F)") {
-    std::unordered_multiset<int> input = {1, 1, 2, 2, 2, 3, 4, 5, 6, 7, 8, 8};
+  TEST_CASE("filter(std::multiset, F)") {
+    std::multiset<int> input = {1, 1, 2, 2, 2, 3, 4, 5, 6, 7, 8, 8};
     auto predicate = [](int x) { return x % 2 == 0; };
 
-    std::unordered_multiset<int> result = filter(input, predicate);
-    std::unordered_multiset<int> correct = {2, 2, 2, 4, 6, 8, 8};
+    std::multiset<int> result = filter(input, predicate);
+    std::multiset<int> correct = {2, 2, 2, 4, 6, 8, 8};
     CHECK(result == correct);
   }
 }

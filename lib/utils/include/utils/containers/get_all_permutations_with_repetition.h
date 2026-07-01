@@ -2,9 +2,8 @@
 #define _FLEXFLOW_LIB_UTILS_INCLUDE_UTILS_CONTAINERS_GET_ALL_PERMUTATIONS_WITH_REPETITION_H
 
 #include "utils/containers/transform.h"
-#include "utils/hash/vector.h"
 #include "utils/nonnegative_int/nonnegative_int.h"
-#include <unordered_set>
+#include <set>
 #include <vector>
 
 namespace FlexFlow {
@@ -16,10 +15,10 @@ namespace FlexFlow {
  * https://en.wikipedia.org/wiki/Permutation#Permutations_with_repetition
  **/
 template <typename C, typename T = typename C::value_type>
-std::unordered_multiset<std::vector<T>>
+std::multiset<std::vector<T>>
     get_all_permutations_with_repetition(C const &container,
                                          nonnegative_int n) {
-  std::unordered_multiset<std::vector<T>> result;
+  std::multiset<std::vector<T>> result;
 
   if (container.empty() || n == 0) {
     return {{}};

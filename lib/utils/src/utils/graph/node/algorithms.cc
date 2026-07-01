@@ -3,7 +3,7 @@
 
 namespace FlexFlow {
 
-std::unordered_set<Node> get_nodes(GraphView const &g) {
+std::set<Node> get_nodes(GraphView const &g) {
   return g.query_nodes(node_query_all());
 }
 

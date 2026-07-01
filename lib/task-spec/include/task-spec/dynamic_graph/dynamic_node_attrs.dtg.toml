@@ -4,12 +4,14 @@ type = "struct"
 features = [
   "eq",
   "hash",
+  "ord",
   "fmt",
 ]
 
 includes = [
   "<optional>",
   "task-spec/dynamic_graph/dynamic_task_type.dtg.h",
+  "utils/nonempty_set/nonempty_set.h",
   "task-spec/dynamic_graph/dynamic_layer_guid_t.dtg.h",
   "task-spec/dynamic_graph/training_operation_attrs.dtg.h",
   "task-spec/device_specific_per_device_op_state.dtg.h",
@@ -26,15 +28,15 @@ name = "task_type"
 type = "std::optional<::FlexFlow::DynamicTaskType>"
 
 [[fields]]
-name = "device_id"
-type = "std::optional<::FlexFlow::global_device_id_t>"
+name = "device_ids"
+type = "std::optional<::FlexFlow::nonempty_set<::FlexFlow::global_device_id_t>>"
 docstring = '''
-\brief The device on which this task should execute.
+\brief The devices on which this task should execute.
 
 For a standard \ref ParallelComputationGraph, filled in by
 \ref perform_shard_expansion.
 
-\note Right now the \c device_coord for a copy node is sort of meaningless
+\note Right now the \c device_ids for a copy node is sort of meaningless
 because we have one controller issuing all copies for the entire graph, no
 matter where they are. However the intention is this to be the "owner" or
 "issuer" of the copy, which matters a lot more down the road once we write the

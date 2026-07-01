@@ -1,5 +1,5 @@
 #include "compiler/series_parallel/pcg/pcg_binary_sp_decomposition.h"
-#include "test/utils/doctest/fmt/unordered_multiset.h"
+#include "test/utils/doctest/fmt/multiset.h"
 #include "test/utils/rapidcheck.h"
 #include <doctest/doctest.h>
 

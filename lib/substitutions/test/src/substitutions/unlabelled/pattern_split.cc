@@ -35,8 +35,8 @@ TEST_SUITE(FF_TEST_SUITE) {
     PatternValue pv1 = pattern_value_from_raw_open_kwarg_dataflow_value(v1);
 
     PatternSplit even_split = PatternSplit{
-        std::unordered_set<PatternNode>{p0},
-        std::unordered_set<PatternNode>{p1},
+        std::set<PatternNode>{p0},
+        std::set<PatternNode>{p1},
     };
 
     SUBCASE("find_even_split") {
@@ -48,15 +48,15 @@ TEST_SUITE(FF_TEST_SUITE) {
     SUBCASE("apply_split") {
       PatternSplitResult split_result = apply_split(pattern, even_split);
       SUBCASE("subpattern_1") {
-        std::unordered_set<PatternNode> result =
+        std::set<PatternNode> result =
             get_pattern_nodes(split_result.subpattern_1);
-        std::unordered_set<PatternNode> correct = even_split.first;
+        std::set<PatternNode> correct = even_split.first;
         CHECK(result == correct);
       }
       SUBCASE("subpattern_2") {
-        std::unordered_set<PatternNode> result =
+        std::set<PatternNode> result =
             get_pattern_nodes(split_result.subpattern_2);
-        std::unordered_set<PatternNode> correct = even_split.second;
+        std::set<PatternNode> correct = even_split.second;
         CHECK(result == correct);
       }
       SUBCASE("full_pattern_values_to_subpattern_1_inputs") {
@@ -113,22 +113,22 @@ TEST_SUITE(FF_TEST_SUITE) {
     PatternValue pv1 = pattern_value_from_raw_open_kwarg_dataflow_value(v1);
 
     PatternSplit even_split = PatternSplit{
-        std::unordered_set<PatternNode>{p0},
-        std::unordered_set<PatternNode>{p1},
+        std::set<PatternNode>{p0},
+        std::set<PatternNode>{p1},
     };
 
     SUBCASE("apply_split") {
       PatternSplitResult split_result = apply_split(pattern, even_split);
       SUBCASE("subpattern_1") {
-        std::unordered_set<PatternNode> result =
+        std::set<PatternNode> result =
             get_pattern_nodes(split_result.subpattern_1);
-        std::unordered_set<PatternNode> correct = even_split.first;
+        std::set<PatternNode> correct = even_split.first;
         CHECK(result == correct);
       }
       SUBCASE("subpattern_2") {
-        std::unordered_set<PatternNode> result =
+        std::set<PatternNode> result =
             get_pattern_nodes(split_result.subpattern_2);
-        std::unordered_set<PatternNode> correct = even_split.second;
+        std::set<PatternNode> correct = even_split.second;
         CHECK(result == correct);
       }
       SUBCASE("full_pattern_values_to_subpattern_1_inputs") {

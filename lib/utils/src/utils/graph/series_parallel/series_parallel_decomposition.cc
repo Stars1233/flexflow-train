@@ -2,20 +2,20 @@
 #include "utils/containers/all_of.h"
 #include "utils/containers/extend.h"
 #include "utils/containers/get_only.h"
+#include "utils/containers/multiset_of.h"
 #include "utils/containers/multiset_union.h"
 #include "utils/containers/set_union.h"
 #include "utils/containers/sum.h"
 #include "utils/containers/transform.h"
-#include "utils/containers/unordered_multiset_of.h"
 #include "utils/containers/values.h"
 #include "utils/containers/vector_of.h"
 #include "utils/exception.h"
 #include "utils/graph/series_parallel/intermediate_sp_decomposition_tree.h"
 #include "utils/graph/series_parallel/series_parallel_metrics.h"
-#include "utils/hash/unordered_set.h"
+#include "utils/hash/set.h"
 #include "utils/nonnegative_int/nonnegative_int.h"
 #include "utils/variant.h"
-#include <unordered_set>
+#include <set>
 
 namespace FlexFlow {
 
@@ -31,7 +31,7 @@ struct ToFinalAST {
                 .value();
           })};
     } else {
-      return ParallelSplit{unordered_multiset_of(transform(
+      return ParallelSplit{multiset_of(transform(
           node.children,
           [](std::variant<IntermediateSpDecompositionTree, Node> const &s) {
             return narrow<std::variant<SeriesSplit, Node>>(
@@ -57,21 +57,20 @@ SeriesParallelDecomposition to_final_ast(
                     internal_to_final_ast(ast));
 }
 
-std::unordered_multiset<Node> get_nodes(SeriesParallelDecomposition const &sp) {
-  return sp.visit<std::unordered_multiset<Node>>(
-      [](auto &&t) { return get_nodes(t); });
+std::multiset<Node> get_nodes(SeriesParallelDecomposition const &sp) {
+  return sp.visit<std::multiset<Node>>([](auto &&t) { return get_nodes(t); });
 }
 
-std::unordered_multiset<Node> get_nodes(SeriesSplit const &serial) {
+std::multiset<Node> get_nodes(SeriesSplit const &serial) {
   return multiset_union(transform(
       serial.children,
       [](std::variant<ParallelSplit, Node> const &child)
-          -> std::unordered_multiset<Node> {
+          -> std::multiset<Node> {
         return std::visit([](auto &&t) { return get_nodes(t); }, child);
       }));
 }
 
-std::unordered_multiset<Node> get_nodes(ParallelSplit const &parallel) {
+std::multiset<Node> get_nodes(ParallelSplit const &parallel) {
   return multiset_union(transform(
       vector_of(parallel.get_children()),
       [](std::variant<SeriesSplit, Node> const &child) {
@@ -79,7 +78,7 @@ std::unordered_multiset<Node> get_nodes(ParallelSplit const &parallel) {
       }));
 }
 
-std::unordered_multiset<Node> get_nodes(Node const &node) {
+std::multiset<Node> get_nodes(Node const &node) {
   return {node};
 }
 
@@ -121,8 +120,7 @@ SeriesParallelDecomposition series_composition(
 }
 
 SeriesParallelDecomposition parallel_composition(
-    std::unordered_multiset<SeriesParallelDecomposition> const
-        &sp_compositions) {
+    std::multiset<SeriesParallelDecomposition> const &sp_compositions) {
 
   ASSERT(sp_compositions.size() > 0,
          "Cannot create parallel composition with zero elements");
@@ -131,13 +129,13 @@ SeriesParallelDecomposition parallel_composition(
     return get_only(sp_compositions);
   }
 
-  std::unordered_multiset<
-      std::variant<::FlexFlow::SeriesSplit, ::FlexFlow::Node>>
+  std::multiset<std::variant<::FlexFlow::SeriesSplit, ::FlexFlow::Node>>
       composition{};
   for (SeriesParallelDecomposition const &sp_comp : sp_compositions) {
     if (sp_comp.has<ParallelSplit>()) {
-      composition = multiset_union(composition,
-                                   sp_comp.get<ParallelSplit>().get_children());
+      composition = multiset_union(
+          composition,
+          multiset_of(sp_comp.get<ParallelSplit>().get_children()));
     } else if (sp_comp.has<SeriesSplit>()) {
       composition.insert(sp_comp.get<SeriesSplit>());
     } else {
@@ -145,7 +143,7 @@ SeriesParallelDecomposition parallel_composition(
       composition.insert(sp_comp.get<Node>());
     }
   }
-  return SeriesParallelDecomposition(ParallelSplit{composition});
+  return SeriesParallelDecomposition(ParallelSplit{multiset_of(composition)});
 }
 
 } // namespace FlexFlow

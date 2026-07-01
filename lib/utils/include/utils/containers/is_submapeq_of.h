@@ -3,13 +3,12 @@
 
 #include "utils/containers/keys.h"
 #include "utils/containers/restrict_keys.h"
-#include <unordered_map>
+#include <map>
 
 namespace FlexFlow {
 
 template <typename K, typename V>
-bool is_submapeq_of(std::unordered_map<K, V> const &sub,
-                    std::unordered_map<K, V> const &m) {
+bool is_submapeq_of(std::map<K, V> const &sub, std::map<K, V> const &m) {
   return restrict_keys(m, keys(sub)) == sub;
 }
 

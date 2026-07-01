@@ -11,9 +11,10 @@
 #include "pcg/parallel_computation_graph/parallel_computation_graph_edge.h"
 #include "pcg/parallel_computation_graph/parallel_layer_guid_t.dtg.h"
 #include "utils/bidict/bidict.h"
+#include "utils/containers/set_of.h"
 #include "utils/graph/instances/adjacency_digraph.h"
-#include <unordered_map>
-#include <unordered_set>
+#include <map>
+#include <set>
 
 namespace FlexFlow {
 
@@ -22,18 +23,17 @@ PCGTaskGraph
                        MachineMapping const &machine_mapping,
                        MachineComputeSpecification const &machine_spec) {
   DiGraph digraph = DiGraph::create<AdjacencyDiGraph>();
-  bidict<Node, PCGTask> node_to_task;
+  ManyToOne<Node, PCGTask> node_to_task;
   bidict<Node, parallel_layer_guid_t> node_to_layer;
-  std::unordered_map<Node, std::unordered_set<MachineSpaceCoordinate>>
-      node_to_devices;
+  std::map<Node, std::set<MachineSpaceCoordinate>> node_to_devices;
 
-  for (parallel_layer_guid_t const &layer : get_parallel_layers(pcg)) {
+  for (parallel_layer_guid_t const &layer : pcg_get_parallel_layers(pcg)) {
     MachineView mv = machine_mapping.machine_views.at(layer);
     RuntimeOnlyOpCostEstimateKey op_key =
         get_mapped_runtime_only_op_cost_estimate_key_for_layer(pcg, layer, mv);
     Node node = digraph.add_node();
-    node_to_task.equate(node, PCGTask{op_key});
-    node_to_layer.equate(node, layer);
+    node_to_task.insert({node, PCGTask{op_key}});
+    node_to_layer.equate_strict(node, layer);
     node_to_devices[node] =
         get_machine_space_coordinates(get_operator_task_space(pcg, layer),
                                       machine_mapping.machine_views.at(layer));
@@ -45,7 +45,7 @@ PCGTaskGraph
     TensorSetMovement movement =
         get_tensor_set_movement_from_pcg_edge(edge, pcg, src_mv, dst_mv);
     Node node = digraph.add_node();
-    node_to_task.equate(node, PCGTask{movement});
+    node_to_task.insert({node, PCGTask{movement}});
     node_to_devices[node] = {};
     Node src_node = node_to_layer.at_r(get_src_layer(edge));
     Node dst_node = node_to_layer.at_r(get_dst_layer(edge));

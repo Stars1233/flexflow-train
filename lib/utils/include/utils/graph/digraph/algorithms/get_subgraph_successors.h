@@ -5,9 +5,8 @@
 
 namespace FlexFlow {
 
-std::unordered_set<Node>
-    get_subgraph_successors(DiGraphView const &,
-                            std::unordered_set<Node> const &);
+std::set<Node> get_subgraph_successors(DiGraphView const &,
+                                       std::set<Node> const &);
 
 } // namespace FlexFlow
 

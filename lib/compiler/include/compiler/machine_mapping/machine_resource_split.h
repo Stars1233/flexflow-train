@@ -12,7 +12,7 @@ std::pair<MachineComputeResourceSlice, MachineComputeResourceSlice>
     apply_resource_split(MachineResourceSplit const &split,
                          MachineComputeResourceSlice const &resources);
 
-std::unordered_set<MachineResourceSplit>
+std::set<MachineResourceSplit>
     get_machine_resource_splits(MachineComputeResourceSlice const &);
 
 MachineSpaceCoordinate

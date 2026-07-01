@@ -16,9 +16,9 @@ bidict<parallel_tensor_guid_t, OutputGraphExprNodeOutput>
   bidict<parallel_tensor_guid_t, OutputGraphExprNodeOutput> result;
 
   for (auto const &[parallel_layer, output_graph_expr_node] : m.node_mapping) {
-    std::unordered_map<TensorSlotName, parallel_tensor_guid_t> layer_outputs =
+    std::map<TensorSlotName, parallel_tensor_guid_t> layer_outputs =
         get_outgoing_tensors(spcg, parallel_layer);
-    std::unordered_map<TensorSlotName, OutputGraphExprNodeOutput>
+    std::map<TensorSlotName, OutputGraphExprNodeOutput>
         output_graph_expr_outputs =
             get_node_outputs(output_graph_expr, output_graph_expr_node);
 

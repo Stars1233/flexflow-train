@@ -57,32 +57,31 @@ TEST_SUITE(FF_TEST_SUITE) {
       REQUIRE(maybe_result.has_value());
       InverseLineGraphResult result = maybe_result.value();
 
-      std::unordered_set<Node> result_nodes = get_nodes(result.graph);
+      std::set<Node> result_nodes = get_nodes(result.graph);
       REQUIRE(result_nodes.size() == 5);
 
       std::vector<Node> inv = get_topological_ordering(result.graph);
 
       SUBCASE("edges") {
-        std::unordered_map<DirectedEdge, int> result_edges =
+        std::map<DirectedEdge, positive_int> result_edges =
             get_edge_counts(result.graph);
-        std::unordered_map<DirectedEdge, int> correct_edges = {
-            {DirectedEdge{inv.at(0), inv.at(1)}, 1},
-            {DirectedEdge{inv.at(1), inv.at(2)}, 1},
-            {DirectedEdge{inv.at(1), inv.at(3)}, 1},
-            {DirectedEdge{inv.at(2), inv.at(3)}, 1},
-            {DirectedEdge{inv.at(3), inv.at(4)}, 1},
+        std::map<DirectedEdge, positive_int> correct_edges = {
+            {DirectedEdge{inv.at(0), inv.at(1)}, 1_p},
+            {DirectedEdge{inv.at(1), inv.at(2)}, 1_p},
+            {DirectedEdge{inv.at(1), inv.at(3)}, 1_p},
+            {DirectedEdge{inv.at(2), inv.at(3)}, 1_p},
+            {DirectedEdge{inv.at(3), inv.at(4)}, 1_p},
         };
         CHECK(result_edges == correct_edges);
       }
 
       SUBCASE("inverse_edge_to_line_node_bidict") {
-        std::unordered_map<Node, DirectedEdge> result_bidict =
-            map_values(result.inverse_edge_to_line_node_bidict.reversed()
-                           .as_unordered_map(),
-                       [&](MultiDiEdge const &e) {
-                         return get_directed_edge(result.graph, e);
-                       });
-        std::unordered_map<Node, DirectedEdge> correct_bidict = {
+        std::map<Node, DirectedEdge> result_bidict = map_values(
+            result.inverse_edge_to_line_node_bidict.reversed().as_map(),
+            [&](MultiDiEdge const &e) {
+              return get_directed_edge(result.graph, e);
+            });
+        std::map<Node, DirectedEdge> correct_bidict = {
             {n.at(0), DirectedEdge{inv.at(0), inv.at(1)}},
             {n.at(1), DirectedEdge{inv.at(1), inv.at(2)}},
             {n.at(2), DirectedEdge{inv.at(1), inv.at(3)}},
@@ -119,28 +118,27 @@ TEST_SUITE(FF_TEST_SUITE) {
       REQUIRE(maybe_result.has_value());
       InverseLineGraphResult result = maybe_result.value();
 
-      std::unordered_set<Node> result_nodes = get_nodes(result.graph);
+      std::set<Node> result_nodes = get_nodes(result.graph);
       REQUIRE(result_nodes.size() == 2);
 
       std::vector<Node> inv = get_topological_ordering(result.graph);
 
       SUBCASE("edges") {
-        std::unordered_map<DirectedEdge, int> result_edges =
+        std::map<DirectedEdge, positive_int> result_edges =
             get_edge_counts(result.graph);
-        std::unordered_map<DirectedEdge, int> correct_edges = {
-            {DirectedEdge{inv.at(0), inv.at(1)}, 2},
+        std::map<DirectedEdge, positive_int> correct_edges = {
+            {DirectedEdge{inv.at(0), inv.at(1)}, 2_p},
         };
         CHECK(result_edges == correct_edges);
       }
 
       SUBCASE("inverse_edge_to_line_node_bidict") {
-        std::unordered_map<Node, DirectedEdge> result_bidict =
-            map_values(result.inverse_edge_to_line_node_bidict.reversed()
-                           .as_unordered_map(),
-                       [&](MultiDiEdge const &e) {
-                         return get_directed_edge(result.graph, e);
-                       });
-        std::unordered_map<Node, DirectedEdge> correct_bidict = {
+        std::map<Node, DirectedEdge> result_bidict = map_values(
+            result.inverse_edge_to_line_node_bidict.reversed().as_map(),
+            [&](MultiDiEdge const &e) {
+              return get_directed_edge(result.graph, e);
+            });
+        std::map<Node, DirectedEdge> correct_bidict = {
             {n.at(0), DirectedEdge{inv.at(0), inv.at(1)}},
             {n.at(1), DirectedEdge{inv.at(0), inv.at(1)}},
         };

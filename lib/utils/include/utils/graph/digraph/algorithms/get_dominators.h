@@ -12,7 +12,7 @@ namespace FlexFlow {
  * dominates itself.
  *
  */
-std::unordered_set<Node> get_dominators(DiGraphView const &, Node const &);
+std::set<Node> get_dominators(DiGraphView const &, Node const &);
 
 /**
  * @brief Returns the intersection of the dominators of the given set of nodes.
@@ -21,8 +21,7 @@ std::unordered_set<Node> get_dominators(DiGraphView const &, Node const &);
  * that all edges belonging to the set of nodes now pass through a single
  * unified node).
  */
-std::unordered_set<Node> get_dominators(DiGraphView const &,
-                                        std::unordered_set<Node> const &);
+std::set<Node> get_dominators(DiGraphView const &, std::set<Node> const &);
 
 } // namespace FlexFlow
 

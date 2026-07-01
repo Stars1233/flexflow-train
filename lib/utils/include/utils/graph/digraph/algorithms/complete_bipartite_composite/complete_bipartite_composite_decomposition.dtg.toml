@@ -12,10 +12,10 @@ includes = [
 ]
 
 src_includes = [
-  "utils/fmt/unordered_set.h",
-  "utils/hash/unordered_set.h",
+  "utils/fmt/set.h",
+  "utils/hash/set.h",
 ]
 
 [[fields]]
 name = "subgraphs"
-type = "std::unordered_set<::FlexFlow::BipartiteComponent>"
+type = "std::set<::FlexFlow::BipartiteComponent>"

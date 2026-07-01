@@ -233,7 +233,7 @@ TEST_SUITE(FF_TEST_SUITE) {
             {pattern_mm_node, mm_match_layer},
             {pattern_relu_node, relu_match_layer},
         },
-        std::unordered_map<PatternInput, open_parallel_tensor_guid_t>{
+        std::map<PatternInput, open_parallel_tensor_guid_t>{
             {
                 PatternInput{pattern_i_activation},
                 mm_match_layer_input_activations,
@@ -285,14 +285,14 @@ TEST_SUITE(FF_TEST_SUITE) {
 
       SubParallelComputationGraphData correct_graph_data =
           SubParallelComputationGraphData{
-              std::unordered_map<parallel_layer_guid_t, ParallelLayerAttrs>{{
+              std::map<parallel_layer_guid_t, ParallelLayerAttrs>{{
                   result_fused_mm_relu_node,
                   ParallelLayerAttrs{
                       PCGOperatorAttrs{correct_result_fused_mm_relu_attrs},
                       /*name=*/std::nullopt,
                   },
               }},
-              std::unordered_set<SubParallelComputationGraphEdge>{
+              std::set<SubParallelComputationGraphEdge>{
                   SubParallelComputationGraphEdge{
                       OpenKwargDataflowEdge<int, TensorSlotName>{
                           KwargDataflowInputEdge{
@@ -316,12 +316,11 @@ TEST_SUITE(FF_TEST_SUITE) {
                       },
                   },
               },
-              std::unordered_set<input_parallel_tensor_guid_t>{
+              std::set<input_parallel_tensor_guid_t>{
                   result_i_activation,
                   result_i_weights,
               },
-              std::unordered_map<open_parallel_tensor_guid_t,
-                                 ParallelTensorAttrs>{
+              std::map<open_parallel_tensor_guid_t, ParallelTensorAttrs>{
                   {
                       open_parallel_tensor_guid_from_input(result_i_activation),
                       correct_result_i_activation_attrs,

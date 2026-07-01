@@ -15,14 +15,12 @@ EqProjection<L, R> make_empty_eq_projection() {
 }
 
 template <typename L, typename R>
-std::unordered_set<L>
-    input_dims_of_eq_projection(EqProjection<L, R> const &projection) {
+std::set<L> input_dims_of_eq_projection(EqProjection<L, R> const &projection) {
   return projection.dim_mapping.left_values();
 }
 
 template <typename L, typename R>
-std::unordered_set<R>
-    output_dims_of_eq_projection(EqProjection<L, R> const &projection) {
+std::set<R> output_dims_of_eq_projection(EqProjection<L, R> const &projection) {
   return projection.dim_mapping.right_values();
 }
 

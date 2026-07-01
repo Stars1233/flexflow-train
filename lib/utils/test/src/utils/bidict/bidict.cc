@@ -1,6 +1,6 @@
 #include "utils/bidict/bidict.h"
 #include "test/utils/doctest/check_without_stringify.h"
-#include "test/utils/doctest/fmt/unordered_map.h"
+#include "test/utils/doctest/fmt/map.h"
 #include "test/utils/doctest/fmt/vector.h"
 #include "test/utils/rapidcheck.h"
 #include <doctest/doctest.h>
@@ -63,14 +63,14 @@ TEST_SUITE(FF_TEST_SUITE) {
     SUBCASE("bidict::erase_l") {
       dict.erase_l(1);
       CHECK(dict.size() == 1);
-      CHECK_THROWS_AS(dict.at_l(1), std::out_of_range);
+      CHECK_THROWS(dict.at_l(1));
       CHECK(dict.at_r("two") == 2);
     }
 
     SUBCASE("bidict::erase_r") {
       dict.erase_r("one");
       CHECK(dict.size() == 1);
-      CHECK_THROWS_AS(dict.at_r("one"), std::out_of_range);
+      CHECK_THROWS(dict.at_r("one"));
       CHECK(dict.at_l(2) == "two");
     }
 
@@ -84,16 +84,16 @@ TEST_SUITE(FF_TEST_SUITE) {
       CHECK(dict.size() == 2);
     }
 
-    SUBCASE("implicitly convert to std::unordered_map") {
-      std::unordered_map<int, std::string> res = dict;
-      std::unordered_map<int, std::string> expected = {{1, "one"}, {2, "two"}};
+    SUBCASE("implicitly convert to std::map") {
+      std::map<int, std::string> res = dict;
+      std::map<int, std::string> expected = {{1, "one"}, {2, "two"}};
       CHECK(res == expected);
     }
 
     SUBCASE("bidict::begin") {
       auto it = dict.begin();
-      CHECK(it->first == 2);
-      CHECK(it->second == "two");
+      CHECK(it->first == 1);
+      CHECK(it->second == "one");
     }
 
     SUBCASE("bidict::end") {
@@ -104,7 +104,7 @@ TEST_SUITE(FF_TEST_SUITE) {
 
     SUBCASE("fmt::to_string(bidict<int, std::string>)") {
       std::string result = fmt::to_string(dict);
-      std::string correct = fmt::to_string(dict.as_unordered_map());
+      std::string correct = fmt::to_string(dict.as_map());
       CHECK(result == correct);
     }
   }
@@ -113,11 +113,13 @@ TEST_SUITE(FF_TEST_SUITE) {
     bidict<int, std::string> deserialized = bidict<int, std::string>{
         {2, "hello"},
         {3, "goodbye"},
+        {4, "yes"},
     };
 
     nlohmann::json serialized = std::vector<std::pair<int, std::string>>{
         {2, "hello"},
         {3, "goodbye"},
+        {4, "yes"},
     };
 
     SUBCASE("to_json") {

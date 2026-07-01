@@ -8,12 +8,12 @@
 
 namespace FlexFlow {
 
-std::unordered_set<OutputGraphExprNode> get_nodes(OutputGraphExpr const &);
+std::set<OutputGraphExprNode> get_nodes(OutputGraphExpr const &);
 
-std::unordered_map<TensorSlotName, OutputGraphExprNodeOutput>
+std::map<TensorSlotName, OutputGraphExprNodeOutput>
     get_node_outputs(OutputGraphExpr const &, OutputGraphExprNode const &);
 
-std::unordered_set<OutputGraphExprInput> get_inputs(OutputGraphExpr const &);
+std::set<OutputGraphExprInput> get_inputs(OutputGraphExpr const &);
 
 } // namespace FlexFlow
 

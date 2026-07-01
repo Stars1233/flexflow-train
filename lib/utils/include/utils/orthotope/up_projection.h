@@ -22,14 +22,12 @@ UpProjection<L, R> make_empty_up_projection() {
 }
 
 template <typename L, typename R>
-std::unordered_set<L>
-    input_dims_of_up_projection(UpProjection<L, R> const &projection) {
+std::set<L> input_dims_of_up_projection(UpProjection<L, R> const &projection) {
   return projection.dim_mapping.left_values();
 }
 
 template <typename L, typename R>
-std::unordered_set<R>
-    output_dims_of_up_projection(UpProjection<L, R> const &projection) {
+std::set<R> output_dims_of_up_projection(UpProjection<L, R> const &projection) {
   return projection.dim_mapping.right_values();
 }
 
@@ -38,22 +36,22 @@ DimCoord<R> compute_up_projection(UpProjection<L, R> const &projection,
                                   DimCoord<L> const &coord,
                                   DimDomain<R> const &output_domain,
                                   DimOrdering<R> const &output_dim_ordering) {
-  std::unordered_set<L> input_dims = input_dims_of_up_projection(projection);
-  std::unordered_set<L> coord_dims = get_coord_dims(coord);
+  std::set<L> input_dims = input_dims_of_up_projection(projection);
+  std::set<L> coord_dims = get_coord_dims(coord);
   ASSERT(input_dims == coord_dims,
          "compute_up_projection expected coord dimensions to match projection "
          "input dimensions");
 
-  std::unordered_set<R> output_dims = output_dims_of_up_projection(projection);
-  std::unordered_set<R> output_domain_dims = get_domain_dims(output_domain);
+  std::set<R> output_dims = output_dims_of_up_projection(projection);
+  std::set<R> output_domain_dims = get_domain_dims(output_domain);
   ASSERT(is_subseteq_of(output_dims, output_domain_dims));
 
   DimCoord<R> unlifted = DimCoord<R>{
       flatmap(coord.raw,
-              [&](L const &input_dim, nonnegative_int input_dim_val) {
-                std::unordered_set<R> dst_dims =
-                    projection.dim_mapping.at_l(input_dim)
-                        .unwrap_as_unordered_set();
+              [&](L const &input_dim, nonnegative_int input_dim_val)
+                  -> std::map<R, nonnegative_int> {
+                std::set<R> dst_dims =
+                    projection.dim_mapping.at_l(input_dim).unwrap_as_set();
 
                 DimDomain<R> dst_domain =
                     restrict_domain_to_dims(output_domain, dst_dims);
@@ -71,7 +69,7 @@ DimCoord<R> compute_up_projection(UpProjection<L, R> const &projection,
 template <typename L, typename R>
 void project_dims(UpProjection<L, R> &proj,
                   L const &onto,
-                  std::unordered_set<R> const &from) {
+                  std::set<R> const &from) {
   ASSERT(from.size() > 0);
 
   for (R const &r : from) {

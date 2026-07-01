@@ -67,8 +67,8 @@ static DynamicNodeInvocation get_update_invocation_for_invocation(
     };
   };
 
-  std::unordered_set<DynamicTensorRole> tensor_roles = set_union(
-      std::unordered_set{
+  std::set<DynamicTensorRole> tensor_roles = set_union(
+      std::set{
           mk_dynamic_tensor_role_fwd(),
           mk_dynamic_tensor_role_bwd(),
       },
@@ -79,24 +79,23 @@ static DynamicNodeInvocation get_update_invocation_for_invocation(
       /*inputs=*/map_from_pairs(
           transform(tensor_roles, create_binding_for_role)),
       /*node_attrs=*/update_node_attrs,
-      /*outputs=*/std::unordered_map<DynamicTensorSlot, DynamicValueAttrs>{},
+      /*outputs=*/std::map<DynamicTensorSlot, DynamicValueAttrs>{},
   };
 }
 
-std::unordered_set<DynamicNodeInvocation>
-    perform_update_insertion_for_invocation(
-        DynamicNodeInvocation const &invocation,
-        OptimizerAttrs const &optimizer_attrs) {
+std::set<DynamicNodeInvocation> perform_update_insertion_for_invocation(
+    DynamicNodeInvocation const &invocation,
+    OptimizerAttrs const &optimizer_attrs) {
 
   if (invocation.node_attrs.task_type.value() == DynamicTaskType::FWD &&
       invocation.node_attrs.op_attrs.value().is_pcg_op() &&
       invocation.node_attrs.op_attrs.value().require_pcg_op().is_weight()) {
-    return std::unordered_set{
+    return std::set{
         invocation,
         get_update_invocation_for_invocation(invocation, optimizer_attrs),
     };
   } else {
-    return std::unordered_set{
+    return std::set{
         invocation,
     };
   };

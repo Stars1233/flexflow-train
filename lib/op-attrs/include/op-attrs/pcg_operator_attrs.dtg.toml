@@ -56,7 +56,7 @@ key = "cast"
 
 [[values]]
 type = "::FlexFlow::CombineAttrs"
-key = "combine_distributed"
+key = "parallel_combine"
 
 [[values]]
 type = "::FlexFlow::ConcatAttrs"
@@ -120,15 +120,15 @@ key = "reduce"
 
 [[values]]
 type = "::FlexFlow::ReductionAttrs"
-key = "reduce_distributed"
+key = "parallel_reduce"
 
 [[values]]
 type = "::FlexFlow::RepartitionAttrs"
-key = "partition_distributed"
+key = "parallel_partition"
 
 [[values]]
 type = "::FlexFlow::ReplicateAttrs"
-key = "replicate_distributed"
+key = "parallel_replicate"
 
 [[values]]
 type = "::FlexFlow::ReverseAttrs"

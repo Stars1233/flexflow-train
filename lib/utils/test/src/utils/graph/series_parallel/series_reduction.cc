@@ -1,6 +1,6 @@
 #include "utils/graph/series_parallel/series_reduction.h"
 #include "utils/containers/set_minus.h"
-#include "utils/fmt/unordered_set.h"
+#include "utils/fmt/set.h"
 #include "utils/fmt/vector.h"
 #include "utils/graph/instances/adjacency_multidigraph.h"
 #include "utils/graph/multidigraph/algorithms/add_edges.h"
@@ -119,7 +119,7 @@ TEST_SUITE(FF_TEST_SUITE) {
                                              });
 
       std::optional<SeriesReduction> result = find_series_reduction(g);
-      std::unordered_set<SeriesReduction> correct_options = {
+      std::set<SeriesReduction> correct_options = {
           make_series_reduction(e.at(0), e.at(1)),
           make_series_reduction(e.at(1), e.at(2)),
       };
@@ -164,14 +164,14 @@ TEST_SUITE(FF_TEST_SUITE) {
       MultiDiEdge returned_edge = apply_series_reduction(g, reduction);
 
       SUBCASE("nodes") {
-        std::unordered_set<Node> result_nodes = get_nodes(g);
-        std::unordered_set<Node> correct_nodes = {n.at(0), n.at(2)};
+        std::set<Node> result_nodes = get_nodes(g);
+        std::set<Node> correct_nodes = {n.at(0), n.at(2)};
         CHECK(result_nodes == correct_nodes);
       }
 
       SUBCASE("edges") {
-        std::unordered_set<MultiDiEdge> result_edges = get_edges(g);
-        std::unordered_set<MultiDiEdge> correct_edges = {returned_edge};
+        std::set<MultiDiEdge> result_edges = get_edges(g);
+        std::set<MultiDiEdge> correct_edges = {returned_edge};
         CHECK(result_edges == correct_edges);
       }
 
@@ -212,16 +212,15 @@ TEST_SUITE(FF_TEST_SUITE) {
       MultiDiEdge returned_edge = apply_series_reduction(g, reduction);
 
       SUBCASE("nodes") {
-        std::unordered_set<Node> result_nodes = get_nodes(g);
-        std::unordered_set<Node> correct_nodes =
-            set_minus(unordered_set_of(n), {n.at(4)});
+        std::set<Node> result_nodes = get_nodes(g);
+        std::set<Node> correct_nodes = set_minus(set_of(n), {n.at(4)});
         CHECK(result_nodes == correct_nodes);
       }
 
       SUBCASE("edges") {
-        std::unordered_set<MultiDiEdge> result_edges = get_edges(g);
-        std::unordered_set<MultiDiEdge> correct_edges = [&] {
-          std::unordered_set<MultiDiEdge> new_edges = unordered_set_of(e);
+        std::set<MultiDiEdge> result_edges = get_edges(g);
+        std::set<MultiDiEdge> correct_edges = [&] {
+          std::set<MultiDiEdge> new_edges = set_of(e);
           new_edges.erase(reduction_e1);
           new_edges.erase(reduction_e2);
           new_edges.insert(returned_edge);
@@ -258,9 +257,9 @@ TEST_SUITE(FF_TEST_SUITE) {
                                                  {n.at(2), n.at(3)},
                                              });
 
-      std::unordered_set<ExtendedSeriesReduction> result =
+      std::set<ExtendedSeriesReduction> result =
           find_all_extended_series_reductions(g);
-      std::unordered_set<ExtendedSeriesReduction> correct = {
+      std::set<ExtendedSeriesReduction> correct = {
           ExtendedSeriesReduction{{e.at(0), e.at(1), e.at(2)}}};
       CHECK(result == correct);
     }
@@ -273,9 +272,9 @@ TEST_SUITE(FF_TEST_SUITE) {
                                               {n.at(1), n.at(3)},
                                               {n.at(2), n.at(3)}});
 
-      std::unordered_set<ExtendedSeriesReduction> result =
+      std::set<ExtendedSeriesReduction> result =
           find_all_extended_series_reductions(g);
-      std::unordered_set<ExtendedSeriesReduction> correct = {
+      std::set<ExtendedSeriesReduction> correct = {
           ExtendedSeriesReduction{{e.at(0), e.at(2)}},
           ExtendedSeriesReduction{{e.at(1), e.at(3)}}};
       CHECK(result == correct);
@@ -296,9 +295,9 @@ TEST_SUITE(FF_TEST_SUITE) {
                                               {n.at(6), n.at(8)},
                                               {n.at(7), n.at(8)}});
 
-      std::unordered_set<ExtendedSeriesReduction> result =
+      std::set<ExtendedSeriesReduction> result =
           find_all_extended_series_reductions(g);
-      std::unordered_set<ExtendedSeriesReduction> correct = {
+      std::set<ExtendedSeriesReduction> correct = {
           ExtendedSeriesReduction{{e.at(0), e.at(2), e.at(7)}},
           ExtendedSeriesReduction{{e.at(3), e.at(6)}},
           ExtendedSeriesReduction{{e.at(5), e.at(9)}}};
@@ -320,14 +319,14 @@ TEST_SUITE(FF_TEST_SUITE) {
       MultiDiEdge returned_edge = apply_extended_series_reduction(g, reduction);
 
       SUBCASE("nodes") {
-        std::unordered_set<Node> result_nodes = get_nodes(g);
-        std::unordered_set<Node> correct_nodes = {n.at(0), n.at(3)};
+        std::set<Node> result_nodes = get_nodes(g);
+        std::set<Node> correct_nodes = {n.at(0), n.at(3)};
         CHECK(result_nodes == correct_nodes);
       }
 
       SUBCASE("edges") {
-        std::unordered_set<MultiDiEdge> result_edges = get_edges(g);
-        std::unordered_set<MultiDiEdge> correct_edges = {returned_edge};
+        std::set<MultiDiEdge> result_edges = get_edges(g);
+        std::set<MultiDiEdge> correct_edges = {returned_edge};
         CHECK(result_edges == correct_edges);
       }
 
@@ -366,16 +365,15 @@ TEST_SUITE(FF_TEST_SUITE) {
       MultiDiEdge returned_edge = apply_extended_series_reduction(g, reduction);
 
       SUBCASE("nodes") {
-        std::unordered_set<Node> result_nodes = get_nodes(g);
-        std::unordered_set<Node> correct_nodes =
-            set_minus(unordered_set_of(n), {n.at(4), n.at(3)});
+        std::set<Node> result_nodes = get_nodes(g);
+        std::set<Node> correct_nodes = set_minus(set_of(n), {n.at(4), n.at(3)});
         CHECK(result_nodes == correct_nodes);
       }
 
       SUBCASE("edges") {
-        std::unordered_set<MultiDiEdge> result_edges = get_edges(g);
-        std::unordered_set<MultiDiEdge> correct_edges = [&] {
-          std::unordered_set<MultiDiEdge> new_edges = unordered_set_of(e);
+        std::set<MultiDiEdge> result_edges = get_edges(g);
+        std::set<MultiDiEdge> correct_edges = [&] {
+          std::set<MultiDiEdge> new_edges = set_of(e);
           new_edges = set_minus(new_edges, {e.at(3), e.at(4), e.at(5)});
           new_edges.insert(returned_edge);
           return new_edges;

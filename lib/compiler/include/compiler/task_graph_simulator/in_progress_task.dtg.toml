@@ -1,7 +1,6 @@
 namespace = "FlexFlow"
 name = "InProgressTask"
 type = "struct"
-
 features = [
   "eq",
   "hash",
@@ -12,7 +11,6 @@ features = [
 includes = [
   "utils/graph/node/node.dtg.h"
 ]
-
 
 [[fields]]
 name = "start_time"

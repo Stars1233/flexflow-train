@@ -16,4 +16,4 @@ type = "::FlexFlow::RuntimeOnlyCostEstimator"
 
 [[fields]]
 name = "allowed_machine_views"
-type = "std::function<std::unordered_set<::FlexFlow::MachineView>(::FlexFlow::UnmappedRuntimeOnlyOpCostEstimateKey const &, ::FlexFlow::MachineComputeResourceSlice const &)>"
+type = "std::function<std::set<::FlexFlow::MachineView>(::FlexFlow::UnmappedRuntimeOnlyOpCostEstimateKey const &, ::FlexFlow::MachineComputeResourceSlice const &)>"

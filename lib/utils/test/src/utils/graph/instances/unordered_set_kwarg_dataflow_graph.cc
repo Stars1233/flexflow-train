@@ -13,22 +13,22 @@ TEST_SUITE(FF_TEST_SUITE) {
         UnorderedSetKwargDataflowGraph<std::string>>();
 
     {
-      std::unordered_set<Node> result = g.query_nodes(node_query_all());
-      std::unordered_set<Node> correct = {};
+      std::set<Node> result = g.query_nodes(node_query_all());
+      std::set<Node> correct = {};
       REQUIRE(result == correct);
     }
 
     {
-      std::unordered_set<KwargDataflowEdge<std::string>> result =
+      std::set<KwargDataflowEdge<std::string>> result =
           g.query_edges(kwarg_dataflow_edge_query_all<std::string>());
-      std::unordered_set<KwargDataflowEdge<std::string>> correct = {};
+      std::set<KwargDataflowEdge<std::string>> correct = {};
       REQUIRE(result == correct);
     }
 
     {
-      std::unordered_set<KwargDataflowOutput<std::string>> result =
+      std::set<KwargDataflowOutput<std::string>> result =
           g.query_outputs(kwarg_dataflow_output_query_all<std::string>());
-      std::unordered_set<KwargDataflowOutput<std::string>> correct = {};
+      std::set<KwargDataflowOutput<std::string>> correct = {};
       REQUIRE(result == correct);
     }
 
@@ -50,23 +50,23 @@ TEST_SUITE(FF_TEST_SUITE) {
         added.outputs.at("output_3");
 
     {
-      std::unordered_set<Node> result = g.query_nodes(node_query_all());
-      std::unordered_set<Node> correct = {added.node};
+      std::set<Node> result = g.query_nodes(node_query_all());
+      std::set<Node> correct = {added.node};
       REQUIRE(result == correct);
     }
 
     {
-      std::unordered_set<KwargDataflowEdge<std::string>> result =
+      std::set<KwargDataflowEdge<std::string>> result =
           g.query_edges(kwarg_dataflow_edge_query_all<std::string>());
-      std::unordered_set<KwargDataflowEdge<std::string>> correct = {};
+      std::set<KwargDataflowEdge<std::string>> correct = {};
       REQUIRE(result == correct);
     }
 
     {
-      std::unordered_set<KwargDataflowOutput<std::string>> result =
+      std::set<KwargDataflowOutput<std::string>> result =
           g.query_outputs(kwarg_dataflow_output_query_all<std::string>());
-      std::unordered_set<KwargDataflowOutput<std::string>> correct =
-          unordered_set_of(values(added.outputs));
+      std::set<KwargDataflowOutput<std::string>> correct =
+          set_of(values(added.outputs));
       REQUIRE(result == correct);
     }
 
@@ -92,13 +92,13 @@ TEST_SUITE(FF_TEST_SUITE) {
         };
 
     {
-      std::unordered_set<Node> result = g.query_nodes(node_query_all());
-      std::unordered_set<Node> correct = {added.node, added2.node};
+      std::set<Node> result = g.query_nodes(node_query_all());
+      std::set<Node> correct = {added.node, added2.node};
       REQUIRE(result == correct);
     }
 
     {
-      std::unordered_set<KwargDataflowEdge<std::string>> result =
+      std::set<KwargDataflowEdge<std::string>> result =
           g.query_edges(kwarg_dataflow_edge_query_all<std::string>());
 
       auto mk_edge =
@@ -115,7 +115,7 @@ TEST_SUITE(FF_TEST_SUITE) {
         };
       };
 
-      std::unordered_set<KwargDataflowEdge<std::string>> correct = {
+      std::set<KwargDataflowEdge<std::string>> correct = {
           mk_edge(added_output_1, added2.node, "input_1"),
           mk_edge(added_output_3, added2.node, "input_2"),
       };
@@ -124,14 +124,14 @@ TEST_SUITE(FF_TEST_SUITE) {
     }
 
     {
-      std::unordered_set<KwargDataflowOutput<std::string>> result =
+      std::set<KwargDataflowOutput<std::string>> result =
           g.query_outputs(kwarg_dataflow_output_query_all<std::string>());
 
       auto get_output_set = [](KwargNodeAddedResult<std::string> const &r) {
-        return unordered_set_of(values(r.outputs));
+        return set_of(values(r.outputs));
       };
 
-      std::unordered_set<KwargDataflowOutput<std::string>> correct =
+      std::set<KwargDataflowOutput<std::string>> correct =
           set_union(get_output_set(added), get_output_set(added2));
 
       REQUIRE(result == correct);

@@ -3,7 +3,7 @@
 
 #include "utils/graph/digraph/digraph_view.h"
 #include "utils/nonnegative_int/nonnegative_int.h"
-#include <unordered_map>
+#include <map>
 
 namespace FlexFlow {
 
@@ -11,26 +11,26 @@ namespace FlexFlow {
  * @brief Computes the longest path lengths from the root in directed acyclic
  * graph.
  *
- * @return std::unordered_map<Node, int> For each node n, returns the length
+ * @return std::map<Node, int> For each node n, returns the length
  * (i.e. number of nodes) of the longest path from the root to n.
  *
  * @note The root has a path length of 1. g must be acyclic.
  */
-std::unordered_map<Node, nonnegative_int>
+std::map<Node, nonnegative_int>
     get_longest_path_lengths_from_root(DiGraphView const &g);
 
 /**
  * @brief Computes the weighted longest path lengths from the root in a directed
  * acyclic graph.
  *
- * @return std::unordered_map<Node, float> For each node n, returns the length
+ * @return std::map<Node, float> For each node n, returns the length
  * (i.e. the sum of the weights of all the nodes) of the longest path from the
  * root to n.
  *
  * @note The root has a path length equal to its weight. g must be acyclic.
  */
-std::unordered_map<Node, float> get_weighted_longest_path_lengths_from_root(
-    DiGraphView const &g, std::unordered_map<Node, float> const &node_costs);
+std::map<Node, float> get_weighted_longest_path_lengths_from_root(
+    DiGraphView const &g, std::map<Node, float> const &node_costs);
 
 } // namespace FlexFlow
 

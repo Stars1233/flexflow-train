@@ -1,8 +1,8 @@
 #include "op-attrs/operator_task_space_to_operator_task_space_mapping.h"
 #include "op-attrs/operator_task_space.h"
 #include "op-attrs/task_space_coordinate.h"
-#include "utils/bidict/algorithms/transform_keys.h"
-#include "utils/bidict/algorithms/transform_values.h"
+#include "utils/bidict/algorithms/bidict_transform_keys.h"
+#include "utils/bidict/algorithms/bidict_transform_values.h"
 #include "utils/orthotope/minimal_dim_domain.h"
 #include "utils/orthotope/minimal_dim_domain_mapping.h"
 
@@ -40,9 +40,10 @@ OperatorTaskSpace op_mapping_get_dst_space(
 
 bidict<TaskSpaceCoordinate, TaskSpaceCoordinate> op_to_op_get_coord_mapping(
     OperatorTaskSpaceToOperatorTaskSpaceMapping const &mapping) {
-  return transform_values(transform_keys(mapping.raw_mapping.coord_mapping,
-                                         task_space_coordinate_from_dim_coord),
-                          task_space_coordinate_from_dim_coord);
+  return bidict_transform_values(
+      bidict_transform_keys(mapping.raw_mapping.coord_mapping,
+                            task_space_coordinate_from_dim_coord),
+      task_space_coordinate_from_dim_coord);
 }
 
 OperatorTaskSpaceToOperatorTaskSpaceMapping

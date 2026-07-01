@@ -18,7 +18,7 @@ TEST_SUITE(FF_TEST_SUITE) {
       DiGraph g = DiGraph::create<AdjacencyDiGraph>();
       std::vector<Node> n = add_nodes(g, 4);
 
-      std::unordered_map<Node, float> cost_map = {
+      std::map<Node, float> cost_map = {
           {n.at(0), 1.0f}, {n.at(1), 5.0f}, {n.at(2), 2.0f}, {n.at(3), 3.0f}};
 
       SeriesParallelDecomposition sp = naive_stratum_sync_sp_ization(g);
@@ -43,11 +43,11 @@ TEST_SUITE(FF_TEST_SUITE) {
                     DirectedEdge{n.at(3), n.at(4)},
                 });
 
-      std::unordered_map<Node, float> cost_map = {{n.at(0), 1.0f},
-                                                  {n.at(1), 2.0f},
-                                                  {n.at(2), 3.0f},
-                                                  {n.at(3), 4.0f},
-                                                  {n.at(4), 5.0f}};
+      std::map<Node, float> cost_map = {{n.at(0), 1.0f},
+                                        {n.at(1), 2.0f},
+                                        {n.at(2), 3.0f},
+                                        {n.at(3), 4.0f},
+                                        {n.at(4), 5.0f}};
 
       SeriesParallelDecomposition sp = naive_stratum_sync_sp_ization(g);
 
@@ -73,11 +73,11 @@ TEST_SUITE(FF_TEST_SUITE) {
                     DirectedEdge{n.at(1), n.at(4)},
                 });
 
-      std::unordered_map<Node, float> cost_map = {{n.at(0), 2.0f},
-                                                  {n.at(1), 3.0f},
-                                                  {n.at(2), 5.0f},
-                                                  {n.at(3), 7.0f},
-                                                  {n.at(4), 11.0f}};
+      std::map<Node, float> cost_map = {{n.at(0), 2.0f},
+                                        {n.at(1), 3.0f},
+                                        {n.at(2), 5.0f},
+                                        {n.at(3), 7.0f},
+                                        {n.at(4), 11.0f}};
 
       SeriesParallelDecomposition sp = naive_stratum_sync_sp_ization(g);
 
@@ -105,12 +105,12 @@ TEST_SUITE(FF_TEST_SUITE) {
                     DirectedEdge{n.at(4), n.at(5)},
                 });
 
-      std::unordered_map<Node, float> cost_map = {{n.at(0), 1.0f},
-                                                  {n.at(1), 1.0f},
-                                                  {n.at(2), 10.0f},
-                                                  {n.at(3), 1.0f},
-                                                  {n.at(4), 1.0f},
-                                                  {n.at(5), 1.0f}};
+      std::map<Node, float> cost_map = {{n.at(0), 1.0f},
+                                        {n.at(1), 1.0f},
+                                        {n.at(2), 10.0f},
+                                        {n.at(3), 1.0f},
+                                        {n.at(4), 1.0f},
+                                        {n.at(5), 1.0f}};
 
       SeriesParallelDecomposition sp = naive_stratum_sync_sp_ization(g);
 

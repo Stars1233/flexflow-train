@@ -9,11 +9,11 @@
 namespace FlexFlow {
 
 template <typename SlotName>
-std::unordered_set<KwargDataflowEdge<SlotName>>
+std::set<KwargDataflowEdge<SlotName>>
     get_kwarg_dataflow_subgraph_incoming_edges(
         KwargDataflowGraphView<SlotName> const &g,
-        std::unordered_set<Node> const &subgraph) {
-  std::unordered_set<Node> all_nodes = get_nodes(g);
+        std::set<Node> const &subgraph) {
+  std::set<Node> all_nodes = get_nodes(g);
   query_set<Node> src_query =
       query_set<Node>::match_values_in(set_of(set_minus(all_nodes, subgraph)));
 

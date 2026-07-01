@@ -38,38 +38,38 @@
 #include "utils/graph/series_parallel/sp_ization/up_down_partition.h"
 #include <libassert/assert.hpp>
 
-#include <unordered_map>
-#include <unordered_set>
+#include <map>
+#include <set>
 
 namespace FlexFlow {
 
-static std::unordered_set<Node>
-    get_component(DiGraph const &sp, std::unordered_set<Node> const &nodes) {
-  std::unordered_set<Node> parents = set_union(
+static std::set<Node> get_component(DiGraph const &sp,
+                                    std::set<Node> const &nodes) {
+  std::set<Node> parents = set_union(
       transform(nodes, [&](Node const &n) { return get_predecessors(sp, n); }));
-  std::unordered_set<Node> children = set_union(transform(
+  std::set<Node> children = set_union(transform(
       parents, [&](Node const &p) { return get_descendants(sp, p); }));
-  std::unordered_set<Node> other_parents = set_union(transform(
+  std::set<Node> other_parents = set_union(transform(
       children, [&](Node const &c) { return get_predecessors(sp, c); }));
   return set_union(set_union(parents, children), other_parents);
 }
 
-static std::unordered_set<Node>
+static std::set<Node>
     get_forest_flexible(DiGraph const &sp,
                         Node const &handle,
-                        std::unordered_set<Node> const &component,
-                        std::unordered_map<Node, NodeRole> const &node_roles) {
-  std::unordered_set<std::unordered_set<Node>> subtrees =
+                        std::set<Node> const &component,
+                        std::map<Node, NodeRole> const &node_roles) {
+  std::set<std::set<Node>> subtrees =
       transform(get_successors(sp, handle), [&](Node const &n) {
         return set_union(get_descendants(sp, n), {n});
       });
 
-  std::unordered_set<std::unordered_set<Node>> overlapping_subtrees =
-      filter(subtrees, [&](std::unordered_set<Node> const &subtree) {
+  std::set<std::set<Node>> overlapping_subtrees =
+      filter(subtrees, [&](std::set<Node> const &subtree) {
         return !set_intersection(subtree, component).empty();
       });
 
-  std::unordered_set<Node> forest = set_union(overlapping_subtrees);
+  std::set<Node> forest = set_union(overlapping_subtrees);
   forest.insert(handle);
 
   return filter(forest, [&](Node const &n) {
@@ -79,34 +79,34 @@ static std::unordered_set<Node>
 
 static UpDownPartition
     get_up_and_down_sets(DiGraph const &sp,
-                         std::unordered_set<Node> const &nodes,
-                         std::unordered_set<Node> const &forest,
-                         std::unordered_map<Node, float> const &cost_map,
-                         std::unordered_map<Node, NodeRole> const &node_roles) {
+                         std::set<Node> const &nodes,
+                         std::set<Node> const &forest,
+                         std::map<Node, float> const &cost_map,
+                         std::map<Node, NodeRole> const &node_roles) {
   DiGraph sp_pure = contract_out_nodes_of_given_role(
       materialize_digraph_view<AdjacencyDiGraph>(sp),
       NodeRole::SYNC,
       node_roles);
 
-  std::unordered_set<Node> base_down = nodes;
-  std::unordered_set<Node> base_up = set_intersection(
+  std::set<Node> base_down = nodes;
+  std::set<Node> base_up = set_intersection(
       set_union(transform(
           nodes, [&](Node const &n) { return get_ancestors(sp_pure, n); })),
       forest);
-  std::unordered_set<Node> assignable_nodes =
+  std::set<Node> assignable_nodes =
       set_difference(forest, set_union(base_up, base_down));
 
   DiGraphView forest_subgraph = get_subgraph(sp_pure, forest);
-  std::unordered_map<Node, float> critical_path_cost_map =
+  std::map<Node, float> critical_path_cost_map =
       get_weighted_longest_path_lengths_from_root(forest_subgraph, cost_map);
 
   auto get_partition_with_max_up_cost =
       [&](float reference_cost) -> UpDownPartition {
-    std::unordered_set<Node> up =
+    std::set<Node> up =
         set_union(base_up, filter(assignable_nodes, [&](Node const &n) {
                     return critical_path_cost_map.at(n) <= reference_cost;
                   }));
-    std::unordered_set<Node> down =
+    std::set<Node> down =
         set_difference(set_union(base_down, assignable_nodes), up);
     return UpDownPartition{up, down};
   };
@@ -134,15 +134,14 @@ static UpDownPartition
     return true;
   };
 
-  std::unordered_set<UpDownPartition> partitions =
+  std::set<UpDownPartition> partitions =
       transform(assignable_nodes, [&](Node const &n) {
         return get_partition_with_max_up_cost(critical_path_cost_map.at(n));
       });
   partitions.insert(
       UpDownPartition{base_up, set_union(base_down, assignable_nodes)});
 
-  std::unordered_set<UpDownPartition> valid_partitions =
-      filter(partitions, is_valid);
+  std::set<UpDownPartition> valid_partitions = filter(partitions, is_valid);
   ASSERT(!valid_partitions.empty());
 
   auto partition_cost = [&](UpDownPartition const &p) {
@@ -155,12 +154,12 @@ static UpDownPartition
   return argmin(valid_partitions, partition_cost);
 }
 
-static std::unordered_set<DirectedEdge> edges_to_remove_flexible(
-    DiGraph const &sp,
-    std::unordered_set<Node> const &up,
-    std::unordered_set<Node> const &down,
-    std::unordered_map<Node, NodeRole> const &node_roles) {
-  std::unordered_set<DirectedEdge> to_remove;
+static std::set<DirectedEdge>
+    edges_to_remove_flexible(DiGraph const &sp,
+                             std::set<Node> const &up,
+                             std::set<Node> const &down,
+                             std::map<Node, NodeRole> const &node_roles) {
+  std::set<DirectedEdge> to_remove;
 
   // from up to down
   for (Node const &u : up) {
@@ -173,8 +172,8 @@ static std::unordered_set<DirectedEdge> edges_to_remove_flexible(
 
   for (Node const &node : get_nodes(sp)) {
     if (node_roles.at(node) == NodeRole::SYNC) {
-      std::unordered_set<Node> preds = get_predecessors(sp, node);
-      std::unordered_set<Node> succs = get_successors(sp, node);
+      std::set<Node> preds = get_predecessors(sp, node);
+      std::set<Node> succs = get_successors(sp, node);
       if (is_subseteq_of(preds, up) && is_subseteq_of(succs, down)) {
         to_remove = set_union(to_remove, get_incoming_edges(sp, node));
         to_remove = set_union(to_remove, get_outgoing_edges(sp, node));
@@ -185,12 +184,12 @@ static std::unordered_set<DirectedEdge> edges_to_remove_flexible(
   return to_remove;
 }
 
-static std::unordered_set<DirectedEdge>
+static std::set<DirectedEdge>
     edges_to_add_flexible(DiGraph const &sp,
                           UpDownPartition const &partition,
                           Node const &sync_node) {
-  std::unordered_set<Node> up_frontier = get_up_frontier(sp, partition);
-  std::unordered_set<Node> down_frontier = get_down_frontier(sp, partition);
+  std::set<Node> up_frontier = get_up_frontier(sp, partition);
+  std::set<Node> down_frontier = get_down_frontier(sp, partition);
 
   return set_union(transform(up_frontier,
                              [&](Node const &u) {
@@ -202,39 +201,37 @@ static std::unordered_set<DirectedEdge>
 }
 
 static Node add_sync_node(DiGraph &sp,
-                          std::unordered_map<Node, NodeRole> &node_roles,
-                          std::unordered_map<Node, float> &cost_map) {
+                          std::map<Node, NodeRole> &node_roles,
+                          std::map<Node, float> &cost_map) {
   Node sync_node = sp.add_node();
   node_roles[sync_node] = NodeRole::SYNC;
   cost_map[sync_node] = 0.0f;
   return sync_node;
 }
 
-static std::unordered_set<Node>
-    get_next_nodes(DiGraph const &sp,
-                   DiGraph const &g,
-                   std::unordered_map<Node, float> const &cost_map) {
-  std::unordered_map<Node, float> sp_longest_paths =
+static std::set<Node> get_next_nodes(DiGraph const &sp,
+                                     DiGraph const &g,
+                                     std::map<Node, float> const &cost_map) {
+  std::map<Node, float> sp_longest_paths =
       get_weighted_longest_path_lengths_from_root(sp, cost_map);
 
-  std::unordered_set<Node> sp_nodes = get_nodes(sp);
-  std::unordered_set<Node> g_nodes = get_nodes(g);
+  std::set<Node> sp_nodes = get_nodes(sp);
+  std::set<Node> g_nodes = get_nodes(g);
 
   // candidate nodes: not in sp but all predecessors in sp
-  std::unordered_set<Node> candidate_nodes =
-      filter(g_nodes, [&](Node const &node) {
-        if (contains(sp_nodes, node)) {
-          return false;
-        }
-        std::unordered_set<Node> preds = get_predecessors(g, node);
-        return is_subseteq_of(preds, sp_nodes);
-      });
+  std::set<Node> candidate_nodes = filter(g_nodes, [&](Node const &node) {
+    if (contains(sp_nodes, node)) {
+      return false;
+    }
+    std::set<Node> preds = get_predecessors(g, node);
+    return is_subseteq_of(preds, sp_nodes);
+  });
 
   ASSERT(!candidate_nodes.empty());
 
-  std::unordered_map<Node, float> critical_path_costs =
+  std::map<Node, float> critical_path_costs =
       generate_map(candidate_nodes, [&](Node const &node) {
-        std::unordered_set<Node> preds = get_predecessors(g, node);
+        std::set<Node> preds = get_predecessors(g, node);
         float max_parent_cost = maximum(transform(preds, [&](Node const &pred) {
           return sp_longest_paths.at(pred);
         }));
@@ -245,15 +242,15 @@ static std::unordered_set<Node>
     return std::make_pair(critical_path_costs.at(n), n.raw_uid);
   });
 
-  std::unordered_set<Node> ref_preds = get_predecessors(g, ref_node);
+  std::set<Node> ref_preds = get_predecessors(g, ref_node);
   return filter(candidate_nodes, [&](Node const &node) {
     return get_predecessors(g, node) == ref_preds;
   });
 }
 
 static bool cost_map_is_valid(DiGraphView const &g,
-                              std::unordered_map<Node, float> const &cost_map) {
-  bool has_correct_nodes = get_nodes(g) == keys(cost_map);
+                              std::map<Node, float> const &cost_map) {
+  bool has_correct_nodes = (get_nodes(g) == keys(cost_map));
   bool has_nonnegative_costs =
       all_of(values(cost_map), [&](float const &cost) { return cost >= 0.0f; });
   return has_correct_nodes && has_nonnegative_costs;
@@ -261,19 +258,18 @@ static bool cost_map_is_valid(DiGraphView const &g,
 
 SeriesParallelDecomposition
     flexible_sync_unchecked(DiGraphView const &g,
-                            std::unordered_map<Node, float> cost_map) {
+                            std::map<Node, float> cost_map) {
   DiGraph g_reduced =
       materialize_digraph_view<AdjacencyDiGraph>(transitive_reduction(g));
 
-  std::unordered_map<Node, NodeRole> node_roles =
-      get_initial_node_role_map(g_reduced);
+  std::map<Node, NodeRole> node_roles = get_initial_node_role_map(g_reduced);
 
   DiGraph sp = DiGraph::create<AdjacencyDiGraph>();
   Node root = get_only(get_initial_nodes(g_reduced));
   sp.add_node_unsafe(root);
 
   while (!is_subseteq_of(get_nodes(g_reduced), get_nodes(sp))) {
-    std::unordered_set<Node> nodes = get_next_nodes(sp, g_reduced, cost_map);
+    std::set<Node> nodes = get_next_nodes(sp, g_reduced, cost_map);
 
     for (Node const &node : nodes) {
       // here we add node unsafe so that we don't have to keep around a mapping
@@ -288,9 +284,9 @@ SeriesParallelDecomposition
     // added edges
     sp = transitive_reduction(sp);
 
-    std::unordered_set<Node> component = get_component(sp, nodes);
+    std::set<Node> component = get_component(sp, nodes);
     Node handle = get_only(get_lowest_common_ancestors(sp, component).value());
-    std::unordered_set<Node> forest =
+    std::set<Node> forest =
         get_forest_flexible(sp, handle, component, node_roles);
 
     UpDownPartition partition =
@@ -316,7 +312,7 @@ SeriesParallelDecomposition
 
 SeriesParallelDecomposition
     flexible_sp_ization(DiGraphView const &g,
-                        std::unordered_map<Node, float> const &cost_map) {
+                        std::map<Node, float> const &cost_map) {
   ASSERT(is_2_terminal_dag(g));
   ASSERT(is_acyclic(g));
   ASSERT(cost_map_is_valid(g, cost_map));

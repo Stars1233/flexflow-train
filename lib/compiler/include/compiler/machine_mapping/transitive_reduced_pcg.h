@@ -18,11 +18,11 @@ TransitiveReducedKwargDataflowGraphView<TensorSlotName>
 TransitiveReducedPCG
     pcg_get_transitive_reduction(ParallelComputationGraph const &);
 
-std::unordered_set<ParallelComputationGraphEdge>
+std::set<ParallelComputationGraphEdge>
     pcg_get_transitive_reduced_edges_across_split(TransitiveReducedPCG const &,
                                                   PCGBinarySeriesSplit const &);
 
-std::unordered_set<parallel_tensor_guid_t>
+std::set<parallel_tensor_guid_t>
     pcg_get_transitive_reduced_tensors_across_split(
         TransitiveReducedPCG const &, PCGBinarySeriesSplit const &);
 

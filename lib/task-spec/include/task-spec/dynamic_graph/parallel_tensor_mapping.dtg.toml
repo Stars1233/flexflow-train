@@ -3,6 +3,7 @@ name = "ParallelTensorMapping"
 type = "struct"
 features = [
   "eq",
+  "ord",
   "hash",
   "json",
   "fmt",

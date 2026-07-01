@@ -13,7 +13,7 @@ includes = [
 ]
 
 src_includes = [
-  "utils/fmt/unordered_map.h",
+  "utils/fmt/map.h",
 ]
 
 [[fields]]
@@ -22,4 +22,4 @@ type = "::FlexFlow::layer_guid_t"
 
 [[fields]]
 name = "outputs"
-type = "std::unordered_map<::FlexFlow::TensorSlotName, ::FlexFlow::tensor_guid_t>"
+type = "std::map<::FlexFlow::TensorSlotName, ::FlexFlow::tensor_guid_t>"

@@ -6,7 +6,7 @@
 
 namespace FlexFlow {
 
-std::unordered_set<DataflowEdge> get_transitive_reduced_edges_across_split(
+std::set<DataflowEdge> get_transitive_reduced_edges_across_split(
     TransitiveReducedDataflowGraphView const &, BinarySeriesSplit const &);
 
 } // namespace FlexFlow

@@ -173,7 +173,7 @@ TEST_SUITE(FF_TEST_SUITE) {
               {b.pattern_node_named("mm"), mm_match_layer},
               {b.pattern_node_named("relu"), relu_match_layer},
           },
-          std::unordered_map<PatternInput, open_parallel_tensor_guid_t>{
+          std::map<PatternInput, open_parallel_tensor_guid_t>{
               {
                   b.pattern_input_named("input"),
                   mm_match_layer_input_activations,

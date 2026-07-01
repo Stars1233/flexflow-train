@@ -13,12 +13,11 @@ std::optional<MachineMapping>
     get_random_mapping(ParallelComputationGraph const &pcg,
                        MachineComputeSpecification const &resources) {
   std::vector<parallel_layer_guid_t> layers = topological_ordering(pcg);
-  std::unordered_map<parallel_layer_guid_t, MachineView> machine_views;
+  std::map<parallel_layer_guid_t, MachineView> machine_views;
   for (parallel_layer_guid_t layer : layers) {
     OperatorTaskSpace task = get_operator_task_space(pcg, layer);
-    std::unordered_set<MachineView> allowed_machine_views =
-        get_allowed_machine_views(compute_slice_from_specification(resources),
-                                  task);
+    std::set<MachineView> allowed_machine_views = get_allowed_machine_views(
+        compute_slice_from_specification(resources), task);
     if (allowed_machine_views.empty()) {
       return std::nullopt;
     }

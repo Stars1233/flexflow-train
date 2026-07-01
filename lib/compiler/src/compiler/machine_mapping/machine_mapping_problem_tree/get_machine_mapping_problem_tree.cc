@@ -18,13 +18,12 @@ bool is_valid_machine_mapping_problem_tree(
         AbstractedTensorSetMovement tensor_movement =
             series_split.tensor_set_movement;
 
-        auto contains_paths =
-            [](MachineMappingProblemTree const &t,
-               std::unordered_set<BinaryTreePath> const &paths) {
-              return all_of(paths, [&](BinaryTreePath const &p) {
-                return mm_problem_tree_get_subtree_at_path(t, p).has_value();
-              });
-            };
+        auto contains_paths = [](MachineMappingProblemTree const &t,
+                                 std::set<BinaryTreePath> const &paths) {
+          return all_of(paths, [&](BinaryTreePath const &p) {
+            return mm_problem_tree_get_subtree_at_path(t, p).has_value();
+          });
+        };
 
         return contains_paths(series_split.get_left_child(),
                               get_src_layers(tensor_movement)) &&

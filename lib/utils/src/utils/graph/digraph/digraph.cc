@@ -22,12 +22,11 @@ void DiGraph::remove_edge(DirectedEdge const &e) {
   return this->get_ptr().remove_edge(e);
 }
 
-std::unordered_set<Node> DiGraph::query_nodes(NodeQuery const &q) const {
+std::set<Node> DiGraph::query_nodes(NodeQuery const &q) const {
   return this->get_ptr().query_nodes(q);
 }
 
-std::unordered_set<DirectedEdge>
-    DiGraph::query_edges(DirectedEdgeQuery const &q) const {
+std::set<DirectedEdge> DiGraph::query_edges(DirectedEdgeQuery const &q) const {
   return this->get_ptr().query_edges(q);
 }
 

@@ -23,7 +23,7 @@ TEST_SUITE(FF_TEST_SUITE) {
 
       KwargNodeAddedResult<int> n1_added = g.add_node(
           /*inputs=*/
-          std::unordered_map<int, OpenKwargDataflowValue<std::string, int>>{
+          std::map<int, OpenKwargDataflowValue<std::string, int>>{
               {
                   1,
                   OpenKwargDataflowValue<std::string, int>{input1},
@@ -37,7 +37,7 @@ TEST_SUITE(FF_TEST_SUITE) {
                   OpenKwargDataflowValue<std::string, int>{input1},
               },
           },
-          /*outputs=*/std::unordered_set<int>{
+          /*outputs=*/std::set<int>{
               5,
           });
 
@@ -46,7 +46,7 @@ TEST_SUITE(FF_TEST_SUITE) {
 
       KwargNodeAddedResult<int> n2_added = g.add_node(
           /*inputs=*/
-          std::unordered_map<int, OpenKwargDataflowValue<std::string, int>>{
+          std::map<int, OpenKwargDataflowValue<std::string, int>>{
               {
                   4,
                   OpenKwargDataflowValue<std::string, int>{input2},
@@ -56,7 +56,7 @@ TEST_SUITE(FF_TEST_SUITE) {
                   OpenKwargDataflowValue<std::string, int>{n1_output},
               },
           },
-          /*outputs=*/std::unordered_set<int>{
+          /*outputs=*/std::set<int>{
               5,
           });
 
@@ -80,7 +80,7 @@ TEST_SUITE(FF_TEST_SUITE) {
 
       KwargNodeAddedResult<std::optional<int>> input1_added = g.add_node(
           /*inputs=*/{},
-          /*outputs=*/std::unordered_set<std::optional<int>>{
+          /*outputs=*/std::set<std::optional<int>>{
               std::nullopt,
           });
 
@@ -89,7 +89,7 @@ TEST_SUITE(FF_TEST_SUITE) {
 
       KwargNodeAddedResult<std::optional<int>> input2_added = g.add_node(
           /*inputs=*/{},
-          /*outputs=*/std::unordered_set<std::optional<int>>{
+          /*outputs=*/std::set<std::optional<int>>{
               std::nullopt,
           });
 
@@ -98,8 +98,7 @@ TEST_SUITE(FF_TEST_SUITE) {
 
       KwargNodeAddedResult<std::optional<int>> n1_added = g.add_node(
           /*inputs=*/
-          std::unordered_map<std::optional<int>,
-                             KwargDataflowOutput<std::optional<int>>>{
+          std::map<std::optional<int>, KwargDataflowOutput<std::optional<int>>>{
               {
                   1,
                   input1,
@@ -113,7 +112,7 @@ TEST_SUITE(FF_TEST_SUITE) {
                   input1,
               },
           },
-          /*outputs=*/std::unordered_set<std::optional<int>>{
+          /*outputs=*/std::set<std::optional<int>>{
               5,
           });
 
@@ -122,8 +121,7 @@ TEST_SUITE(FF_TEST_SUITE) {
 
       KwargNodeAddedResult<std::optional<int>> n2_added = g.add_node(
           /*inputs=*/
-          std::unordered_map<std::optional<int>,
-                             KwargDataflowOutput<std::optional<int>>>{
+          std::map<std::optional<int>, KwargDataflowOutput<std::optional<int>>>{
               {
                   4,
                   input2,
@@ -133,7 +131,7 @@ TEST_SUITE(FF_TEST_SUITE) {
                   n1_output,
               },
           },
-          /*outputs=*/std::unordered_set<std::optional<int>>{
+          /*outputs=*/std::set<std::optional<int>>{
               5,
           });
 

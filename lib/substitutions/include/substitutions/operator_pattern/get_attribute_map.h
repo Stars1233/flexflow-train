@@ -7,7 +7,7 @@
 
 namespace FlexFlow {
 
-std::unordered_map<OperatorAttributeKey, OperatorAttributeValue>
+std::map<OperatorAttributeKey, OperatorAttributeValue>
     get_attribute_map(PCGOperatorAttrs const &);
 
 } // namespace FlexFlow

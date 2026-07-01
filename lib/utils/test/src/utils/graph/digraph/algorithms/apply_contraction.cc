@@ -35,14 +35,14 @@ TEST_SUITE(FF_TEST_SUITE) {
                                            });
 
     SUBCASE("nodes") {
-      std::unordered_set<Node> result_nodes = get_nodes(result);
-      std::unordered_set<Node> correct_nodes = {n.at(2), n.at(4), n.at(5)};
+      std::set<Node> result_nodes = get_nodes(result);
+      std::set<Node> correct_nodes = {n.at(2), n.at(4), n.at(5)};
       CHECK(result_nodes == correct_nodes);
     }
 
     SUBCASE("edges") {
-      std::unordered_set<DirectedEdge> result_edges = get_edges(result);
-      std::unordered_set<DirectedEdge> correct_edges = {
+      std::set<DirectedEdge> result_edges = get_edges(result);
+      std::set<DirectedEdge> correct_edges = {
           DirectedEdge{n.at(2), n.at(4)},
           DirectedEdge{n.at(2), n.at(2)},
           DirectedEdge{n.at(4), n.at(2)},

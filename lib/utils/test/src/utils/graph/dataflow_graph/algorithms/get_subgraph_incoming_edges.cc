@@ -8,7 +8,7 @@ using namespace ::FlexFlow;
 
 TEST_SUITE(FF_TEST_SUITE) {
   TEST_CASE("get_subgraph_incoming_edges(DataflowGraphView, "
-            "std::unordered_set<Node>") {
+            "std::set<Node>") {
     DataflowGraph g = DataflowGraph::create<UnorderedSetDataflowGraph>();
 
     NodeAddedResult n1_added = g.add_node({}, 1_n);
@@ -27,12 +27,12 @@ TEST_SUITE(FF_TEST_SUITE) {
     Node n4 = n4_added.node;
     DataflowOutput o4 = get_only(n4_added.outputs);
 
-    std::unordered_set<Node> input_node_set = {n2, n3};
+    std::set<Node> input_node_set = {n2, n3};
 
-    std::unordered_set<DataflowEdge> result =
+    std::set<DataflowEdge> result =
         get_subgraph_incoming_edges(g, input_node_set);
 
-    std::unordered_set<DataflowEdge> correct = {
+    std::set<DataflowEdge> correct = {
         DataflowEdge{o1, DataflowInput{n2, 0_n}},
         DataflowEdge{o1, DataflowInput{n3, 0_n}},
         DataflowEdge{o1, DataflowInput{n3, 2_n}},

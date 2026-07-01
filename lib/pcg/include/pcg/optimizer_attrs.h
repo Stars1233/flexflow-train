@@ -9,7 +9,7 @@ namespace FlexFlow {
 
 OptimizerAttrs get_optimizer_attrs_for_next_iter(OptimizerAttrs const &old);
 
-std::unordered_set<OptimizerSlotName>
+std::set<OptimizerSlotName>
     get_slot_names_for_optimizer(OptimizerAttrs const &);
 
 } // namespace FlexFlow

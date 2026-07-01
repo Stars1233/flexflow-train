@@ -5,17 +5,15 @@
 #include "utils/graph/series_parallel/series_parallel_decomposition.dtg.h"
 #include "utils/graph/series_parallel/sp_ization/node_role.dtg.h"
 #include "utils/nonnegative_int/nonnegative_int.h"
-#include <unordered_map>
+#include <map>
 namespace FlexFlow {
 
-DiGraph add_dummy_nodes(DiGraph g,
-                        std::unordered_map<Node, NodeRole> &node_roles);
+DiGraph add_dummy_nodes(DiGraph g, std::map<Node, NodeRole> &node_roles);
 
-std::unordered_set<Node>
-    get_component(DiGraph const &g,
-                  Node const &node,
-                  std::unordered_map<Node, nonnegative_int> const &depth_map,
-                  std::unordered_map<Node, NodeRole> const &node_roles);
+std::set<Node> get_component(DiGraph const &g,
+                             Node const &node,
+                             std::map<Node, nonnegative_int> const &depth_map,
+                             std::map<Node, NodeRole> const &node_roles);
 
 /**
  * \brief See \ref spization-escribano.

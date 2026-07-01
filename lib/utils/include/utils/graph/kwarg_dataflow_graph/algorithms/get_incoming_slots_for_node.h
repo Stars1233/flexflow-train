@@ -7,7 +7,7 @@
 namespace FlexFlow {
 
 template <typename SlotName>
-std::unordered_set<SlotName>
+std::set<SlotName>
     get_incoming_slots_for_node(KwargDataflowGraphView<SlotName> const &g,
                                 Node n) {
   return keys(get_incoming_kwarg_dataflow_edges_for_node(g, n));

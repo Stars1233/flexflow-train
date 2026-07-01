@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <doctest/doctest.h>
 #include <set>
-#include <unordered_set>
 #include <vector>
 
 using namespace FlexFlow;
@@ -27,8 +26,8 @@ TEST_SUITE(FF_TEST_SUITE) {
       }
     }
 
-    SUBCASE("unordered_set") {
-      std::unordered_set<int> s = {1, 2, 3, 4, 5};
+    SUBCASE("set") {
+      std::set<int> s = {1, 2, 3, 4, 5};
 
       SUBCASE("element in container") {
         CHECK_WITHOUT_STRINGIFY(find(s, 3) == std::find(s.begin(), s.end(), 3));

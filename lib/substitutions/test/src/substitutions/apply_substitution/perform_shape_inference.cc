@@ -174,10 +174,9 @@ TEST_SUITE(FF_TEST_SUITE) {
     KwargDataflowOutput<TensorSlotName> o2 =
         require_only_key(n2_added_result.outputs, TensorSlotName::OUTPUT);
 
-    std::unordered_map<KwargDataflowGraphInput<int>, ParallelTensorShape>
-        input_shapes = {
-            {i0, i0_shape},
-        };
+    std::map<KwargDataflowGraphInput<int>, ParallelTensorShape> input_shapes = {
+        {i0, i0_shape},
+    };
 
     LabelledOpenKwargDataflowGraphView<ParallelLayerAttrs,
                                        ParallelTensorShape,

@@ -25,7 +25,7 @@ TEST_SUITE(FF_TEST_SUITE) {
                   DirectedEdge{n.at(4), n.at(1)},
               });
 
-    std::unordered_map<Node, std::optional<Node>> correct = {
+    std::map<Node, std::optional<Node>> correct = {
         {n.at(0), std::nullopt},
         {n.at(1), n.at(0)},
         {n.at(2), n.at(1)},
@@ -34,8 +34,7 @@ TEST_SUITE(FF_TEST_SUITE) {
         {n.at(5), n.at(1)},
     };
 
-    std::unordered_map<Node, std::optional<Node>> result =
-        get_imm_dominators_map(g);
+    std::map<Node, std::optional<Node>> result = get_imm_dominators_map(g);
 
     CHECK(result == correct);
   }

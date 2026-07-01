@@ -18,6 +18,10 @@ includes = [
   "utils/nonnegative_int/nonnegative_int.h",
 ]
 
+src_includes = [
+  "utils/json/optional.h",
+]
+
 [[fields]]
 name = "node"
 type = "::FlexFlow::Node"

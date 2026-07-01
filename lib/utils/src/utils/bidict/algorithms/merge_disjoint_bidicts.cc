@@ -6,6 +6,7 @@ namespace FlexFlow {
 using K = ordered_value_type<0>;
 using V = ordered_value_type<1>;
 
+template bidict<K, V> merge_disjoint_bidicts(std::vector<bidict<K, V>> const &);
 template bidict<K, V> merge_disjoint_bidicts(std::set<bidict<K, V>> const &);
 
 } // namespace FlexFlow

@@ -8,9 +8,9 @@
 
 namespace FlexFlow {
 
-std::unordered_map<TensorSlotName, IncomingTensorRole>
+std::map<TensorSlotName, IncomingTensorRole>
     get_conv2d_incoming_tensor_roles(Conv2DAttrs const &attrs) {
-  std::unordered_map<TensorSlotName, IncomingTensorRole> result = {
+  std::map<TensorSlotName, IncomingTensorRole> result = {
       {TensorSlotName::INPUT, IncomingTensorRole::INPUT},
       {TensorSlotName::FILTER, IncomingTensorRole::WEIGHT},
   };
@@ -89,10 +89,10 @@ TensorShape get_output_shape(Conv2DAttrs const &attrs,
                      input.datatype};
 }
 
-std::unordered_map<TensorSlotName, TensorShape>
+std::map<TensorSlotName, TensorShape>
     get_weight_shapes(Conv2DAttrs const &attrs,
                       TensorShape const &input_shape) {
-  std::unordered_map<TensorSlotName, TensorShape> weight_shapes = {
+  std::map<TensorSlotName, TensorShape> weight_shapes = {
       {
           TensorSlotName::FILTER,
           get_kernel_shape(attrs, input_shape),
@@ -180,10 +180,10 @@ ParallelTensorShape get_output_shape(Conv2DAttrs const &attrs,
       unpar, sum_degree, discard_copy_degree, shard_degrees);
 }
 
-std::unordered_map<TensorSlotName, ParallelTensorShape>
+std::map<TensorSlotName, ParallelTensorShape>
     get_weight_shapes(Conv2DAttrs const &attrs,
                       ParallelTensorShape const &input_shape) {
-  std::unordered_map<TensorSlotName, ParallelTensorShape> weight_shapes = {
+  std::map<TensorSlotName, ParallelTensorShape> weight_shapes = {
       {
           TensorSlotName::FILTER,
           get_kernel_shape(attrs, input_shape),
@@ -206,7 +206,7 @@ std::unordered_map<TensorSlotName, ParallelTensorShape>
  * see
  * https://github.com/pytorch/pytorch/blob/1eba9b3aa3c43f86f4a2c807ac8e12c4a7767340/torch/nn/modules/conv.py#L178-L187
  */
-std::unordered_map<TensorSlotName, InitializerAttrs>
+std::map<TensorSlotName, InitializerAttrs>
     get_initializers(Conv2DAttrs const &attrs,
                      TensorShape const &input_shape,
                      std::optional<InitializerAttrs> maybe_kernel_initializer,

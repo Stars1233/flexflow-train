@@ -8,36 +8,38 @@
 #include "utils/full_binary_tree/binary_tree_path.h"
 #include "utils/full_binary_tree/full_binary_tree_visitor.dtg.h"
 #include "utils/full_binary_tree/visit.h"
-#include <unordered_set>
+#include <set>
 
 namespace FlexFlow {
 
 template <typename Tree, typename Parent, typename Leaf>
-std::unordered_map<BinaryTreePath, Leaf> get_path_to_leaf_map(
+std::map<BinaryTreePath, Leaf> get_path_to_leaf_map(
     Tree const &tree,
     FullBinaryTreeImplementation<Tree, Parent, Leaf> const &impl) {
 
-  auto visitor = FullBinaryTreeVisitor<std::unordered_map<BinaryTreePath, Leaf>,
-                                       Tree,
-                                       Parent,
-                                       Leaf>{
-      [&](Parent const &parent) -> std::unordered_map<BinaryTreePath, Leaf> {
-        std::unordered_map<BinaryTreePath, Leaf> left_map = map_keys(
-            get_path_to_leaf_map(impl.get_left_child(parent), impl),
-            [](BinaryTreePath const &p) { return nest_inside_left_child(p); });
+  auto visitor =
+      FullBinaryTreeVisitor<std::map<BinaryTreePath, Leaf>, Tree, Parent, Leaf>{
+          [&](Parent const &parent) -> std::map<BinaryTreePath, Leaf> {
+            std::map<BinaryTreePath, Leaf> left_map = map_keys(
+                get_path_to_leaf_map(impl.get_left_child(parent), impl),
+                [](BinaryTreePath const &p) {
+                  return nest_inside_left_child(p);
+                });
 
-        std::unordered_map<BinaryTreePath, Leaf> right_map = map_keys(
-            get_path_to_leaf_map(impl.get_right_child(parent), impl),
-            [](BinaryTreePath const &p) { return nest_inside_right_child(p); });
+            std::map<BinaryTreePath, Leaf> right_map = map_keys(
+                get_path_to_leaf_map(impl.get_right_child(parent), impl),
+                [](BinaryTreePath const &p) {
+                  return nest_inside_right_child(p);
+                });
 
-        return binary_merge_disjoint_maps(left_map, right_map);
-      },
-      [](Leaf const &leaf) -> std::unordered_map<BinaryTreePath, Leaf> {
-        return std::unordered_map<BinaryTreePath, Leaf>{
-            {binary_tree_root_path(), leaf},
-        };
-      },
-  };
+            return binary_merge_disjoint_maps(left_map, right_map);
+          },
+          [](Leaf const &leaf) -> std::map<BinaryTreePath, Leaf> {
+            return std::map<BinaryTreePath, Leaf>{
+                {binary_tree_root_path(), leaf},
+            };
+          },
+      };
 
   return visit(tree, impl, visitor);
 }

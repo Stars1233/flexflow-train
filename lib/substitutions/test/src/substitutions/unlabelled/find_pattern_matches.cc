@@ -136,8 +136,7 @@ TEST_SUITE(FF_TEST_SUITE) {
             bidict<PatternInput,
                    OpenKwargDataflowValue<int, TensorSlotName>>{}};
 
-    std::unordered_map<TensorSlotName,
-                       OpenKwargDataflowEdge<int, TensorSlotName>>
+    std::map<TensorSlotName, OpenKwargDataflowEdge<int, TensorSlotName>>
         n1_incoming = {
             {
                 TensorSlotName::INPUT,
@@ -152,31 +151,26 @@ TEST_SUITE(FF_TEST_SUITE) {
 
     SUBCASE("get_incoming_edges") {
       SUBCASE("n0") {
-        std::unordered_map<TensorSlotName,
-                           OpenKwargDataflowEdge<int, TensorSlotName>>
+        std::map<TensorSlotName, OpenKwargDataflowEdge<int, TensorSlotName>>
             result = get_incoming_open_kwarg_dataflow_edges_for_node(graph, n0);
-        std::unordered_map<TensorSlotName,
-                           OpenKwargDataflowEdge<int, TensorSlotName>>
+        std::map<TensorSlotName, OpenKwargDataflowEdge<int, TensorSlotName>>
             correct = {};
         CHECK(result == correct);
       }
 
       SUBCASE("n1") {
-        std::unordered_map<TensorSlotName,
-                           OpenKwargDataflowEdge<int, TensorSlotName>>
+        std::map<TensorSlotName, OpenKwargDataflowEdge<int, TensorSlotName>>
             result = get_incoming_open_kwarg_dataflow_edges_for_node(graph, n1);
-        std::unordered_map<TensorSlotName,
-                           OpenKwargDataflowEdge<int, TensorSlotName>>
+        std::map<TensorSlotName, OpenKwargDataflowEdge<int, TensorSlotName>>
             correct = n1_incoming;
         CHECK(result == correct);
       }
     }
 
     SUBCASE("get_open_kwarg_dataflow_subgraph_inputs") {
-      std::unordered_set<OpenKwargDataflowValue<int, TensorSlotName>> result =
+      std::set<OpenKwargDataflowValue<int, TensorSlotName>> result =
           get_open_kwarg_dataflow_subgraph_inputs(graph, {n0, n1});
-      std::unordered_set<OpenKwargDataflowValue<int, TensorSlotName>> correct =
-          {};
+      std::set<OpenKwargDataflowValue<int, TensorSlotName>> correct = {};
       CHECK(result == correct);
     }
 
@@ -188,20 +182,19 @@ TEST_SUITE(FF_TEST_SUITE) {
               .graph;
 
       SUBCASE("nodes") {
-        std::unordered_set<Node> result = get_nodes(g);
-        std::unordered_set<Node> correct = {n0, n1};
+        std::set<Node> result = get_nodes(g);
+        std::set<Node> correct = {n0, n1};
         CHECK(result == correct);
       }
 
       SUBCASE("inputs") {
-        std::unordered_set<KwargDataflowGraphInput<int>> result =
-            g.get_inputs();
-        std::unordered_set<KwargDataflowGraphInput<int>> correct = {};
+        std::set<KwargDataflowGraphInput<int>> result = g.get_inputs();
+        std::set<KwargDataflowGraphInput<int>> correct = {};
         CHECK(result == correct);
       }
 
       SUBCASE("get_all_open_kwarg_dataflow_values") {
-        std::unordered_set<OpenKwargDataflowValue<int, TensorSlotName>> values =
+        std::set<OpenKwargDataflowValue<int, TensorSlotName>> values =
             get_all_open_kwarg_dataflow_values(g);
         CHECK(values.size() == 2);
       }
@@ -210,8 +203,8 @@ TEST_SUITE(FF_TEST_SUITE) {
     SUBCASE("subgraph_matched") {
       OpenKwargDataflowGraphView<int, TensorSlotName> result =
           subgraph_matched(graph, match).graph;
-      std::unordered_set<Node> result_nodes = get_nodes(result);
-      std::unordered_set<Node> correct_nodes = {n0, n1};
+      std::set<Node> result_nodes = get_nodes(result);
+      std::set<Node> correct_nodes = {n0, n1};
       CHECK(result_nodes == correct_nodes);
     }
 

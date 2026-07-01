@@ -1,7 +1,7 @@
 #include "utils/graph/digraph/algorithms/complete_bipartite_composite/complete_bipartite_composite_decomposition.h"
 #include "utils/fmt/optional.h"
-#include "utils/fmt/unordered_set.h"
-#include "utils/hash/unordered_set.h"
+#include "utils/fmt/set.h"
+#include "utils/hash/set.h"
 #include <doctest/doctest.h>
 
 using namespace ::FlexFlow;
@@ -48,18 +48,14 @@ TEST_SUITE(FF_TEST_SUITE) {
     }
 
     SUBCASE("get_head_subcomponents") {
-      std::unordered_set<std::unordered_set<Node>> result =
-          get_head_subcomponents(cbc);
-      std::unordered_set<std::unordered_set<Node>> correct = {bc1.head_nodes,
-                                                              bc2.head_nodes};
+      std::set<std::set<Node>> result = get_head_subcomponents(cbc);
+      std::set<std::set<Node>> correct = {bc1.head_nodes, bc2.head_nodes};
       CHECK(result == correct);
     }
 
     SUBCASE("get_tail_subcomponents") {
-      std::unordered_set<std::unordered_set<Node>> result =
-          get_tail_subcomponents(cbc);
-      std::unordered_set<std::unordered_set<Node>> correct = {bc1.tail_nodes,
-                                                              bc2.tail_nodes};
+      std::set<std::set<Node>> result = get_tail_subcomponents(cbc);
+      std::set<std::set<Node>> correct = {bc1.tail_nodes, bc2.tail_nodes};
       CHECK(result == correct);
     }
   }

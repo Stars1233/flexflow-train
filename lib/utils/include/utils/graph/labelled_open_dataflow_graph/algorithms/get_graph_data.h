@@ -13,14 +13,14 @@ template <typename NodeLabel, typename ValueLabel>
 LabelledOpenDataflowGraphData<NodeLabel, ValueLabel> get_graph_data(
     LabelledOpenDataflowGraphView<NodeLabel, ValueLabel> const &g) {
 
-  std::unordered_map<Node, NodeLabel> node_data =
+  std::map<Node, NodeLabel> node_data =
       generate_map(get_nodes(g), [&](Node const &n) { return g.at(n); });
 
-  std::unordered_set<OpenDataflowEdge> edges = get_edges(g);
+  std::set<OpenDataflowEdge> edges = get_edges(g);
 
-  std::unordered_set<DataflowGraphInput> inputs = g.get_inputs();
+  std::set<DataflowGraphInput> inputs = g.get_inputs();
 
-  std::unordered_map<OpenDataflowValue, ValueLabel> value_data =
+  std::map<OpenDataflowValue, ValueLabel> value_data =
       generate_map(get_open_dataflow_values(g),
                    [&](OpenDataflowValue const &v) { return g.at(v); });
 

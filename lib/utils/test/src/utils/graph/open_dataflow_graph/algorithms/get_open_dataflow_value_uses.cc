@@ -27,13 +27,13 @@ TEST_SUITE(FF_TEST_SUITE) {
           1_n);
       Node n1 = n1_added.node;
 
-      std::unordered_set<DataflowInput> correct = {
+      std::set<DataflowInput> correct = {
           DataflowInput{n0, 0_n},
           DataflowInput{n0, 2_n},
           DataflowInput{n1, 2_n},
       };
 
-      std::unordered_set<DataflowInput> result =
+      std::set<DataflowInput> result =
           get_open_dataflow_value_uses(g, OpenDataflowValue{i0});
 
       CHECK(result == correct);
@@ -60,12 +60,12 @@ TEST_SUITE(FF_TEST_SUITE) {
           g.add_node({OpenDataflowValue{o0_1}, OpenDataflowValue{i0}}, 1_n);
       Node n2 = n2_added.node;
 
-      std::unordered_set<DataflowInput> correct = {
+      std::set<DataflowInput> correct = {
           DataflowInput{n1, 1_n},
           DataflowInput{n2, 0_n},
       };
 
-      std::unordered_set<DataflowInput> result =
+      std::set<DataflowInput> result =
           get_open_dataflow_value_uses(g, OpenDataflowValue{o0_1});
 
       CHECK(result == correct);

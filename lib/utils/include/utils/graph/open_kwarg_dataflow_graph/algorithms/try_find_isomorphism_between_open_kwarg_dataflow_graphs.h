@@ -12,9 +12,8 @@ std::optional<OpenKwargDataflowGraphIsomorphism<GraphInputName>>
     try_find_isomorphism_between_open_kwarg_dataflow_graphs(
         OpenKwargDataflowGraphView<GraphInputName, SlotName> const &src,
         OpenKwargDataflowGraphView<GraphInputName, SlotName> const &dst) {
-  std::unordered_set<OpenKwargDataflowGraphIsomorphism<GraphInputName>>
-      isomorphisms =
-          find_isomorphisms_between_open_kwarg_dataflow_graphs(src, dst);
+  std::set<OpenKwargDataflowGraphIsomorphism<GraphInputName>> isomorphisms =
+      find_isomorphisms_between_open_kwarg_dataflow_graphs(src, dst);
 
   return try_get_one_of(isomorphisms);
 }

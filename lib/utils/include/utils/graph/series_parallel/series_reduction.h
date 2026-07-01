@@ -28,7 +28,7 @@ std::optional<SeriesReduction> find_series_reduction(MultiDiGraphView const &);
  * We have that [(A,B), (B,D), (D,E)] and [(A,C), (C,E)] both constitute
  * `ExtendedSeriesReduction`.
  */
-std::unordered_set<ExtendedSeriesReduction>
+std::set<ExtendedSeriesReduction>
     find_all_extended_series_reductions(MultiDiGraphView const &g);
 
 MultiDiEdge apply_series_reduction(MultiDiGraph &, SeriesReduction const &);

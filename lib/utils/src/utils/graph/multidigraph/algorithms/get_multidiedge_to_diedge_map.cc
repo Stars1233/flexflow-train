@@ -5,7 +5,7 @@
 
 namespace FlexFlow {
 
-std::unordered_map<MultiDiEdge, DirectedEdge>
+std::map<MultiDiEdge, DirectedEdge>
     get_multidiedge_to_diedge_map(MultiDiGraphView const &g) {
   return generate_map(get_edges(g), [&](MultiDiEdge const &e) {
     return get_directed_edge(g, e);

@@ -32,9 +32,9 @@ namespace FlexFlow {
  * In a Directed Acyclic Graph, a set of nodes can have no LCA, a unique node as
  * LCA, or a set of nodes as LCA.
  */
-std::optional<std::unordered_set<Node>>
+std::optional<std::set<Node>>
     get_lowest_common_ancestors(DiGraphView const &g,
-                                std::unordered_set<Node> const &nodes);
+                                std::set<Node> const &nodes);
 
 } // namespace FlexFlow
 

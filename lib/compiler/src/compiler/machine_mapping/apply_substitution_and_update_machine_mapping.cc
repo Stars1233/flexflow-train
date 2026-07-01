@@ -36,18 +36,17 @@ SearchResult apply_substitution_and_update_machine_mapping(
       apply_substitution_from_output_result(
           substitution_output_result, spcg, sub, match);
 
-  std::unordered_map<parallel_layer_guid_t, ParallelLayerAttrs> post_node_data =
+  std::map<parallel_layer_guid_t, ParallelLayerAttrs> post_node_data =
       get_sub_pcg_data(post_substitution_graph).node_data;
 
-  std::unordered_set<parallel_layer_guid_t>
-      substitution_output_parallel_layers =
-          get_parallel_layers(substitution_output_result.first);
+  std::set<parallel_layer_guid_t> substitution_output_parallel_layers =
+      spcg_get_parallel_layers(substitution_output_result.first);
 
-  std::unordered_map<parallel_layer_guid_t, MachineView> machine_views =
+  std::map<parallel_layer_guid_t, MachineView> machine_views =
       mapped_pcg.machine_mapping.machine_views;
 
-  std::unordered_set<parallel_layer_guid_t> matched_nodes =
-      unordered_set_of(values(match.node_assignment));
+  std::set<parallel_layer_guid_t> matched_nodes =
+      set_of(values(match.node_assignment));
 
   std::vector<MachineView> substituted_machine_views = vector_of(
       transform(matched_nodes, [&](parallel_layer_guid_t const &node) {
@@ -61,12 +60,11 @@ SearchResult apply_substitution_and_update_machine_mapping(
 
   ASSERT(is_subseteq_of(keys(post_node_data), keys(machine_views)));
 
-  std::unordered_map<parallel_layer_guid_t, MachineView>
-      post_node_machine_views =
-          filter(machine_views,
-                 [&](std::pair<parallel_layer_guid_t, MachineView> const &p) {
-                   return post_node_data.count(p.first);
-                 });
+  std::map<parallel_layer_guid_t, MachineView> post_node_machine_views =
+      filter(machine_views,
+             [&](std::pair<parallel_layer_guid_t, MachineView> const &p) {
+               return post_node_data.count(p.first);
+             });
 
   ASSERT(keys(post_node_data) == keys(post_node_machine_views));
 

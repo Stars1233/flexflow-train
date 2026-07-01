@@ -9,13 +9,13 @@
 namespace FlexFlow {
 
 template <typename GraphInputName, typename SlotName>
-std::unordered_set<OpenKwargDataflowValue<GraphInputName, SlotName>>
+std::set<OpenKwargDataflowValue<GraphInputName, SlotName>>
     get_all_open_kwarg_dataflow_values(
         OpenKwargDataflowGraphView<GraphInputName, SlotName> const &g) {
-  std::unordered_set<KwargDataflowOutput<SlotName>> internal_values =
+  std::set<KwargDataflowOutput<SlotName>> internal_values =
       get_all_kwarg_dataflow_outputs(g);
 
-  std::unordered_set<KwargDataflowGraphInput<GraphInputName>> external_values =
+  std::set<KwargDataflowGraphInput<GraphInputName>> external_values =
       get_all_kwarg_dataflow_graph_inputs(g);
 
   return set_union(

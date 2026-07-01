@@ -8,9 +8,9 @@
 
 namespace FlexFlow {
 
-std::unordered_map<TensorSlotName, IncomingTensorRole>
+std::map<TensorSlotName, IncomingTensorRole>
     get_incoming_tensor_roles(ComputationGraphOpAttrs const &);
-std::unordered_map<TensorSlotName, IncomingTensorRole>
+std::map<TensorSlotName, IncomingTensorRole>
     get_incoming_tensor_roles(PCGOperatorAttrs const &);
 
 } // namespace FlexFlow

@@ -19,12 +19,12 @@ public:
                            nonnegative_int num_outputs) override;
   DataflowGraphInput add_input() override;
 
-  std::unordered_set<Node> query_nodes(NodeQuery const &) const override;
-  std::unordered_set<OpenDataflowEdge>
+  std::set<Node> query_nodes(NodeQuery const &) const override;
+  std::set<OpenDataflowEdge>
       query_edges(OpenDataflowEdgeQuery const &) const override;
-  std::unordered_set<DataflowOutput>
+  std::set<DataflowOutput>
       query_outputs(DataflowOutputQuery const &) const override;
-  std::unordered_set<DataflowGraphInput> get_inputs() const override;
+  std::set<DataflowGraphInput> get_inputs() const override;
 
   void add_node_unsafe(Node const &node,
                        std::vector<DataflowOutput> const &inputs,
@@ -39,21 +39,20 @@ private:
                        std::vector<OpenDataflowValue> const &inputs,
                        std::vector<DataflowOutput> const &outputs);
 
-  UnorderedSetDataflowGraph(
-      NodeSource const &node_source,
-      DataflowGraphInputSource const &graph_input_source,
-      std::unordered_set<Node> const &nodes,
-      std::unordered_set<OpenDataflowEdge> const &edges,
-      std::unordered_set<DataflowOutput> const &outputs,
-      std::unordered_set<DataflowGraphInput> const &graph_inputs);
+  UnorderedSetDataflowGraph(NodeSource const &node_source,
+                            DataflowGraphInputSource const &graph_input_source,
+                            std::set<Node> const &nodes,
+                            std::set<OpenDataflowEdge> const &edges,
+                            std::set<DataflowOutput> const &outputs,
+                            std::set<DataflowGraphInput> const &graph_inputs);
 
 private:
   NodeSource node_source;
   DataflowGraphInputSource graph_input_source;
-  std::unordered_set<Node> nodes;
-  std::unordered_set<OpenDataflowEdge> edges;
-  std::unordered_set<DataflowOutput> outputs;
-  std::unordered_set<DataflowGraphInput> graph_inputs;
+  std::set<Node> nodes;
+  std::set<OpenDataflowEdge> edges;
+  std::set<DataflowOutput> outputs;
+  std::set<DataflowGraphInput> graph_inputs;
 };
 CHECK_RC_COPY_VIRTUAL_COMPLIANT(UnorderedSetDataflowGraph);
 

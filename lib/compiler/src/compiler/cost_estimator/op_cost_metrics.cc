@@ -4,7 +4,7 @@
 namespace FlexFlow {
 
 bool is_pareto_optimal_in(OpCostMetrics const &m,
-                          std::unordered_set<OpCostMetrics> const &others) {
+                          std::set<OpCostMetrics> const &others) {
   return all_of(others, [&](OpCostMetrics const &other) {
     return m.forward_runtime <= other.forward_runtime ||
            m.backward_runtime <= other.backward_runtime ||

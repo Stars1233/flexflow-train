@@ -3,26 +3,27 @@ name = "SerializableDynamicNodeInvocation"
 type = "struct"
 features = [
   "eq",
+  "ord",
   "fmt",
   "hash",
   "json",
 ]
 
 includes = [
-  "<unordered_map>",
+  "<map>",
   "task-spec/dynamic_graph/serializable_dynamic_node_attrs.dtg.h",
   "task-spec/dynamic_graph/dynamic_tensor_slot.dtg.h",
   "task-spec/dynamic_graph/serializable_dynamic_value_attrs.dtg.h",
 ]
 
 src_includes = [
-  "utils/hash/unordered_map.h",
-  "utils/fmt/unordered_map.h",
+  "utils/hash/map.h",
+  "utils/fmt/map.h",
 ]
 
 [[fields]]
 name = "inputs"
-type = "std::unordered_map<::FlexFlow::DynamicTensorSlot, ::FlexFlow::SerializableDynamicValueAttrs>"
+type = "std::map<::FlexFlow::DynamicTensorSlot, ::FlexFlow::SerializableDynamicValueAttrs>"
 
 [[fields]]
 name = "node_attrs"
@@ -30,4 +31,4 @@ type = "::FlexFlow::SerializableDynamicNodeAttrs"
 
 [[fields]]
 name = "outputs"
-type = "std::unordered_map<::FlexFlow::DynamicTensorSlot, ::FlexFlow::SerializableDynamicValueAttrs>"
+type = "std::map<::FlexFlow::DynamicTensorSlot, ::FlexFlow::SerializableDynamicValueAttrs>"

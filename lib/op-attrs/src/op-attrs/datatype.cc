@@ -25,7 +25,7 @@ positive_int size_of_datatype(DataType data_type) {
 }
 
 bool can_strictly_promote_datatype_from_to(DataType src, DataType dst) {
-  std::unordered_set<DataType> allowed;
+  std::set<DataType> allowed;
   switch (src) {
     case DataType::BOOL:
       allowed = {DataType::INT32,
@@ -55,7 +55,7 @@ bool can_strictly_promote_datatype_from_to(DataType src, DataType dst) {
 }
 
 bool can_torch_strictly_promote_datatype_from_to(DataType src, DataType dst) {
-  std::unordered_set<DataType> allowed;
+  std::set<DataType> allowed;
   switch (src) {
     case DataType::BOOL:
       allowed = {DataType::INT32,

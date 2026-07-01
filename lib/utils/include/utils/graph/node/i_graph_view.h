@@ -13,7 +13,7 @@ struct IGraphView {
 
   virtual IGraphView *clone() const = 0;
 
-  virtual std::unordered_set<Node> query_nodes(NodeQuery const &) const = 0;
+  virtual std::set<Node> query_nodes(NodeQuery const &) const = 0;
   virtual ~IGraphView(){};
 };
 CHECK_RC_COPY_VIRTUAL_COMPLIANT(IGraphView);

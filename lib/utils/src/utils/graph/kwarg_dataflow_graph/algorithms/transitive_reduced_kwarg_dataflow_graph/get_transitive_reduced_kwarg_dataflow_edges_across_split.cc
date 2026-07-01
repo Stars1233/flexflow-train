@@ -5,7 +5,7 @@ namespace FlexFlow {
 
 using SlotName = ordered_value_type<0>;
 
-template std::unordered_set<KwargDataflowEdge<SlotName>>
+template std::set<KwargDataflowEdge<SlotName>>
     get_transitive_reduced_kwarg_dataflow_edges_across_split(
         TransitiveReducedKwargDataflowGraphView<SlotName> const &,
         BinarySeriesSplit const &);

@@ -5,8 +5,8 @@
 #include "op-attrs/parallel_tensor_shape.h"
 #include "op-attrs/parallel_tensor_space_to_parallel_tensor_space_mapping.dtg.h"
 #include "op-attrs/parallel_tensor_space_to_parallel_tensor_space_mapping.h"
-#include "utils/bidict/algorithms/transform_keys.h"
-#include "utils/bidict/algorithms/transform_values.h"
+#include "utils/bidict/algorithms/bidict_transform_keys.h"
+#include "utils/bidict/algorithms/bidict_transform_values.h"
 
 namespace FlexFlow {
 
@@ -51,8 +51,9 @@ static ParallelTensorSpaceToParallelTensorSpaceMapping
 
   EqProjection<parallel_tensor_dim_idx_t, parallel_tensor_dim_idx_t>
       inp_to_out = EqProjection{
-          transform_keys(
-              transform_values(attrs.permutation.as_bidict(), ff_dim_to_pt_dim),
+          bidict_transform_keys(
+              bidict_transform_values(attrs.permutation.as_bidict(),
+                                      ff_dim_to_pt_dim),
               ff_dim_to_pt_dim),
       };
 

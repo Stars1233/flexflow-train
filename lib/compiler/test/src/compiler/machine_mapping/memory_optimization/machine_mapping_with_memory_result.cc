@@ -1,6 +1,6 @@
 #include "compiler/machine_mapping/memory_optimization/machine_mapping_with_memory_result.h"
 #include "compiler/machine_mapping/machine_view.h"
-#include "test/utils/doctest/fmt/unordered_set.h"
+#include "test/utils/doctest/fmt/set.h"
 #include "test/utils/rapidcheck/some.h"
 #include "utils/nonnegative_int/nonnegative_int.h"
 #include <doctest/doctest.h>
@@ -71,10 +71,10 @@ TEST_SUITE(FF_TEST_SUITE) {
                 mapping3,
             }};
 
-        std::unordered_set<ParetoOptimalMachineMapping> result =
+        std::set<ParetoOptimalMachineMapping> result =
             mapping_result.get_pareto_frontier();
 
-        std::unordered_set<ParetoOptimalMachineMapping> correct = {
+        std::set<ParetoOptimalMachineMapping> correct = {
             mapping1,
             mapping2,
             mapping3,
@@ -87,10 +87,10 @@ TEST_SUITE(FF_TEST_SUITE) {
         MachineMappingWithMemoryResult mapping_result =
             MachineMappingWithMemoryResult{{}};
 
-        std::unordered_set<ParetoOptimalMachineMapping> result =
+        std::set<ParetoOptimalMachineMapping> result =
             mapping_result.get_pareto_frontier();
 
-        std::unordered_set<ParetoOptimalMachineMapping> correct = {};
+        std::set<ParetoOptimalMachineMapping> correct = {};
 
         CHECK(result == correct);
       }

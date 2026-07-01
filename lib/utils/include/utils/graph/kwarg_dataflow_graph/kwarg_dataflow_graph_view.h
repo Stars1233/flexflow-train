@@ -13,16 +13,16 @@ struct KwargDataflowGraphView : virtual public DiGraphView {
   KwargDataflowGraphView(KwargDataflowGraphView const &) = default;
   KwargDataflowGraphView &operator=(KwargDataflowGraphView const &) = default;
 
-  std::unordered_set<Node> query_nodes(NodeQuery const &q) const {
+  std::set<Node> query_nodes(NodeQuery const &q) const {
     return this->get_interface().query_nodes(q);
   }
 
-  std::unordered_set<KwargDataflowEdge<SlotName>>
+  std::set<KwargDataflowEdge<SlotName>>
       query_edges(KwargDataflowEdgeQuery<SlotName> const &q) const {
     return this->get_interface().query_edges(q);
   }
 
-  std::unordered_set<KwargDataflowOutput<SlotName>>
+  std::set<KwargDataflowOutput<SlotName>>
       query_outputs(KwargDataflowOutputQuery<SlotName> const &q) const {
     return this->get_interface().query_outputs(q);
   }

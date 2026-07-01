@@ -1,7 +1,7 @@
 #ifndef _FLEXFLOW_LIB_UTILS_INCLUDE_UTILS_GRAPH_LABELLED_OPEN_KWARG_DATAFLOW_GRAPH_ALGORITHMS_LABELLED_OPEN_KWARG_DATAFLOW_GRAPHS_ARE_ISOMORPHIC_UNDER_H
 #define _FLEXFLOW_LIB_UTILS_INCLUDE_UTILS_GRAPH_LABELLED_OPEN_KWARG_DATAFLOW_GRAPH_ALGORITHMS_LABELLED_OPEN_KWARG_DATAFLOW_GRAPHS_ARE_ISOMORPHIC_UNDER_H
 
-#include "utils/bidict/algorithms/transform_values.h"
+#include "utils/bidict/algorithms/bidict_transform_values.h"
 #include "utils/graph/labelled_open_kwarg_dataflow_graph/algorithms/get_labelled_open_kwarg_dataflow_graph_data.h"
 #include "utils/graph/labelled_open_kwarg_dataflow_graph/algorithms/labelled_open_kwarg_dataflow_graph_data.dtg.h"
 #include "utils/graph/labelled_open_kwarg_dataflow_graph/algorithms/permute_labelled_open_kwarg_dataflow_graph_input_ids.h"
@@ -28,9 +28,9 @@ bool labelled_open_kwarg_dataflow_graphs_are_isomorphic_under(
     OpenKwargDataflowGraphIsomorphism<GraphInputName> const
         &candidate_isomorphism) {
   bidict<NewNode, Node> new_node_to_old_node =
-      transform_values(candidate_isomorphism.node_mapping, [](Node const &n) {
-        return NewNode{n};
-      }).reversed();
+      bidict_transform_values(candidate_isomorphism.node_mapping,
+                              [](Node const &n) { return NewNode{n}; })
+          .reversed();
 
   bidict<KwargDataflowGraphInput<GraphInputName>,
          KwargDataflowGraphInput<GraphInputName>>

@@ -19,17 +19,13 @@ AbstractedTensorSetMovement
     abstracted_tensor_set_movement_from_single_tensor_movement(
         AbstractedSingleTensorMovement const &);
 
-std::unordered_set<BinaryTreePath>
-    get_src_layers(AbstractedTensorSetMovement const &);
-std::unordered_set<BinaryTreePath>
-    get_dst_layers(AbstractedTensorSetMovement const &);
+std::set<BinaryTreePath> get_src_layers(AbstractedTensorSetMovement const &);
+std::set<BinaryTreePath> get_dst_layers(AbstractedTensorSetMovement const &);
 
 TensorSetMovement concretize_abstracted_tensor_set_movement(
     AbstractedTensorSetMovement const &,
-    std::unordered_map<BinaryTreePath, MachineSpaceStencil> const
-        &pre_machine_stencils,
-    std::unordered_map<BinaryTreePath, MachineSpaceStencil> const
-        &post_machine_stencils);
+    std::map<BinaryTreePath, MachineSpaceStencil> const &pre_machine_stencils,
+    std::map<BinaryTreePath, MachineSpaceStencil> const &post_machine_stencils);
 
 } // namespace FlexFlow
 

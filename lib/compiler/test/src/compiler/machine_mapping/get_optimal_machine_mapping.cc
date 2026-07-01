@@ -217,7 +217,7 @@ TEST_SUITE(FF_TEST_SUITE) {
             ASSERT(k == k1);
             ASSERT(resources == four_nodes_resources);
 
-            return std::unordered_set<MachineView>{
+            return std::set<MachineView>{
                 mv_stride_1,
                 mv_stride_2,
             };
@@ -229,7 +229,7 @@ TEST_SUITE(FF_TEST_SUITE) {
                   mk_cost_entry(k1, mv_stride_1, 1),
                   mk_cost_entry(k1, mv_stride_2, 2),
               },
-              std::unordered_map<TensorSetMovement, milliseconds_t>{{}});
+              std::map<TensorSetMovement, milliseconds_t>{{}});
 
       MachineMappingContext context = MachineMappingContext{
           /*cost_estimator=*/runtime_only_cost_estimator,
@@ -314,17 +314,17 @@ TEST_SUITE(FF_TEST_SUITE) {
       auto allowed_machine_views =
           [&](UnmappedRuntimeOnlyOpCostEstimateKey const &k,
               MachineComputeResourceSlice const &resources)
-          -> std::unordered_set<MachineView> {
-        std::unordered_set<MachineView> result;
+          -> std::set<MachineView> {
+        std::set<MachineView> result;
 
         if (resources == four_nodes_resources) {
-          result = std::unordered_set<MachineView>{mv_stride_1, mv_stride_2};
+          result = std::set<MachineView>{mv_stride_1, mv_stride_2};
         } else if (resources == three_nodes_resources) {
-          result = std::unordered_set<MachineView>{mv_stride_1, mv_stride_2};
+          result = std::set<MachineView>{mv_stride_1, mv_stride_2};
         } else if (resources == two_nodes_resources) {
-          result = std::unordered_set<MachineView>{mv_stride_1};
+          result = std::set<MachineView>{mv_stride_1};
         } else {
-          result = std::unordered_set<MachineView>{};
+          result = std::set<MachineView>{};
         }
 
         for (MachineView const &mv : result) {
@@ -343,14 +343,14 @@ TEST_SUITE(FF_TEST_SUITE) {
       SUBCASE("solution requires taking comm cost into account") {
         RuntimeOnlyCostEstimator runtime_only_cost_estimator =
             make_fake_runtime_only_cost_estimator(
-                std::unordered_map<RuntimeOnlyOpCostEstimateKey,
-                                   RuntimeOnlyOpCostMetrics>{{
+                std::map<RuntimeOnlyOpCostEstimateKey,
+                         RuntimeOnlyOpCostMetrics>{{
                     mk_cost_entry(k1, mv_stride_1, 1),
                     mk_cost_entry(k1, mv_stride_2, 3),
                     mk_cost_entry(k2, mv_stride_1, 4),
                     mk_cost_entry(k2, mv_stride_2, 1),
                 }},
-                std::unordered_map<TensorSetMovement, milliseconds_t>{{
+                std::map<TensorSetMovement, milliseconds_t>{{
                     {
                         TensorSetMovement{{}},
                         0.0_ms,
@@ -400,14 +400,14 @@ TEST_SUITE(FF_TEST_SUITE) {
       SUBCASE("solution places operators on different machine views") {
         RuntimeOnlyCostEstimator runtime_only_cost_estimator =
             make_fake_runtime_only_cost_estimator(
-                std::unordered_map<RuntimeOnlyOpCostEstimateKey,
-                                   RuntimeOnlyOpCostMetrics>{{
+                std::map<RuntimeOnlyOpCostEstimateKey,
+                         RuntimeOnlyOpCostMetrics>{{
                     mk_cost_entry(k1, mv_stride_1, 1),
                     mk_cost_entry(k1, mv_stride_2, 3),
                     mk_cost_entry(k2, mv_stride_1, 4),
                     mk_cost_entry(k2, mv_stride_2, 1),
                 }},
-                std::unordered_map<TensorSetMovement, milliseconds_t>{{
+                std::map<TensorSetMovement, milliseconds_t>{{
                     {
                         TensorSetMovement{{}},
                         0.0_ms,
@@ -467,27 +467,27 @@ TEST_SUITE(FF_TEST_SUITE) {
           [&](UnmappedRuntimeOnlyOpCostEstimateKey const &k,
               MachineComputeResourceSlice const &resources) {
             if (resources == four_nodes_resources) {
-              return std::unordered_set<MachineView>{mv_stride_1, mv_stride_2};
+              return std::set<MachineView>{mv_stride_1, mv_stride_2};
             } else if (resources == three_nodes_resources) {
-              return std::unordered_set<MachineView>{mv_stride_1, mv_stride_2};
+              return std::set<MachineView>{mv_stride_1, mv_stride_2};
             } else if (resources == two_nodes_resources) {
-              return std::unordered_set<MachineView>{mv_stride_1};
+              return std::set<MachineView>{mv_stride_1};
             } else {
-              return std::unordered_set<MachineView>{};
+              return std::set<MachineView>{};
             }
           };
 
       SUBCASE("cannot use overlapping machine views in parallel") {
         RuntimeOnlyCostEstimator runtime_only_cost_estimator =
             make_fake_runtime_only_cost_estimator(
-                std::unordered_map<RuntimeOnlyOpCostEstimateKey,
-                                   RuntimeOnlyOpCostMetrics>{{
+                std::map<RuntimeOnlyOpCostEstimateKey,
+                         RuntimeOnlyOpCostMetrics>{{
                     mk_cost_entry(k1, mv_stride_1, 1),
                     mk_cost_entry(k1, mv_stride_2, 3),
                     mk_cost_entry(k2, mv_stride_1, 4),
                     mk_cost_entry(k2, mv_stride_2, 1),
                 }},
-                std::unordered_map<TensorSetMovement, milliseconds_t>{{
+                std::map<TensorSetMovement, milliseconds_t>{{
                     {
                         TensorSetMovement{{}},
                         0.0_ms,
@@ -529,14 +529,14 @@ TEST_SUITE(FF_TEST_SUITE) {
       SUBCASE("solution is running operators in parallel") {
         RuntimeOnlyCostEstimator runtime_only_cost_estimator =
             make_fake_runtime_only_cost_estimator(
-                std::unordered_map<RuntimeOnlyOpCostEstimateKey,
-                                   RuntimeOnlyOpCostMetrics>{{
+                std::map<RuntimeOnlyOpCostEstimateKey,
+                         RuntimeOnlyOpCostMetrics>{{
                     mk_cost_entry(k1, mv_stride_1, 1),
                     mk_cost_entry(k1, mv_stride_2, 3),
                     mk_cost_entry(k2, mv_stride_1, 3),
                     mk_cost_entry(k2, mv_stride_2, 4),
                 }},
-                std::unordered_map<TensorSetMovement, milliseconds_t>{{
+                std::map<TensorSetMovement, milliseconds_t>{{
                     {
                         TensorSetMovement{{}},
                         0.0_ms,
@@ -592,14 +592,14 @@ TEST_SUITE(FF_TEST_SUITE) {
       SUBCASE("solution is running operators in series") {
         RuntimeOnlyCostEstimator runtime_only_cost_estimator =
             make_fake_runtime_only_cost_estimator(
-                std::unordered_map<RuntimeOnlyOpCostEstimateKey,
-                                   RuntimeOnlyOpCostMetrics>{{
+                std::map<RuntimeOnlyOpCostEstimateKey,
+                         RuntimeOnlyOpCostMetrics>{{
                     mk_cost_entry(k1, mv_stride_1, 3),
                     mk_cost_entry(k1, mv_stride_2, 1),
                     mk_cost_entry(k2, mv_stride_1, 4),
                     mk_cost_entry(k2, mv_stride_2, 1),
                 }},
-                std::unordered_map<TensorSetMovement, milliseconds_t>{{
+                std::map<TensorSetMovement, milliseconds_t>{{
                     {
                         TensorSetMovement{{}},
                         0.0_ms,

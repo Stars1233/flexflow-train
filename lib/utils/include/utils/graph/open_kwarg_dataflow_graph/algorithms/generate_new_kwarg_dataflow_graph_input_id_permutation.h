@@ -14,7 +14,7 @@ bidict<KwargDataflowGraphInput<GraphInputName>,
     generate_new_kwarg_dataflow_graph_input_id_permutation(
         OpenKwargDataflowGraphView<GraphInputName, SlotName> const &g,
         std::function<GraphInputName()> const &input_id_source) {
-  std::unordered_set<KwargDataflowGraphInput<GraphInputName>> old_graph_inputs =
+  std::set<KwargDataflowGraphInput<GraphInputName>> old_graph_inputs =
       get_all_kwarg_dataflow_graph_inputs(g);
 
   auto fresh_input_id = [&]() -> GraphInputName {

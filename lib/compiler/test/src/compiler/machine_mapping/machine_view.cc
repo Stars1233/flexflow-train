@@ -4,7 +4,7 @@
 #include "pcg/gpu_id_t.dtg.h"
 #include "test/utils/doctest/fmt/optional.h"
 #include "utils/containers/transform.h"
-#include "utils/fmt/unordered_set.h"
+#include "utils/fmt/set.h"
 #include "utils/fmt/vector.h"
 #include <doctest/doctest.h>
 

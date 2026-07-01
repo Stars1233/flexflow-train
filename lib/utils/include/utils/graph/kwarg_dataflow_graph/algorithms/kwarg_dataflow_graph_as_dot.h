@@ -1,6 +1,7 @@
 #ifndef _FLEXFLOW_LIB_UTILS_INCLUDE_UTILS_GRAPH_KWARG_DATAFLOW_GRAPH_ALGORITHMS_KWARG_DATAFLOW_GRAPH_AS_DOT_H
 #define _FLEXFLOW_LIB_UTILS_INCLUDE_UTILS_GRAPH_KWARG_DATAFLOW_GRAPH_ALGORITHMS_KWARG_DATAFLOW_GRAPH_AS_DOT_H
 
+#include "utils/containers/set_of.h"
 #include "utils/graph/dataflow_graph/algorithms/dataflow_graph_as_dot.h"
 #include "utils/graph/kwarg_dataflow_graph/algorithms/dataflow_graph_from_kwarg_dataflow_graph.h"
 #include "utils/graph/kwarg_dataflow_graph/algorithms/get_incoming_slots_for_node.h"
@@ -16,12 +17,12 @@ std::string kwarg_dataflow_graph_as_dot(
     std::function<nlohmann::json(KwargDataflowOutput<SlotName> const &)> const
         &render_value,
     std::function<nlohmann::json(SlotName const &)> const &render_slot_name,
-    std::function<std::vector<SlotName>(
-        std::unordered_set<SlotName> const &)> const &order_slots) {
+    std::function<std::vector<SlotName>(std::set<SlotName> const &)> const
+        &order_slots) {
   std::function<nlohmann::json(DataflowInput const &)> get_input_label =
       [&](DataflowInput const &i) -> nlohmann::json {
     std::vector<SlotName> slot_ordering =
-        order_slots(get_incoming_slots_for_node(g, i.node));
+        order_slots(set_of(get_incoming_slots_for_node(g, i.node)));
 
     SlotName slot_name = slot_ordering.at(i.idx.unwrap_nonnegative());
 
@@ -31,7 +32,7 @@ std::string kwarg_dataflow_graph_as_dot(
   std::function<nlohmann::json(DataflowOutput const &)> get_output_label =
       [&](DataflowOutput const &o) -> nlohmann::json {
     std::vector<SlotName> slot_ordering =
-        order_slots(get_outgoing_slots_for_node(g, o.node));
+        order_slots(set_of(get_outgoing_slots_for_node(g, o.node)));
 
     SlotName slot_name = slot_ordering.at(o.idx.unwrap_nonnegative());
 

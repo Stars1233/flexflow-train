@@ -3,18 +3,19 @@ name = "DynamicOpenDataflowGraph"
 type = "struct"
 features = [
   "eq",
+	"ord",
   "fmt",
 ]
 
 includes = [
   "task-spec/dynamic_graph/dynamic_node_invocation.dtg.h",
-  "<unordered_set>",
+  "<set>",
 ]
 
 src_includes = [
-  "utils/fmt/unordered_set.h",
+  "utils/fmt/set.h",
 ]
 
 [[fields]]
 name = "invocations"
-type = "std::unordered_set<::FlexFlow::DynamicNodeInvocation>"
+type = "std::set<::FlexFlow::DynamicNodeInvocation>"

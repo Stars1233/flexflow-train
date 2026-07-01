@@ -3,6 +3,7 @@ name = "ExtendedParallelReduction"
 type = "struct"
 features = [
   "eq",
+  "ord",
   "hash",
   "fmt",
 ]
@@ -14,14 +15,14 @@ docstring = """\
 
 includes = [
   "utils/graph/multidigraph/multidiedge.dtg.h",
-  "<unordered_set>"
+  "<set>"
 ]
 
-src_includes = [   
-  "utils/hash/unordered_set.h",
-  "utils/fmt/unordered_set.h",
+src_includes = [
+  "utils/hash/set.h",
+  "utils/fmt/set.h",
 ]
 
 [[fields]]
 name = "edges"
-type = "std::unordered_set<::FlexFlow::MultiDiEdge>"
+type = "std::set<::FlexFlow::MultiDiEdge>"

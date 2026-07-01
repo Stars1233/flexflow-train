@@ -43,8 +43,8 @@ std::optional<InverseLineGraphResult>
     return get_component_containing_node_in_tail(cbc_decomposition, n).value();
   };
 
-  std::unordered_set<Node> initial_nodes = get_initial_nodes(view);
-  std::unordered_set<Node> terminal_nodes = get_terminal_nodes(view);
+  std::set<Node> initial_nodes = get_initial_nodes(view);
+  std::set<Node> terminal_nodes = get_terminal_nodes(view);
 
   auto src_for_node = [&](Node const &v) -> Node {
     if (contains(initial_nodes, v)) {

@@ -7,6 +7,6 @@ using SlotName = ordered_value_type<0>;
 
 template KwargDataflowGraphView<SlotName>
     get_kwarg_dataflow_graph_subgraph(KwargDataflowGraphView<SlotName> const &,
-                                      std::unordered_set<Node> const &);
+                                      std::set<Node> const &);
 
 } // namespace FlexFlow

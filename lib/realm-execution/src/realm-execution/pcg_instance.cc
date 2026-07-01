@@ -5,6 +5,7 @@
 #include "realm-execution/distributed_per_device_op_state_initialization.h"
 #include "realm-execution/instance_allocation.h"
 #include "realm-execution/realm_context.h"
+#include "realm-execution/redops/redop_id_t.h"
 #include "realm-execution/tasks/impl/op_task.h"
 #include "realm-execution/tensor_instance_backing.h"
 #include "task-spec/dynamic_graph/copy_insertion.h"
@@ -24,8 +25,10 @@
 #include "utils/containers/transform.h"
 #include "utils/containers/try_at.h"
 #include "utils/containers/values.h"
+#include "utils/containers/vector_of.h"
 #include "utils/graph/digraph/algorithms/get_topological_ordering.h"
 #include "utils/optional.h"
+#include <vector>
 
 namespace FlexFlow {
 
@@ -82,8 +85,7 @@ PCGInstance create_pcg_instance(
     MappedParallelComputationGraph const &mpcg,
     OptimizerAttrs const &optimizer_attrs,
     std::optional<ParallelLossConfig> const &loss,
-    std::unordered_map<DynamicValueAttrs, DynamicTensorAccessor> const
-        &input_tensors,
+    std::map<DynamicValueAttrs, DynamicTensorAccessor> const &input_tensors,
     ProfilingSettings const &profiling_settings,
     DistributedFfHandle const &device_handle,
     DeviceType device_type) {
@@ -92,8 +94,7 @@ PCGInstance create_pcg_instance(
       make_dynamic_open_dataflow_graph_from_mapped_pcg(mpcg, device_type);
   dg = perform_pass_expansion(dg);
 
-  std::unordered_map<DynamicValueAttrs, DynamicTensorAccessor> inputs =
-      input_tensors;
+  std::map<DynamicValueAttrs, DynamicTensorAccessor> inputs = input_tensors;
   std::optional<DynamicValueAttrs> logit_grad_value;
   if (loss.has_value()) {
     ParallelLossConfig loss_config = assert_unwrap(loss);
@@ -172,6 +173,87 @@ PCGInstance create_pcg_instance(
   };
 }
 
+static Realm::Event
+    issue_p2p_copy(RealmContext &ctx,
+                   DynamicValueAttrs const &input,
+                   DynamicValueAttrs const &output,
+                   TensorInstanceBacking const &tensor_instance_backing,
+                   Realm::Event precondition) {
+  Realm::RegionInstance src_inst =
+      tensor_instance_backing.backing.at(input).first;
+  Realm::RegionInstance dst_inst =
+      tensor_instance_backing.backing.at(output).first;
+  return ctx.issue_copy(assert_unwrap(input.parallel_tensor_shape),
+                        src_inst,
+                        assert_unwrap(output.parallel_tensor_shape),
+                        dst_inst,
+                        Realm::ProfilingRequestSet{},
+                        precondition);
+}
+
+static Realm::Event
+    issue_p2p_reduction(RealmContext &ctx,
+                        DynamicValueAttrs const &input,
+                        DynamicValueAttrs const &output,
+                        TensorInstanceBacking const &tensor_instance_backing,
+                        redop_id_t redop_id,
+                        bool is_fold,
+                        bool exclusive,
+                        Realm::Event precondition) {
+  Realm::RegionInstance src_inst =
+      tensor_instance_backing.backing.at(input).first;
+  Realm::RegionInstance dst_inst =
+      tensor_instance_backing.backing.at(output).first;
+  return ctx.issue_reduction(assert_unwrap(input.parallel_tensor_shape),
+                             src_inst,
+                             assert_unwrap(output.parallel_tensor_shape),
+                             dst_inst,
+                             redop_id,
+                             is_fold,
+                             exclusive,
+                             Realm::ProfilingRequestSet{},
+                             precondition);
+}
+
+static Realm::Event issue_collective_broadcast(
+    RealmContext &ctx,
+    DynamicValueAttrs const &input,
+    std::vector<DynamicValueAttrs> const &outputs,
+    TensorInstanceBacking const &tensor_instance_backing,
+    Realm::Event precondition) {
+  // For now we just implement this as the naive set of N p2p copies.
+  std::vector<Realm::Event> result =
+      transform(outputs, [&](DynamicValueAttrs const &output) {
+        return issue_p2p_copy(
+            ctx, input, output, tensor_instance_backing, precondition);
+      });
+  return Realm::Event::merge_events(result);
+}
+
+static Realm::Event issue_collective_reduction(
+    RealmContext &ctx,
+    std::vector<DynamicValueAttrs> const &inputs,
+    DynamicValueAttrs const &output,
+    TensorInstanceBacking const &tensor_instance_backing,
+    redop_id_t redop_id,
+    Realm::Event precondition) {
+  // For now we just implement this as a naive set of N p2p reductions. Because
+  // we're launching them in parallel they cannot be exclusive (i.e., they need
+  // to use per-element atomics to update the output tensor)
+  std::vector<Realm::Event> result =
+      transform(inputs, [&](DynamicValueAttrs const &input) {
+        return issue_p2p_reduction(ctx,
+                                   input,
+                                   output,
+                                   tensor_instance_backing,
+                                   redop_id,
+                                   /*is_fold*/ false,
+                                   /*exclusive*/ false,
+                                   precondition);
+      });
+  return Realm::Event::merge_events(result);
+}
+
 /**
  * \brief Spawn the Realm operations (tasks, copies, etc.) for a given \ref
  * DynamicNodeInvocation, given the specified dependencies, instances, etc. Note
@@ -198,7 +280,7 @@ static Realm::Event spawn_dynamic_node_invocation(
 
   auto spawn_task = [&]() {
     Realm::Processor target_proc = ctx.processor_from_global_device_id(
-        assert_unwrap(invocation.node_attrs.device_id));
+        get_only(assert_unwrap(invocation.node_attrs.device_ids)));
     return spawn_op_task(ctx,
                          target_proc,
                          invocation,
@@ -213,16 +295,26 @@ static Realm::Event spawn_dynamic_node_invocation(
   auto issue_copy = [&]() {
     DynamicValueAttrs const &input = get_only(invocation.inputs).second;
     DynamicValueAttrs const &output = get_only(invocation.outputs).second;
-    Realm::RegionInstance src_inst =
-        tensor_instance_backing.backing.at(input).first;
-    Realm::RegionInstance dst_inst =
-        tensor_instance_backing.backing.at(output).first;
-    return ctx.issue_copy(assert_unwrap(input.parallel_tensor_shape),
-                          src_inst,
-                          assert_unwrap(output.parallel_tensor_shape),
-                          dst_inst,
-                          Realm::ProfilingRequestSet{},
-                          precondition);
+    return issue_p2p_copy(
+        ctx, input, output, tensor_instance_backing, precondition);
+  };
+
+  auto issue_replicate = [&]() {
+    DynamicValueAttrs const &input = get_only(invocation.inputs).second;
+    std::vector<DynamicValueAttrs> outputs =
+        vector_of(values(invocation.outputs));
+    return issue_collective_broadcast(
+        ctx, input, outputs, tensor_instance_backing, precondition);
+  };
+
+  auto issue_reduction = [&]() {
+    std::vector<DynamicValueAttrs> inputs =
+        vector_of(values(invocation.inputs));
+    DynamicValueAttrs const &output = get_only(invocation.outputs).second;
+    redop_id_t redop_id = get_sum_redop_id_for_data_type(
+        assert_unwrap(output.parallel_tensor_shape).data_type);
+    return issue_collective_reduction(
+        ctx, inputs, output, tensor_instance_backing, redop_id, precondition);
   };
 
   TrainingOperationAttrs op_attrs =
@@ -232,6 +324,18 @@ static Realm::Event spawn_dynamic_node_invocation(
         return pcg_op_attrs.visit<Realm::Event>(overload{
             [&](InputAttrs const &) { return Realm::Event::NO_EVENT; },
             [&](WeightAttrs const &) { return Realm::Event::NO_EVENT; },
+            [&](ReplicateAttrs const &) {
+              DynamicTaskType task_type =
+                  assert_unwrap(invocation.node_attrs.task_type);
+              switch (task_type) {
+                case DynamicTaskType::FWD:
+                  return issue_replicate();
+                case DynamicTaskType::BWD:
+                  return issue_reduction();
+                default:
+                  PANIC("Unhandled replicate task type ", task_type);
+              }
+            },
             [&](auto const &) { return spawn_task(); },
         });
       },
@@ -240,7 +344,7 @@ static Realm::Event spawn_dynamic_node_invocation(
   });
 }
 
-static std::unordered_map<dynamic_layer_guid_t, Realm::Event>
+static std::map<dynamic_layer_guid_t, Realm::Event>
     execute_distributed_dynamic_node_invocation_set(
         RealmContext &ctx,
         std::vector<DynamicNodeInvocation> const &invocations,
@@ -252,7 +356,7 @@ static std::unordered_map<dynamic_layer_guid_t, Realm::Event>
   // For simplicity we'll track a dependency on all outstanding operations up to
   // this point. This will create an effective barrier between phases.
   DependencySet dependency_set{ctx.get_outstanding_events()};
-  return unordered_map_from_pairs(
+  return map_from_pairs(
       transform(invocations, [&](DynamicNodeInvocation const &invocation) {
         std::vector<Realm::Event> input_dependencies =
             transform(vector_of(values(invocation.inputs)),
@@ -286,14 +390,14 @@ static std::unordered_map<dynamic_layer_guid_t, Realm::Event>
       }));
 }
 
-std::unordered_map<dynamic_layer_guid_t, Realm::Event>
+std::map<dynamic_layer_guid_t, Realm::Event>
     perform_all_passes_for_pcg_instance(
         PCGInstance &pcg_instance,
         ProfilingSettings const &profiling_settings,
         DistributedFfHandle const &device_handle) {
   std::vector<DynamicNodeInvocation> execution_order =
       pcg_instance.get_execution_order();
-  std::unordered_map<dynamic_layer_guid_t, Realm::Event> result =
+  std::map<dynamic_layer_guid_t, Realm::Event> result =
       execute_distributed_dynamic_node_invocation_set(
           /*ctx=*/pcg_instance.get_realm_context(),
           /*invocations=*/execution_order,
@@ -307,7 +411,7 @@ std::unordered_map<dynamic_layer_guid_t, Realm::Event>
   return result;
 }
 
-std::unordered_map<dynamic_layer_guid_t, Realm::Event>
+std::map<dynamic_layer_guid_t, Realm::Event>
     perform_forward_pass_for_pcg_instance(
         PCGInstance &pcg_instance,
         ProfilingSettings const &profiling_settings,
@@ -330,7 +434,7 @@ std::unordered_map<dynamic_layer_guid_t, Realm::Event>
       /*device_handle=*/device_handle);
 }
 
-std::unordered_map<dynamic_layer_guid_t, Realm::Event>
+std::map<dynamic_layer_guid_t, Realm::Event>
     perform_backward_pass_for_pcg_instance(
         PCGInstance &pcg_instance,
         ProfilingSettings const &profiling_settings,
@@ -353,7 +457,7 @@ std::unordered_map<dynamic_layer_guid_t, Realm::Event>
       /*device_handle=*/device_handle);
 }
 
-std::unordered_map<dynamic_layer_guid_t, Realm::Event>
+std::map<dynamic_layer_guid_t, Realm::Event>
     perform_update_pass_for_pcg_instance(
         PCGInstance &pcg_instance,
         ProfilingSettings const &profiling_settings,
@@ -366,7 +470,7 @@ std::unordered_map<dynamic_layer_guid_t, Realm::Event>
                return task_type == DynamicTaskType::UPD;
              });
 
-  std::unordered_map<dynamic_layer_guid_t, Realm::Event> result =
+  std::map<dynamic_layer_guid_t, Realm::Event> result =
       execute_distributed_dynamic_node_invocation_set(
           /*ctx=*/pcg_instance.get_realm_context(),
           /*invocations=*/execution_order,

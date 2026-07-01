@@ -8,7 +8,7 @@ namespace FlexFlow {
 
 LocalTaskArgumentAccessor::LocalTaskArgumentAccessor(
     Allocator const &allocator,
-    std::unordered_map<TaskTensorParameter, DynamicTensorAccessor> const
+    std::map<TaskTensorParameter, DynamicTensorAccessor> const
         &tensor_slots_backing,
     ProfilingSettings const &profiling_settings,
     device_handle_t const &ff_handle,

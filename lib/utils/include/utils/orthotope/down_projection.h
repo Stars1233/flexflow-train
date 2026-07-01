@@ -22,13 +22,13 @@ DownProjection<L, R> make_empty_down_projection() {
 }
 
 template <typename L, typename R>
-std::unordered_set<L>
+std::set<L>
     input_dims_of_down_projection(DownProjection<L, R> const &projection) {
   return projection.dim_mapping.left_values();
 }
 
 template <typename L, typename R>
-std::unordered_set<R>
+std::set<R>
     output_dims_of_down_projection(DownProjection<L, R> const &projection) {
   return projection.dim_mapping.right_values();
 }
@@ -38,21 +38,20 @@ DimCoord<R> compute_down_projection(DownProjection<L, R> const &projection,
                                     DimCoord<L> const &coord,
                                     DimDomain<L> const &input_domain,
                                     DimOrdering<L> const &input_dim_ordering) {
-  std::unordered_set<L> input_dims = input_dims_of_down_projection(projection);
-  std::unordered_set<L> coord_dims = get_coord_dims(coord);
+  std::set<L> input_dims = input_dims_of_down_projection(projection);
+  std::set<L> coord_dims = get_coord_dims(coord);
   ASSERT(input_dims == coord_dims,
          "compute_down_projection expected coord dimensions to match "
          "projection input dimensions");
 
-  std::unordered_set<R> output_dims =
-      output_dims_of_down_projection(projection);
+  std::set<R> output_dims = output_dims_of_down_projection(projection);
 
   return DimCoord<R>{
       generate_map(
           output_dims,
-          [&](R const &output_dim) {
-            std::unordered_set<L> src_dims =
-                projection.dim_mapping.at_r(output_dim);
+          [&](R const &output_dim) -> nonnegative_int {
+            std::set<L> src_dims =
+                projection.dim_mapping.at_r(output_dim).unwrap_as_set();
 
             DimCoord<L> src_coord = restrict_coord_to_dims(coord, src_dims);
             DimDomain<L> src_domain =
@@ -65,7 +64,7 @@ DimCoord<R> compute_down_projection(DownProjection<L, R> const &projection,
 
 template <typename L, typename R>
 void project_dims(DownProjection<L, R> &proj,
-                  std::unordered_set<L> const &from,
+                  std::set<L> const &from,
                   R const &onto) {
   ASSERT(from.size() > 0);
 

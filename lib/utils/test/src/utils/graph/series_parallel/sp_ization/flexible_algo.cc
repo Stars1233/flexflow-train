@@ -16,8 +16,8 @@
 #include "utils/graph/series_parallel/sp_ization/dependencies_are_maintained.h"
 #include "utils/graph/series_parallel/sp_ization/node_role.dtg.h"
 #include <doctest/doctest.h>
-#include <unordered_map>
-#include <unordered_set>
+#include <map>
+#include <set>
 
 using namespace FlexFlow;
 
@@ -27,7 +27,7 @@ TEST_SUITE(FF_TEST_SUITE) {
       DiGraph g = DiGraph::create<AdjacencyDiGraph>();
       Node n0 = g.add_node();
 
-      std::unordered_map<Node, float> cost_map = {{n0, 1.0f}};
+      std::map<Node, float> cost_map = {{n0, 1.0f}};
 
       SeriesParallelDecomposition result = flexible_sp_ization(g, cost_map);
       SeriesParallelDecomposition correct = SeriesParallelDecomposition{n0};
@@ -45,7 +45,7 @@ TEST_SUITE(FF_TEST_SUITE) {
                  DirectedEdge{n[1], n[3]},
                  DirectedEdge{n[2], n[3]}});
 
-      std::unordered_map<Node, float> cost_map = {
+      std::map<Node, float> cost_map = {
           {n[0], 1.0f},
           {n[1], 1.0f},
           {n[2], 1.0f},
@@ -68,7 +68,7 @@ TEST_SUITE(FF_TEST_SUITE) {
                  DirectedEdge{n[1], n[2]},
                  DirectedEdge{n[2], n[3]}});
 
-      std::unordered_map<Node, float> cost_map = {
+      std::map<Node, float> cost_map = {
           {n[0], 1.0f},
           {n[1], 1.0f},
           {n[2], 1.0f},
@@ -95,7 +95,7 @@ TEST_SUITE(FF_TEST_SUITE) {
                  DirectedEdge{n[3], n[5]},
                  DirectedEdge{n[4], n[5]}});
 
-      std::unordered_map<Node, float> cost_map = {
+      std::map<Node, float> cost_map = {
           {n[0], 1.0f},
           {n[1], 1.0f},
           {n[2], 1.0f},
@@ -127,7 +127,7 @@ TEST_SUITE(FF_TEST_SUITE) {
                  DirectedEdge{n[3], n[5]},
                  DirectedEdge{n[4], n[5]}});
 
-      std::unordered_map<Node, float> cost_map = {
+      std::map<Node, float> cost_map = {
           {n[0], 1.0f},
           {n[1], 1.0f},
           {n[2], 10.0f},
@@ -159,7 +159,7 @@ TEST_SUITE(FF_TEST_SUITE) {
                  DirectedEdge{n[3], n[5]},
                  DirectedEdge{n[4], n[5]}});
 
-      std::unordered_map<Node, float> cost_map = {
+      std::map<Node, float> cost_map = {
           {n[0], 1.0f},
           {n[1], 1.0f},
           {n[2], 1000.0f},
@@ -192,7 +192,7 @@ TEST_SUITE(FF_TEST_SUITE) {
                  DirectedEdge{n[5], n[7]},
                  DirectedEdge{n[6], n[7]}});
 
-      std::unordered_map<Node, float> cost_map = {
+      std::map<Node, float> cost_map = {
           {n[0], 1.0f},
           {n[1], 1.0f},
           {n[2], 1.0f},
@@ -228,7 +228,7 @@ TEST_SUITE(FF_TEST_SUITE) {
                  DirectedEdge{n[0], n[5]},
                  DirectedEdge{n[5], n[6]}});
 
-      std::unordered_map<Node, float> cost_map = {
+      std::map<Node, float> cost_map = {
           {n[0], 1.0f},
           {n[1], 1.0f},
           {n[2], 100.0f},
@@ -268,7 +268,7 @@ TEST_SUITE(FF_TEST_SUITE) {
                  DirectedEdge{n[2], n[7]},
                  DirectedEdge{n[7], n[5]}});
 
-      std::unordered_map<Node, float> cost_map = {
+      std::map<Node, float> cost_map = {
           {n[0], 1.0f},
           {n[1], 1.0f},
           {n[2], 1.0f},
@@ -308,7 +308,7 @@ TEST_SUITE(FF_TEST_SUITE) {
                  DirectedEdge{n[2], n[7]},
                  DirectedEdge{n[7], n[5]}});
 
-      std::unordered_map<Node, float> cost_map = {
+      std::map<Node, float> cost_map = {
           {n[0], 1.0f},
           {n[1], 100.0f},
           {n[2], 1.0f},
@@ -350,7 +350,7 @@ TEST_SUITE(FF_TEST_SUITE) {
                  DirectedEdge{m[4], m[5]},
                  DirectedEdge{m[5], m[6]}});
 
-      std::unordered_map<Node, float> cost_map2 = {
+      std::map<Node, float> cost_map2 = {
           {m[0], 1.0f},
           {m[1], 1.0f},
           {m[2], 1.0f},
@@ -389,7 +389,7 @@ TEST_SUITE(FF_TEST_SUITE) {
                     DirectedEdge{n[14], n[15]}, DirectedEdge{n[15], n[16]},
                     DirectedEdge{n[16], n[17]}});
 
-      std::unordered_map<Node, float> cost_map;
+      std::map<Node, float> cost_map;
       for (int i = 0; i < 18; i++) {
         cost_map[n[i]] = 1.0f;
       }
@@ -429,7 +429,7 @@ TEST_SUITE(FF_TEST_SUITE) {
                     DirectedEdge{n[13], n[15]}, DirectedEdge{n[14], n[15]},
                     DirectedEdge{n[15], n[16]}, DirectedEdge{n[16], n[17]}});
 
-      std::unordered_map<Node, float> cost_map;
+      std::map<Node, float> cost_map;
       for (int i = 0; i < 18; i++) {
         cost_map[n[i]] = 1.0f;
       }
@@ -455,7 +455,7 @@ TEST_SUITE(FF_TEST_SUITE) {
                     DirectedEdge{n[13], n[15]}, DirectedEdge{n[14], n[15]},
                     DirectedEdge{n[15], n[16]}, DirectedEdge{n[16], n[17]}});
 
-      std::unordered_map<Node, float> cost_map = {
+      std::map<Node, float> cost_map = {
           {n[0], 1.0f},
           {n[1], 3.0f},
           {n[2], 5.0f},

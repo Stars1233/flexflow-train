@@ -28,9 +28,9 @@ DataflowOutputQuery dataflow_output_query_for_output(DataflowOutput const &o) {
   };
 }
 
-std::unordered_set<DataflowOutput>
+std::set<DataflowOutput>
     apply_dataflow_output_query(DataflowOutputQuery const &q,
-                                std::unordered_set<DataflowOutput> const &os) {
+                                std::set<DataflowOutput> const &os) {
   return filter(os, [&](DataflowOutput const &o) {
     return dataflow_output_query_includes_dataflow_output(q, o);
   });

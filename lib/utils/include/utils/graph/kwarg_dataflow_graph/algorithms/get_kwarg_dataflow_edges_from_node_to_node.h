@@ -6,7 +6,7 @@
 namespace FlexFlow {
 
 template <typename SlotName>
-std::unordered_set<KwargDataflowEdge<SlotName>>
+std::set<KwargDataflowEdge<SlotName>>
     get_kwarg_dataflow_edges_from_node_to_node(
         KwargDataflowGraphView<SlotName> const &g,
         Node const &src,

@@ -6,7 +6,7 @@
 
 namespace FlexFlow {
 
-std::unordered_set<DataflowInput>
+std::set<DataflowInput>
     get_open_dataflow_value_uses(OpenDataflowGraphView const &view,
                                  OpenDataflowValue const &value);
 

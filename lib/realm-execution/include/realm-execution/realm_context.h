@@ -8,11 +8,12 @@
 #include "op-attrs/tensor_shape.dtg.h"
 #include "pcg/machine_space_coordinate.dtg.h"
 #include "realm-execution/realm.h"
+#include "realm-execution/redops/redop_id_t.dtg.h"
 #include "realm-execution/tasks/task_id_t.dtg.h"
 #include "task-spec/global_device_id_t.dtg.h"
 #include "task-spec/local_device_id_t.dtg.h"
+#include <map>
 #include <optional>
-#include <unordered_map>
 
 namespace FlexFlow {
 
@@ -68,7 +69,7 @@ public:
                             int priority = 0);
   ///\}
 
-  /** \name Data movement */
+  /** \name Data movement and reduction */
   ///\{
   Realm::Event issue_copy(ParallelTensorShape const &src_shape,
                           Realm::RegionInstance src_inst,
@@ -77,6 +78,17 @@ public:
                           Realm::ProfilingRequestSet const &requests,
                           Realm::Event wait_on = Realm::Event::NO_EVENT,
                           int priority = 0);
+
+  Realm::Event issue_reduction(ParallelTensorShape const &src_shape,
+                               Realm::RegionInstance src_inst,
+                               ParallelTensorShape const &dst_shape,
+                               Realm::RegionInstance dst_inst,
+                               redop_id_t redop_id,
+                               bool is_fold,
+                               bool exclusive,
+                               Realm::ProfilingRequestSet const &requests,
+                               Realm::Event wait_on = Realm::Event::NO_EVENT,
+                               int priority = 0);
   ///\}
 
   /** \name Instance management */

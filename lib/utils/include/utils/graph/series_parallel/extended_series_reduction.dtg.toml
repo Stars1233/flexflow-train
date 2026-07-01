@@ -13,6 +13,7 @@ docstring = """\
 
 features = [
   "eq",
+  "ord",
   "hash",
   "fmt",
 ]
@@ -22,7 +23,7 @@ includes = [
   "<vector>"
 ]
 
-src_includes = [   
+src_includes = [
   "utils/hash/vector.h",
   "utils/fmt/vector.h",
 ]

@@ -13,10 +13,10 @@ struct ILabelledKwargDataflowGraph
                                                      OutputLabel,
                                                      SlotName> {
 public:
-  virtual KwargNodeAddedResult<SlotName> add_node(
-      NodeLabel const &node_label,
-      std::unordered_map<SlotName, KwargDataflowOutput<SlotName>> const &inputs,
-      std::unordered_map<SlotName, OutputLabel> const &output_labels) = 0;
+  virtual KwargNodeAddedResult<SlotName>
+      add_node(NodeLabel const &node_label,
+               std::map<SlotName, KwargDataflowOutput<SlotName>> const &inputs,
+               std::map<SlotName, OutputLabel> const &output_labels) = 0;
   virtual void inplace_materialize_from(
       LabelledKwargDataflowGraphView<NodeLabel, OutputLabel, SlotName> const
           &) = 0;

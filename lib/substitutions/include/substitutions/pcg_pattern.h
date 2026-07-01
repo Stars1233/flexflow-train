@@ -10,7 +10,7 @@
 
 namespace FlexFlow {
 
-std::unordered_set<PatternNode> get_nodes(PCGPattern const &);
+std::set<PatternNode> get_nodes(PCGPattern const &);
 
 std::optional<PCGPatternMatch>
     get_random_pattern_match(PCGPattern const &pattern,
@@ -29,8 +29,8 @@ TensorAttributePattern get_tensor_pattern(PCGPattern const &,
                                           PatternValue const &);
 OperatorAttributePattern get_operator_pattern(PCGPattern const &,
                                               PatternNode const &);
-std::unordered_set<PatternInput> get_inputs(PCGPattern const &);
-std::unordered_map<TensorSlotName, PatternNodeOutput>
+std::set<PatternInput> get_inputs(PCGPattern const &);
+std::map<TensorSlotName, PatternNodeOutput>
     get_pattern_node_outputs(PCGPattern const &, PatternNode const &);
 
 bool assignment_satisfies(SubParallelComputationGraph const &,

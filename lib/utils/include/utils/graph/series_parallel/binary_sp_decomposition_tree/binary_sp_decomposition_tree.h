@@ -9,7 +9,7 @@
 #include "utils/graph/series_parallel/sp_decomposition_tree_node_type.dtg.h"
 #include "utils/nonnegative_int/nonnegative_int.h"
 #include <optional>
-#include <unordered_set>
+#include <set>
 
 namespace FlexFlow {
 
@@ -22,7 +22,7 @@ GenericBinarySPDecompositionTreeImplementation<BinarySPDecompositionTree,
 bool is_binary_sp_tree_left_associative(BinarySPDecompositionTree const &);
 bool is_binary_sp_tree_right_associative(BinarySPDecompositionTree const &);
 
-std::unordered_multiset<Node> get_leaves(BinarySPDecompositionTree const &);
+std::multiset<Node> get_leaves(BinarySPDecompositionTree const &);
 
 SPDecompositionTreeNodeType get_node_type(BinarySPDecompositionTree const &);
 

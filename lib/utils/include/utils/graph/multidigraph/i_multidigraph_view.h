@@ -17,13 +17,13 @@ public:
   IMultiDiGraphView(IMultiDiGraphView const &) = delete;
   IMultiDiGraphView &operator=(IMultiDiGraphView const &) = delete;
 
-  virtual std::unordered_set<Edge> query_edges(EdgeQuery const &) const = 0;
+  virtual std::set<Edge> query_edges(EdgeQuery const &) const = 0;
   virtual Node get_multidiedge_src(MultiDiEdge const &) const = 0;
   virtual Node get_multidiedge_dst(MultiDiEdge const &) const = 0;
 
   virtual ~IMultiDiGraphView() = default;
 
-  std::unordered_set<DirectedEdge>
+  std::set<DirectedEdge>
       query_edges(DirectedEdgeQuery const &) const override final;
 };
 CHECK_RC_COPY_VIRTUAL_COMPLIANT(IMultiDiGraphView);

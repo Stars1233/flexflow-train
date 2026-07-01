@@ -3,7 +3,6 @@
 #include "compiler/machine_mapping/abstracted_tensor_set_movement/get_abstracted_tensor_set_movement_across_split.h"
 #include "pcg/parallel_computation_graph/parallel_computation_graph.h"
 #include "pcg/parallel_computation_graph/parallel_computation_graph_edge.h"
-#include "utils/containers/unordered_multiset_of.h"
 #include "utils/full_binary_tree/binary_tree_path.dtg.h"
 
 namespace FlexFlow {
@@ -49,11 +48,11 @@ TensorSetMovement get_tensor_set_movement_from_pcg_edge(
   return concretize_abstracted_tensor_set_movement(
       abstracted_tensor_set_movement,
       /*pre_machine_stencils=*/
-      std::unordered_map<BinaryTreePath, MachineSpaceStencil>{
+      std::map<BinaryTreePath, MachineSpaceStencil>{
           {src_path, src_machine_stencil},
       },
       /*post_machine_stencils=*/
-      std::unordered_map<BinaryTreePath, MachineSpaceStencil>{
+      std::map<BinaryTreePath, MachineSpaceStencil>{
           {dst_path, dst_machine_stencil},
       });
 }

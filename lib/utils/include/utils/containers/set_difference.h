@@ -3,13 +3,12 @@
 
 #include "utils/containers/contains.h"
 #include "utils/containers/filter.h"
-#include <unordered_set>
+#include <set>
 
 namespace FlexFlow {
 
 template <typename T>
-std::unordered_set<T> set_difference(std::unordered_set<T> const &l,
-                                     std::unordered_set<T> const &r) {
+std::set<T> set_difference(std::set<T> const &l, std::set<T> const &r) {
   return filter(l, [&](T const &element) { return !contains(r, element); });
 }
 

@@ -44,10 +44,10 @@ std::pair<MachineComputeResourceSlice, MachineComputeResourceSlice>
   }
 }
 
-std::unordered_set<MachineResourceSplit>
+std::set<MachineResourceSplit>
     get_machine_resource_splits(MachineComputeResourceSlice const &resources) {
 
-  std::unordered_set<MachineResourceSplit> result;
+  std::set<MachineResourceSplit> result;
 
   for (positive_int i = 1_p; i < resources.num_nodes; i *= 2_p) {
     result.insert(MachineResourceSplit{

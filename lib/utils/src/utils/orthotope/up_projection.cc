@@ -1,12 +1,11 @@
 #include "utils/orthotope/up_projection.h"
 #include "utils/archetypes/ordered_value_type.h"
-#include "utils/archetypes/value_type.h"
 
 namespace FlexFlow {
 
-using T1 = value_type<0>;
-using T2 = value_type<1>;
-using T3 = value_type<2>;
+using T1 = ordered_value_type<0>;
+using T2 = ordered_value_type<1>;
+using T3 = ordered_value_type<2>;
 
 template UpProjection<T1, T3>
     compose_up_projections(UpProjection<T1, T2> const &,
@@ -15,11 +14,9 @@ template UpProjection<T1, T3>
 using L = ordered_value_type<0>;
 using R = ordered_value_type<1>;
 
-template std::unordered_set<L>
-    input_dims_of_up_projection(UpProjection<L, R> const &);
+template std::set<L> input_dims_of_up_projection(UpProjection<L, R> const &);
 
-template std::unordered_set<R>
-    output_dims_of_up_projection(UpProjection<L, R> const &);
+template std::set<R> output_dims_of_up_projection(UpProjection<L, R> const &);
 
 template DimCoord<R> compute_up_projection(UpProjection<L, R> const &,
                                            DimCoord<L> const &,
@@ -28,9 +25,8 @@ template DimCoord<R> compute_up_projection(UpProjection<L, R> const &,
 
 template UpProjection<L, R> make_empty_up_projection();
 
-template void project_dims(UpProjection<L, R> &,
-                           L const &,
-                           std::unordered_set<R> const &);
+template void
+    project_dims(UpProjection<L, R> &, L const &, std::set<R> const &);
 
 template DownProjection<R, L> invert_up_projection(UpProjection<L, R> const &);
 

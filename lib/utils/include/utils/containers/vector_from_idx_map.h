@@ -3,8 +3,8 @@
 
 #include "utils/containers/contains_key.h"
 #include "utils/nonnegative_int/nonnegative_int.h"
+#include <map>
 #include <optional>
-#include <unordered_map>
 #include <vector>
 
 namespace FlexFlow {
@@ -12,6 +12,21 @@ namespace FlexFlow {
 template <typename T>
 std::optional<std::vector<T>>
     vector_from_idx_map(std::unordered_map<nonnegative_int, T> const &m) {
+  std::vector<T> result;
+
+  for (nonnegative_int i = 0_n; i < m.size(); i++) {
+    if (!contains_key(m, i)) {
+      return std::nullopt;
+    }
+    result.push_back(m.at(i));
+  }
+
+  return result;
+}
+
+template <typename T>
+std::optional<std::vector<T>>
+    vector_from_idx_map(std::map<nonnegative_int, T> const &m) {
   std::vector<T> result;
 
   for (nonnegative_int i = 0_n; i < m.size(); i++) {

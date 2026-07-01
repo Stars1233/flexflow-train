@@ -16,9 +16,9 @@
 #include "utils/containers/map_values.h"
 #include "utils/containers/maximum.h"
 #include "utils/containers/require_only_key.h"
+#include "utils/containers/set_of.h"
 #include "utils/containers/sum.h"
 #include "utils/containers/transform.h"
-#include "utils/containers/unordered_set_of.h"
 #include "utils/containers/values.h"
 #include "utils/exception.h"
 #include "utils/optional.h"
@@ -38,12 +38,12 @@ LocalCostEstimator::LocalCostEstimator(
 
 static ComputationGraph computation_graph_for_local_cost_estimation(
     ComputationGraphOpAttrs const &op,
-    std::unordered_map<TensorSlotName, ParallelTensorShape> const &inputs,
-    std::unordered_map<TensorSlotName, ParallelTensorShape> const &weights,
-    std::unordered_map<TensorSlotName, ParallelTensorShape> const &outputs) {
+    std::map<TensorSlotName, ParallelTensorShape> const &inputs,
+    std::map<TensorSlotName, ParallelTensorShape> const &weights,
+    std::map<TensorSlotName, ParallelTensorShape> const &outputs) {
   ComputationGraph computation_graph = make_empty_computation_graph();
 
-  std::unordered_map<TensorSlotName, tensor_guid_t> input_tensors =
+  std::map<TensorSlotName, tensor_guid_t> input_tensors =
       map_values(inputs, [&](ParallelTensorShape const &shape) {
         LayerAddedResult inputs_layer =
             add_layer(computation_graph,
@@ -55,7 +55,7 @@ static ComputationGraph computation_graph_for_local_cost_estimation(
         return require_only_key(inputs_layer.outputs, TensorSlotName::OUTPUT);
       });
 
-  std::unordered_map<TensorSlotName, tensor_guid_t> weight_tensors =
+  std::map<TensorSlotName, tensor_guid_t> weight_tensors =
       map_values(weights, [&](ParallelTensorShape const &shape) {
         LayerAddedResult weights_layer =
             add_layer(computation_graph,
@@ -84,11 +84,11 @@ OpCostMetrics LocalCostEstimator::estimate_cost(
     OpCostEstimateKey const &op_cost_estimate_key) const {
 
   PCGOperatorAttrs op = op_cost_estimate_key.op_attrs;
-  std::unordered_map<TensorSlotName, ParallelTensorShape> inputs =
+  std::map<TensorSlotName, ParallelTensorShape> inputs =
       op_cost_estimate_key.input_shapes;
-  std::unordered_map<TensorSlotName, ParallelTensorShape> weights =
+  std::map<TensorSlotName, ParallelTensorShape> weights =
       op_cost_estimate_key.weight_shapes;
-  std::unordered_map<TensorSlotName, ParallelTensorShape> outputs =
+  std::map<TensorSlotName, ParallelTensorShape> outputs =
       op_cost_estimate_key.output_shapes;
   OptimizerAttrs optimizer_attrs = op_cost_estimate_key.optimizer_attrs;
 
@@ -129,15 +129,15 @@ OpCostMetrics LocalCostEstimator::estimate_cost(
   // execute layer
   dynamic_layer_guid_t operator_layer_guid{get_layer_by_name(cg, "operator")};
 
-  std::unordered_map<dynamic_layer_guid_t, std::optional<milliseconds_t>>
-      fwd_timing = perform_forward_pass_for_computation_graph_instance(
+  std::map<dynamic_layer_guid_t, std::optional<milliseconds_t>> fwd_timing =
+      perform_forward_pass_for_computation_graph_instance(
           instance,
           this->profiling_settings,
           this->device_handle,
           this->device_idx);
   milliseconds_t fwd = fwd_timing.at(operator_layer_guid).value();
-  std::unordered_map<dynamic_layer_guid_t, std::optional<milliseconds_t>>
-      bwd_timing = perform_backward_pass_for_computation_graph_instance(
+  std::map<dynamic_layer_guid_t, std::optional<milliseconds_t>> bwd_timing =
+      perform_backward_pass_for_computation_graph_instance(
           instance,
           this->profiling_settings,
           this->device_handle,
@@ -169,7 +169,7 @@ milliseconds_t LocalCostEstimator::estimate_cost(
   };
 
   return maximum(
-      transform(unordered_set_of(tensor_set_movement.edge_to_size),
+      transform(set_of(tensor_set_movement.edge_to_size),
                 [&](std::pair<CommunicationEdge, num_bytes_t> const &p) {
                   return estimate_single_comm_cost(
                       p.first.get_src(), p.first.get_dst(), p.second);

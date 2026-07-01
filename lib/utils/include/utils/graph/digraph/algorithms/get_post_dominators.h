@@ -5,7 +5,7 @@
 
 namespace FlexFlow {
 
-std::unordered_set<Node> get_post_dominators(DiGraphView const &, Node const &);
+std::set<Node> get_post_dominators(DiGraphView const &, Node const &);
 
 } // namespace FlexFlow
 

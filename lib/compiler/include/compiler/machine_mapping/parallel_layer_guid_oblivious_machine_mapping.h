@@ -23,18 +23,18 @@ std::optional<MachineView>
     get_machine_view_for_path(ParallelLayerGuidObliviousMachineMapping const &,
                               BinaryTreePath const &);
 
-std::unordered_map<BinaryTreePath, MachineSpaceStencil>
+std::map<BinaryTreePath, MachineSpaceStencil>
     get_machine_stencils_for_decomposition(
         ParallelComputationGraph const &pcg,
         PCGBinarySPDecomposition const &decomposition,
         ParallelLayerGuidObliviousMachineMapping const &mapping);
 
-std::unordered_map<BinaryTreePath, std::optional<MachineSpaceStencil>>
+std::map<BinaryTreePath, std::optional<MachineSpaceStencil>>
     get_machine_stencils_for_mm_problem_tree(
         MachineMappingProblemTree const &,
         ParallelLayerGuidObliviousMachineMapping const &mapping);
 
-std::unordered_map<BinaryTreePath, MachineSpaceStencil>
+std::map<BinaryTreePath, MachineSpaceStencil>
     get_machine_stencils_for_partially_mapped_mm_problem_tree(
         MachineMappingProblemTree const &,
         ParallelLayerGuidObliviousMachineMapping const &);

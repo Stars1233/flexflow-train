@@ -4,10 +4,8 @@
 #include "utils/graph/digraph/digraph_view.h"
 namespace FlexFlow {
 
-std::unordered_set<DirectedEdge>
-    get_edges_from_subgraph_to_subgraph(DiGraphView const &,
-                                        std::unordered_set<Node> const &,
-                                        std::unordered_set<Node> const &);
+std::set<DirectedEdge> get_edges_from_subgraph_to_subgraph(
+    DiGraphView const &, std::set<Node> const &, std::set<Node> const &);
 
 } // namespace FlexFlow
 

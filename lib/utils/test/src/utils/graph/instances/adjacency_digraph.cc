@@ -32,8 +32,8 @@ TEST_SUITE(FF_TEST_SUITE) {
 
     SUBCASE("query_nodes") {
       SUBCASE("query_all") {
-        std::unordered_set<Node> result = g.query_nodes(node_query_all());
-        std::unordered_set<Node> correct = {n[0], n[1], n[2], n[3], n[4]};
+        std::set<Node> result = g.query_nodes(node_query_all());
+        std::set<Node> correct = {n[0], n[1], n[2], n[3], n[4]};
 
         CHECK(result == correct);
       }
@@ -43,8 +43,8 @@ TEST_SUITE(FF_TEST_SUITE) {
             query_set<Node>::match_values_in(std::set{n[0], n[2]}),
         };
 
-        std::unordered_set<Node> result = g.query_nodes(query);
-        std::unordered_set<Node> correct = {n[0], n[2]};
+        std::set<Node> result = g.query_nodes(query);
+        std::set<Node> correct = {n[0], n[2]};
 
         CHECK(result == correct);
       }
@@ -53,10 +53,10 @@ TEST_SUITE(FF_TEST_SUITE) {
     SUBCASE("query_edges") {
 
       SUBCASE("query_all") {
-        std::unordered_set<DirectedEdge> result =
+        std::set<DirectedEdge> result =
             g.query_edges(directed_edge_query_all());
 
-        std::unordered_set<DirectedEdge> correct = {
+        std::set<DirectedEdge> correct = {
             e.at(0),
             e.at(1),
             e.at(2),
@@ -74,9 +74,8 @@ TEST_SUITE(FF_TEST_SUITE) {
 
         };
 
-        std::unordered_set<DirectedEdge> result = g.query_edges(query);
-        std::unordered_set<DirectedEdge> correct =
-            std::unordered_set<DirectedEdge>{e[0]};
+        std::set<DirectedEdge> result = g.query_edges(query);
+        std::set<DirectedEdge> correct = std::set<DirectedEdge>{e[0]};
         CHECK(result == correct);
       }
     }
@@ -85,33 +84,33 @@ TEST_SUITE(FF_TEST_SUITE) {
       g.remove_node_unsafe(n[0]);
 
       CHECK(g.query_nodes(node_query_all()) ==
-            std::unordered_set<Node>{n[1], n[2], n[3], n[4]});
+            std::set<Node>{n[1], n[2], n[3], n[4]});
 
       // removing a node also removes its adjacent edges
       CHECK(g.query_edges(directed_edge_query_all()) ==
-            std::unordered_set<DirectedEdge>{e[2], e[3], e[4]});
+            std::set<DirectedEdge>{e[2], e[3], e[4]});
 
       g.remove_node_unsafe(n[1]);
 
       CHECK(g.query_nodes(node_query_all()) ==
-            std::unordered_set<Node>{n[2], n[3], n[4]});
+            std::set<Node>{n[2], n[3], n[4]});
 
       CHECK(g.query_edges(directed_edge_query_all()) ==
-            std::unordered_set<DirectedEdge>{e[3]});
+            std::set<DirectedEdge>{e[3]});
     }
 
     SUBCASE("remove_edge") {
       g.remove_edge(e[0]);
 
       CHECK(g.query_edges(directed_edge_query_all()) ==
-            std::unordered_set<DirectedEdge>{e[1], e[2], e[3], e[4]});
+            std::set<DirectedEdge>{e[1], e[2], e[3], e[4]});
       CHECK(g.query_nodes(node_query_all()) ==
-            std::unordered_set<Node>{n[0], n[1], n[2], n[3], n[4]});
+            std::set<Node>{n[0], n[1], n[2], n[3], n[4]});
 
       g.remove_edge(e[1]);
       g.remove_edge(e[3]);
       CHECK(g.query_edges(directed_edge_query_all()) ==
-            std::unordered_set<DirectedEdge>{e[2], e[4]});
+            std::set<DirectedEdge>{e[2], e[4]});
     }
   }
 }

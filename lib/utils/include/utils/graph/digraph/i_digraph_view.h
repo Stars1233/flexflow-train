@@ -18,7 +18,7 @@ public:
   IDiGraphView(IDiGraphView const &) = delete;
   IDiGraphView &operator=(IDiGraphView const &) = delete;
 
-  virtual std::unordered_set<Edge> query_edges(EdgeQuery const &) const = 0;
+  virtual std::set<Edge> query_edges(EdgeQuery const &) const = 0;
   virtual ~IDiGraphView() = default;
 };
 CHECK_RC_COPY_VIRTUAL_COMPLIANT(IDiGraphView);

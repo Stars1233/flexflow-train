@@ -6,7 +6,7 @@
 namespace FlexFlow {
 
 template <typename GraphInputName, typename SlotName>
-std::unordered_set<KwargDataflowGraphInput<GraphInputName>>
+std::set<KwargDataflowGraphInput<GraphInputName>>
     get_all_kwarg_dataflow_graph_inputs(
         OpenKwargDataflowGraphView<GraphInputName, SlotName> const &view) {
   return view.get_inputs();

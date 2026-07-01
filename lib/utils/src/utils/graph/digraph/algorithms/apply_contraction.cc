@@ -7,7 +7,7 @@
 namespace FlexFlow {
 
 DiGraphView apply_contraction(DiGraphView const &g,
-                              std::unordered_map<Node, Node> const &nodes) {
+                              std::map<Node, Node> const &nodes) {
   auto get_dst = [&](Node const &src) {
     Node result = src;
     while (contains_key(nodes, result)) {

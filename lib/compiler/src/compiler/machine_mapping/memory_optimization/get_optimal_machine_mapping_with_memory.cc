@@ -19,7 +19,7 @@
 #include "utils/containers/flatmap.h"
 #include "utils/containers/generate_map.h"
 #include "utils/containers/get_all_assignments.h"
-#include "utils/containers/unordered_set_of.h"
+#include "utils/containers/set_of.h"
 #include "utils/exception.h"
 #include "utils/overload.h"
 
@@ -81,24 +81,21 @@ MachineMappingWithMemoryResult get_optimal_machine_mapping_with_memory(
 
   auto get_boundary_machine_view_assignments =
       [&](MachineMappingProblemTree const &root,
-          std::unordered_set<BinaryTreePath> const &boundary_layers)
-      -> std::unordered_set<ParallelLayerGuidObliviousMachineMapping> {
-    std::unordered_map<BinaryTreePath, std::unordered_set<MachineView>>
-        allowed = generate_map(
-            boundary_layers,
-            [&](BinaryTreePath const &l) -> std::unordered_set<MachineView> {
-              UnmappedRuntimeOnlyOpCostEstimateKey leaf =
-                  mm_problem_tree_get_subtree_at_path(root, l)
-                      .value()
-                      .get<UnmappedRuntimeOnlyOpCostEstimateKey>();
-              return context.allowed_machine_views(leaf, resources);
-            });
-
-    return transform(
-        get_all_assignments(allowed),
-        [](std::unordered_map<BinaryTreePath, MachineView> const &m) {
-          return ParallelLayerGuidObliviousMachineMapping{m};
+          std::set<BinaryTreePath> const &boundary_layers)
+      -> std::set<ParallelLayerGuidObliviousMachineMapping> {
+    std::map<BinaryTreePath, std::set<MachineView>> allowed = generate_map(
+        boundary_layers, [&](BinaryTreePath const &l) -> std::set<MachineView> {
+          UnmappedRuntimeOnlyOpCostEstimateKey leaf =
+              mm_problem_tree_get_subtree_at_path(root, l)
+                  .value()
+                  .get<UnmappedRuntimeOnlyOpCostEstimateKey>();
+          return context.allowed_machine_views(leaf, resources);
         });
+
+    return transform(get_all_assignments(allowed),
+                     [](std::map<BinaryTreePath, MachineView> const &m) {
+                       return ParallelLayerGuidObliviousMachineMapping{m};
+                     });
   };
 
   auto eval_pre_boundary_mapping =
@@ -226,9 +223,8 @@ MachineMappingWithMemoryResult get_optimal_machine_mapping_with_memory(
         return parallel_combine(resource_split, left_result, right_result);
       };
 
-  std::unordered_set<MachineMappingWithMemoryResult> parallel_results =
-      transform(get_machine_resource_splits(resources),
-                evaluate_resource_split);
+  std::set<MachineMappingWithMemoryResult> parallel_results = transform(
+      get_machine_resource_splits(resources), evaluate_resource_split);
 
   return minimize_runtime(series_result,
                           get_mapping_with_minimal_runtime(parallel_results));
@@ -241,10 +237,10 @@ MachineMappingWithMemoryResult get_optimal_machine_mapping_with_memory(
     MachineComputeResourceSlice const &resource,
     MachineMappingConstraints const &constraints) {
 
-  std::unordered_set<MachineView> candidates = [&] {
+  std::set<MachineView> candidates = [&] {
     std::optional<MachineView> machine_view = require_only_root(constraints);
     if (machine_view.has_value()) {
-      return std::unordered_set{machine_view.value()};
+      return std::set{machine_view.value()};
     } else {
       return context.allowed_machine_views(leaf, resource);
     }
@@ -261,7 +257,7 @@ MachineMappingWithMemoryResult get_optimal_machine_mapping_with_memory(
                                                              machine_view);
   };
 
-  std::unordered_set<MachineMappingWithMemoryResult> candidate_results =
+  std::set<MachineMappingWithMemoryResult> candidate_results =
       transform(candidates, get_mapping_result);
 
   return get_mapping_with_minimal_runtime(candidate_results);

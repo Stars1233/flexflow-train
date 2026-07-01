@@ -20,9 +20,8 @@ positive_int get_degree_of_replica_type(ReplicaParallelDimSet const &s,
   }
 }
 
-std::unordered_set<ReplicaParallelDim>
-    get_replica_dims(ReplicaParallelDimSet const &s) {
-  return std::unordered_set<ReplicaParallelDim>{
+std::set<ReplicaParallelDim> get_replica_dims(ReplicaParallelDimSet const &s) {
+  return std::set<ReplicaParallelDim>{
       ReplicaParallelDim{s.sum_degree.value, ReplicaType::SUM},
       ReplicaParallelDim{s.discard_copy_degree.value,
                          ReplicaType::DISCARD_COPY},

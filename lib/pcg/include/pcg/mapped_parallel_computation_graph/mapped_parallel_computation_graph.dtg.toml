@@ -7,7 +7,7 @@ includes = [
   "pcg/mapped_parallel_computation_graph/mapped_operator_task_group.h",
   "pcg/parallel_computation_graph/parallel_computation_graph.h",
   "pcg/mapped_parallel_computation_graph/mapped_parallel_layer_attrs.dtg.h",
-  "<unordered_map>",
+  "<map>",
 ]
 
 [[fields]]

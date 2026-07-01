@@ -13,9 +13,9 @@
 #include "utils/containers/map_keys.h"
 #include "utils/containers/map_values.h"
 #include "utils/containers/range.h"
+#include "utils/containers/set_of.h"
 #include "utils/containers/set_union.h"
 #include "utils/containers/transform.h"
-#include "utils/containers/unordered_set_of.h"
 #include "utils/nonnegative_int/nonnegative_range.h"
 #include "utils/nonnegative_int/num_elements.h"
 #include "utils/orthotope/minimal_dim_domain.h"
@@ -35,11 +35,11 @@ num_tensor_dims_t get_ptensor_dim_degrees_num_tensor_dims(
       get_ptensor_dim_degrees_num_shard_dims(degrees));
 }
 
-std::unordered_set<parallel_tensor_dim_idx_t>
+std::set<parallel_tensor_dim_idx_t>
     get_parallel_tensor_dim_indices(ParallelTensorDimDegrees const &degrees) {
 
-  std::unordered_set<parallel_tensor_dim_idx_t> result =
-      unordered_set_of(dim_idxs_for_num_shard_dims(
+  std::set<parallel_tensor_dim_idx_t> result =
+      set_of(dim_idxs_for_num_shard_dims(
           get_ptensor_dim_degrees_num_shard_dims(degrees)));
   result.insert(sum_dim_idx());
   result.insert(discard_copy_dim_idx());
@@ -84,18 +84,16 @@ positive_int get_degree_for_parallel_tensor_dim_idx(
   }
 }
 
-std::unordered_map<parallel_tensor_dim_idx_t, positive_int>
+std::map<parallel_tensor_dim_idx_t, positive_int>
     get_parallel_tensor_degree_map(ParallelTensorDimDegrees const &degrees) {
 
-  std::unordered_map<parallel_tensor_dim_idx_t, positive_int>
-      replica_dim_degrees = {
-          {parallel_tensor_dim_idx_t{ReplicaType::SUM},
-           degrees.sum_degree.value},
-          {parallel_tensor_dim_idx_t{ReplicaType::DISCARD_COPY},
-           degrees.discard_copy_degree.value},
-      };
+  std::map<parallel_tensor_dim_idx_t, positive_int> replica_dim_degrees = {
+      {parallel_tensor_dim_idx_t{ReplicaType::SUM}, degrees.sum_degree.value},
+      {parallel_tensor_dim_idx_t{ReplicaType::DISCARD_COPY},
+       degrees.discard_copy_degree.value},
+  };
 
-  std::unordered_map<ff_dim_t, positive_int> shard_dim_degrees =
+  std::map<ff_dim_t, positive_int> shard_dim_degrees =
       generate_map(get_idxs(degrees.shard_degrees), [&](ff_dim_t const &dim) {
         return degrees.shard_degrees.at(dim);
       });
@@ -107,23 +105,22 @@ std::unordered_map<parallel_tensor_dim_idx_t, positive_int>
       }));
 }
 
-std::unordered_set<ParallelTensorSpaceCoordinate>
-    get_parallel_tensor_space_coordinates(
-        ParallelTensorDimDegrees const &degrees) {
+std::set<ParallelTensorSpaceCoordinate> get_parallel_tensor_space_coordinates(
+    ParallelTensorDimDegrees const &degrees) {
 
-  std::unordered_map<parallel_tensor_dim_idx_t, positive_int> degree_map =
+  std::map<parallel_tensor_dim_idx_t, positive_int> degree_map =
       get_parallel_tensor_degree_map(degrees);
 
-  std::unordered_map<parallel_tensor_dim_idx_t,
-                     std::unordered_set<nonnegative_int>>
+  std::map<parallel_tensor_dim_idx_t, std::set<nonnegative_int>>
       possible_per_dim_coords = map_values(degree_map, [](positive_int degree) {
-        return unordered_set_of(nonnegative_range(degree));
+        return set_of(nonnegative_range(degree));
       });
 
   return transform(
       get_all_assignments(possible_per_dim_coords),
-      [](std::unordered_map<parallel_tensor_dim_idx_t, nonnegative_int> const
-             &m) { return parallel_tensor_space_coord_from_map(m); });
+      [](std::map<parallel_tensor_dim_idx_t, nonnegative_int> const &m) {
+        return parallel_tensor_space_coord_from_map(m);
+      });
 }
 
 DimDomain<parallel_tensor_dim_idx_t>
@@ -142,7 +139,7 @@ DimDomain<parallel_tensor_dim_idx_t>
 ParallelTensorDimDegrees parallel_tensor_dim_degrees_from_dim_domain(
     DimDomain<parallel_tensor_dim_idx_t> const &dim_domain) {
 
-  std::unordered_map<ff_dim_t, positive_int> shard_dims =
+  std::map<ff_dim_t, positive_int> shard_dims =
       filtermap_keys(dim_domain.dims, [](parallel_tensor_dim_idx_t dim_idx) {
         return dim_idx.try_require_shard_dim();
       });

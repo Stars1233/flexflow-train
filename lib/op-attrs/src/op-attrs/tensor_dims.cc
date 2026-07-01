@@ -13,8 +13,8 @@
 #include "utils/containers/contains.h"
 #include "utils/containers/product.h"
 #include "utils/containers/reversed.h"
+#include "utils/containers/set_of.h"
 #include "utils/containers/transform.h"
-#include "utils/containers/unordered_set_of.h"
 #include "utils/containers/vector_of.h"
 #include "utils/containers/zip.h"
 #include "utils/integer_conversions.h"
@@ -147,7 +147,7 @@ TensorDimsCoord get_broadcast_src_coord(TensorDims const &input_dims,
   return result;
 }
 
-std::unordered_set<TensorDimsCoord>
+std::set<TensorDimsCoord>
     get_tensor_dims_coord_set(TensorDims const &tensor_dims) {
   std::vector<std::vector<nonnegative_int>> per_dim_ranges = transform(
       vector_of(tensor_dims.ff_ordered),
@@ -155,8 +155,8 @@ std::unordered_set<TensorDimsCoord>
         return nonnegative_range(dim_size.nonnegative_int_from_positive_int());
       });
 
-  std::unordered_set<std::vector<nonnegative_int>> raw_points =
-      unordered_set_of(cartesian_product(per_dim_ranges));
+  std::set<std::vector<nonnegative_int>> raw_points =
+      set_of(cartesian_product(per_dim_ranges));
 
   return transform(raw_points,
                    [](std::vector<nonnegative_int> const &raw_point) {
@@ -164,12 +164,12 @@ std::unordered_set<TensorDimsCoord>
                    });
 }
 
-std::unordered_set<ff_dim_t> get_ff_dim_t_set(TensorDims const &tensor_dims) {
-  return unordered_set_of(get_idxs(tensor_dims.ff_ordered));
+std::set<ff_dim_t> get_ff_dim_t_set(TensorDims const &tensor_dims) {
+  return set_of(get_idxs(tensor_dims.ff_ordered));
 }
 
 std::optional<TensorDims>
-    get_broadcast_target_dims(std::unordered_set<TensorDims> const &dims) {
+    get_broadcast_target_dims(std::set<TensorDims> const &dims) {
   for (TensorDims target_candidate : dims) {
     if (all_of(dims, [&](TensorDims const &d) {
           return tensor_dims_is_broadcastable_to(d, target_candidate);

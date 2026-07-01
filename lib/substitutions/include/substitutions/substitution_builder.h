@@ -17,19 +17,16 @@ public:
                 std::optional<std::string> const &name = std::nullopt);
   void equate_outputs(PatternValue const &, OutputGraphExprValue const &);
 
-  std::unordered_map<TensorSlotName, PatternValue> add_pattern_node(
+  std::map<TensorSlotName, PatternValue> add_pattern_node(
       OperatorAttributePattern const &node_pattern,
-      std::unordered_map<TensorSlotName, PatternValue> const &inputs,
-      std::unordered_map<TensorSlotName, TensorAttributePattern> const
-          &output_patterns,
+      std::map<TensorSlotName, PatternValue> const &inputs,
+      std::map<TensorSlotName, TensorAttributePattern> const &output_patterns,
       std::optional<std::string> const &name = std::nullopt);
 
-  std::unordered_map<TensorSlotName, OutputGraphExprValue>
-      add_output_graph_node(
-          OutputOperatorAttrsAssignment const &node_expr,
-          std::unordered_map<TensorSlotName, OutputGraphExprValue> const
-              &inputs,
-          std::unordered_set<TensorSlotName> const &output_slots);
+  std::map<TensorSlotName, OutputGraphExprValue> add_output_graph_node(
+      OutputOperatorAttrsAssignment const &node_expr,
+      std::map<TensorSlotName, OutputGraphExprValue> const &inputs,
+      std::set<TensorSlotName> const &output_slots);
 
   PatternNode pattern_node_named(std::string const &) const;
   PatternInput pattern_input_named(std::string const &) const;

@@ -39,7 +39,7 @@ positive_int get_kvSeqLength(MultiHeadAttentionInputs const &);
 positive_int get_num_samples(MultiHeadAttentionParallelInputs const &);
 positive_int get_num_samples(MultiHeadAttentionInputs const &);
 
-std::unordered_map<TensorSlotName, IncomingTensorRole>
+std::map<TensorSlotName, IncomingTensorRole>
     get_attention_incoming_tensor_roles(MultiHeadAttentionAttrs const &);
 
 tl::expected<TensorShape, std::string>
@@ -63,7 +63,7 @@ tl::expected<TensorShape, std::string>
                      TensorShape const &input_k,
                      TensorShape const &input_v);
 
-tl::expected<std::unordered_map<TensorSlotName, TensorShape>, std::string>
+tl::expected<std::map<TensorSlotName, TensorShape>, std::string>
     get_weight_shapes(MultiHeadAttentionAttrs const &,
                       TensorShape const &input_q,
                       TensorShape const &input_k,
@@ -106,14 +106,13 @@ tl::expected<ParallelTensorShape, std::string>
                      ParallelTensorShape const &input_k,
                      ParallelTensorShape const &input_v);
 
-tl::expected<std::unordered_map<TensorSlotName, ParallelTensorShape>,
-             std::string>
+tl::expected<std::map<TensorSlotName, ParallelTensorShape>, std::string>
     get_weight_shapes(MultiHeadAttentionAttrs const &,
                       ParallelTensorShape const &input_q,
                       ParallelTensorShape const &input_k,
                       ParallelTensorShape const &input_v);
 
-tl::expected<std::unordered_map<TensorSlotName, InitializerAttrs>, std::string>
+tl::expected<std::map<TensorSlotName, InitializerAttrs>, std::string>
     get_initializers(
         MultiHeadAttentionAttrs const &,
         TensorShape const &input_q,

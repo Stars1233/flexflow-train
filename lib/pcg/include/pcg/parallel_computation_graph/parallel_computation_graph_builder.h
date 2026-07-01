@@ -138,11 +138,10 @@ private:
                                  std::string const &name);
 
 private:
-  std::unordered_map<TensorSlotName, parallel_tensor_guid_t> add_layer(
+  std::map<TensorSlotName, parallel_tensor_guid_t> add_layer(
       ParallelLayerAttrs const &layer,
-      std::unordered_map<TensorSlotName, parallel_tensor_guid_t> const &inputs,
-      std::unordered_map<TensorSlotName, InitializerAttrs> const
-          &weight_initializers);
+      std::map<TensorSlotName, parallel_tensor_guid_t> const &inputs,
+      std::map<TensorSlotName, InitializerAttrs> const &weight_initializers);
 
   parallel_tensor_guid_t
       add_weight(ParallelTensorShape const &weight_tensor_shape,

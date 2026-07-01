@@ -2,17 +2,16 @@
 
 namespace FlexFlow {
 
-std::unordered_set<Node>
-    DataflowGraphView::query_nodes(NodeQuery const &q) const {
+std::set<Node> DataflowGraphView::query_nodes(NodeQuery const &q) const {
   return this->get_interface().query_nodes(q);
 }
 
-std::unordered_set<DataflowEdge>
+std::set<DataflowEdge>
     DataflowGraphView::query_edges(DataflowEdgeQuery const &q) const {
   return this->get_interface().query_edges(q);
 }
 
-std::unordered_set<DataflowOutput>
+std::set<DataflowOutput>
     DataflowGraphView::query_outputs(DataflowOutputQuery const &q) const {
   return this->get_interface().query_outputs(q);
 }

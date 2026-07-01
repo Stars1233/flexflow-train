@@ -1,14 +1,13 @@
 #include "utils/containers/set_intersection.h"
 #include "test/utils/doctest/fmt/optional.h"
 #include "test/utils/doctest/fmt/set.h"
-#include "test/utils/doctest/fmt/unordered_set.h"
 #include <doctest/doctest.h>
 
 using namespace ::FlexFlow;
 
 TEST_SUITE(FF_TEST_SUITE) {
   TEST_CASE_TEMPLATE(
-      "set_intersection(S, S)", S, std::unordered_set<int>, std::set<int>) {
+      "set_intersection(S, S)", S, std::set<int>, std::set<int>) {
     S input_l = {1, 2, 3};
     S input_r = {2, 3, 5};
 
@@ -19,7 +18,7 @@ TEST_SUITE(FF_TEST_SUITE) {
   }
 
   TEST_CASE_TEMPLATE(
-      "set_intersection(C<S>)", S, std::unordered_set<int>, std::set<int>) {
+      "set_intersection(C<S>)", S, std::set<int>, std::set<int>) {
     SUBCASE("input is empty container") {
       std::vector<S> input = {};
 

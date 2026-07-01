@@ -9,7 +9,7 @@ NodeQuery node_query_all() {
 
 NodeQuery query_intersection(NodeQuery const &lhs, NodeQuery const &rhs) {
 
-  std::unordered_set<Node> nodes;
+  std::set<Node> nodes;
 
   if (is_matchall(lhs.nodes) && !is_matchall(rhs.nodes)) {
     nodes = allowed_values(rhs.nodes);
@@ -28,8 +28,8 @@ NodeQuery query_union(NodeQuery const &lhs, NodeQuery const &rhs) {
   NOT_IMPLEMENTED();
 }
 
-std::unordered_set<Node> apply_node_query(NodeQuery const &query,
-                                          std::unordered_set<Node> const &ns) {
+std::set<Node> apply_node_query(NodeQuery const &query,
+                                std::set<Node> const &ns) {
   return apply_query(query.nodes, ns);
 }
 

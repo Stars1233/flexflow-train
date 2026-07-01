@@ -14,7 +14,7 @@ void Graph::remove_node_unsafe(Node const &node) {
   get_ptr().remove_node_unsafe(node);
 }
 
-std::unordered_set<Node> Graph::query_nodes(NodeQuery const &q) const {
+std::set<Node> Graph::query_nodes(NodeQuery const &q) const {
   return get_ptr().query_nodes(q);
 }
 

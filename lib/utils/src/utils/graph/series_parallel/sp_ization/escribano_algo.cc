@@ -9,7 +9,7 @@
 #include "utils/containers/set_union.h"
 #include "utils/containers/transform.h"
 #include "utils/containers/values.h"
-#include "utils/fmt/unordered_multiset.h"
+#include "utils/fmt/multiset.h"
 #include "utils/graph/algorithms.h"
 #include "utils/graph/digraph/algorithms/get_descendants.h"
 #include "utils/graph/digraph/algorithms/get_edges.h"
@@ -33,28 +33,27 @@
 #include "utils/positive_int/positive_int.h"
 #include <libassert/assert.hpp>
 
-#include <unordered_map>
-#include <unordered_set>
+#include <map>
+#include <set>
 
 namespace FlexFlow {
 
-static std::unordered_set<Node> filter_out_sync_nodes(
-    std::unordered_set<Node> const &nodes,
-    std::unordered_map<Node, NodeRole> const &node_roles) {
+static std::set<Node>
+    filter_out_sync_nodes(std::set<Node> const &nodes,
+                          std::map<Node, NodeRole> const &node_roles) {
   return filter(
       nodes, [&](Node const &n) { return node_roles.at(n) != NodeRole::SYNC; });
 }
 
 static nonnegative_int
     get_max_depth(DiGraph const &sp,
-                  std::unordered_map<Node, nonnegative_int> const &depth_map) {
+                  std::map<Node, nonnegative_int> const &depth_map) {
   return maximum(values(filter_keys(
       depth_map, [&](Node const &n) { return contains(get_nodes(sp), n); })));
 }
 
-DiGraph add_dummy_nodes(DiGraph g,
-                        std::unordered_map<Node, NodeRole> &node_roles) {
-  std::unordered_map<Node, nonnegative_int> depth_map =
+DiGraph add_dummy_nodes(DiGraph g, std::map<Node, NodeRole> &node_roles) {
+  std::map<Node, nonnegative_int> depth_map =
       get_longest_path_lengths_from_root(g);
 
   for (DirectedEdge const &e : get_edges(g)) {
@@ -87,11 +86,10 @@ DiGraph add_dummy_nodes(DiGraph g,
   return g;
 }
 
-std::unordered_set<Node>
-    get_component(DiGraph const &g,
-                  Node const &node,
-                  std::unordered_map<Node, nonnegative_int> const &depth_map,
-                  std::unordered_map<Node, NodeRole> const &node_roles) {
+std::set<Node> get_component(DiGraph const &g,
+                             Node const &node,
+                             std::map<Node, nonnegative_int> const &depth_map,
+                             std::map<Node, NodeRole> const &node_roles) {
 
   nonnegative_int max_depth = get_max_depth(g, depth_map);
   auto is_in_last_2_strata = [&](Node const &n) {
@@ -109,49 +107,47 @@ std::unordered_set<Node>
     }
   };
 
-  std::unordered_set<Node> last_two_layers_nodes =
+  std::set<Node> last_two_layers_nodes =
       filter(get_nodes(g), is_in_last_2_strata);
 
   DiGraphView subgraph = get_subgraph(g, last_two_layers_nodes);
-  std::unordered_set<Node> component =
+  std::set<Node> component =
       get_only(filter(get_weakly_connected_components(subgraph),
-                      [&](std::unordered_set<Node> const &component) {
+                      [&](std::set<Node> const &component) {
                         return contains(component, node);
                       }));
 
-  std::unordered_set<Node> component_without_sync_nodes =
+  std::set<Node> component_without_sync_nodes =
       filter_out_sync_nodes(component, node_roles);
 
   return component_without_sync_nodes;
 }
 
-static std::unordered_set<Node>
+static std::set<Node>
     get_forest_escribano(DiGraph const &g,
                          Node const &handle,
-                         std::unordered_set<Node> const &component,
-                         std::unordered_map<Node, NodeRole> const &node_roles) {
-  std::unordered_set<std::unordered_set<Node>> subtrees =
+                         std::set<Node> const &component,
+                         std::map<Node, NodeRole> const &node_roles) {
+  std::set<std::set<Node>> subtrees =
       transform(get_successors(g, handle), [&](Node const &n) {
         return set_union(get_descendants(g, n), {n});
       });
 
   auto subtrees_overlapping_with_component =
-      filter(subtrees, [&](std::unordered_set<Node> subtree) {
+      filter(subtrees, [&](std::set<Node> subtree) {
         return set_intersection(subtree, component).size() > 0;
       });
 
-  std::unordered_set<Node> forest =
-      set_union(subtrees_overlapping_with_component);
+  std::set<Node> forest = set_union(subtrees_overlapping_with_component);
   forest.insert(handle);
 
   return filter_out_sync_nodes(forest, node_roles);
 }
 
-static std::pair<nonempty_unordered_set<Node>, nonempty_unordered_set<Node>>
-    get_up_and_down_sets(
-        DiGraph const &g,
-        std::unordered_set<Node> const &forest,
-        std::unordered_map<Node, nonnegative_int> const &depth_map) {
+static std::pair<nonempty_set<Node>, nonempty_set<Node>>
+    get_up_and_down_sets(DiGraph const &g,
+                         std::set<Node> const &forest,
+                         std::map<Node, nonnegative_int> const &depth_map) {
 
   nonnegative_int max_depth = get_max_depth(g, depth_map);
 
@@ -163,11 +159,10 @@ static std::pair<nonempty_unordered_set<Node>, nonempty_unordered_set<Node>>
                         grouped_by_depth.at_l(max_depth));
 }
 
-static std::unordered_set<DirectedEdge>
-    edges_to_remove(DiGraph const &g,
-                    std::unordered_set<Node> const &up,
-                    std::unordered_set<Node> const &down) {
-  std::unordered_set<DirectedEdge> to_remove;
+static std::set<DirectedEdge> edges_to_remove(DiGraph const &g,
+                                              std::set<Node> const &up,
+                                              std::set<Node> const &down) {
+  std::set<DirectedEdge> to_remove;
 
   for (Node const &u : up) {
     to_remove = set_union(to_remove, get_outgoing_edges(g, u));
@@ -179,10 +174,9 @@ static std::unordered_set<DirectedEdge>
   return to_remove;
 }
 
-static std::unordered_set<DirectedEdge>
-    edges_to_add_escribano(std::unordered_set<Node> const &up,
-                           std::unordered_set<Node> const &down,
-                           Node const &sync_node) {
+static std::set<DirectedEdge> edges_to_add_escribano(std::set<Node> const &up,
+                                                     std::set<Node> const &down,
+                                                     Node const &sync_node) {
   return set_union(transform(up,
                              [&](Node const &u) {
                                return DirectedEdge{u, sync_node};
@@ -192,8 +186,7 @@ static std::unordered_set<DirectedEdge>
                    }));
 }
 
-static Node add_sync_node(DiGraph &sp,
-                          std::unordered_map<Node, NodeRole> &node_roles) {
+static Node add_sync_node(DiGraph &sp, std::map<Node, NodeRole> &node_roles) {
   Node sync_node = sp.add_node();
   node_roles[sync_node] = NodeRole::SYNC;
   return sync_node;
@@ -203,10 +196,10 @@ SeriesParallelDecomposition escribano_sp_ization(DiGraph g) {
   ASSERT(is_2_terminal_dag(g));
   ASSERT(is_acyclic(g));
 
-  std::unordered_map<Node, NodeRole> node_roles = get_initial_node_role_map(g);
+  std::map<Node, NodeRole> node_roles = get_initial_node_role_map(g);
 
   g = add_dummy_nodes(g, node_roles);
-  std::unordered_map<Node, nonnegative_int> depth_map =
+  std::map<Node, nonnegative_int> depth_map =
       get_longest_path_lengths_from_root(g);
 
   DiGraph sp = DiGraph::create<AdjacencyDiGraph>();
@@ -223,18 +216,16 @@ SeriesParallelDecomposition escribano_sp_ization(DiGraph g) {
     sp.add_node_unsafe(node);
     add_edges(sp, get_incoming_edges(g, node));
 
-    std::unordered_set<Node> component =
-        get_component(sp, node, depth_map, node_roles);
+    std::set<Node> component = get_component(sp, node, depth_map, node_roles);
     Node handle = get_only(get_lowest_common_ancestors(sp, component).value());
-    std::unordered_set<Node> forest =
+    std::set<Node> forest =
         get_forest_escribano(sp, handle, component, node_roles);
 
-    std::pair<nonempty_unordered_set<Node>, nonempty_unordered_set<Node>>
-        up_down_sets = get_up_and_down_sets(sp, forest, depth_map);
+    std::pair<nonempty_set<Node>, nonempty_set<Node>> up_down_sets =
+        get_up_and_down_sets(sp, forest, depth_map);
 
-    std::unordered_set<Node> up = up_down_sets.first.unwrap_as_unordered_set();
-    std::unordered_set<Node> down =
-        up_down_sets.second.unwrap_as_unordered_set();
+    std::set<Node> up = up_down_sets.first.unwrap_as_set();
+    std::set<Node> down = up_down_sets.second.unwrap_as_set();
 
     remove_edges(sp, edges_to_remove(sp, up, down));
 

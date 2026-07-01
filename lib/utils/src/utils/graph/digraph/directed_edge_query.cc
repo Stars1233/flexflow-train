@@ -13,7 +13,7 @@ bool matches_edge(DirectedEdgeQuery const &q, DirectedEdge const &e) {
 
 DirectedEdgeQuery query_intersection(DirectedEdgeQuery const &lhs,
                                      DirectedEdgeQuery const &rhs) {
-  std::unordered_set<Node> result_srcs;
+  std::set<Node> result_srcs;
   if (is_matchall(lhs.srcs) && !is_matchall(rhs.srcs)) {
     result_srcs = allowed_values(rhs.srcs);
   } else if (!is_matchall(lhs.srcs) && is_matchall(rhs.srcs)) {
@@ -22,7 +22,7 @@ DirectedEdgeQuery query_intersection(DirectedEdgeQuery const &lhs,
     result_srcs = allowed_values(query_intersection(lhs.srcs, rhs.srcs));
   }
 
-  std::unordered_set<Node> result_dsts;
+  std::set<Node> result_dsts;
   if (is_matchall(lhs.dsts) && !is_matchall(rhs.dsts)) {
     result_dsts = allowed_values(rhs.dsts);
   } else if (!is_matchall(lhs.dsts) && is_matchall(rhs.dsts)) {

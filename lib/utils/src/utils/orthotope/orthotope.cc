@@ -6,10 +6,10 @@
 #include "utils/containers/filter_idxs.h"
 #include "utils/containers/product.h"
 #include "utils/containers/scanr.h"
+#include "utils/containers/set_of.h"
 #include "utils/containers/slice.h"
 #include "utils/containers/sum.h"
 #include "utils/containers/transform.h"
-#include "utils/containers/unordered_set_of.h"
 #include "utils/containers/zip3_with_strict.h"
 #include "utils/containers/zip_strict.h"
 #include "utils/containers/zip_with_strict.h"
@@ -28,14 +28,14 @@ positive_int orthotope_get_volume(Orthotope const &orthotope) {
   return product(orthotope.dims);
 }
 
-std::unordered_set<OrthotopeCoord>
+std::set<OrthotopeCoord>
     get_all_coords_in_orthotope(Orthotope const &orthotope) {
-  std::unordered_multiset<std::vector<nonnegative_int>> raw_coords =
+  std::multiset<std::vector<nonnegative_int>> raw_coords =
       cartesian_product(transform(orthotope.dims, [](positive_int dim_size) {
         return nonnegative_range(dim_size);
       }));
 
-  return unordered_set_of(
+  return set_of(
       transform(raw_coords, [](std::vector<nonnegative_int> const &raw_coord) {
         return OrthotopeCoord{raw_coord};
       }));

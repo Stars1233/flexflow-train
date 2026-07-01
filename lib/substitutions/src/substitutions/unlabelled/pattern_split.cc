@@ -13,8 +13,8 @@ PatternSplit find_even_split(UnlabelledGraphPattern const &pattern) {
 
   int split_point = topological_ordering.size() / 2;
   auto split = vector_split(topological_ordering, split_point);
-  std::unordered_set<PatternNode> prefix = unordered_set_of(split.first);
-  std::unordered_set<PatternNode> postfix = unordered_set_of(split.second);
+  std::set<PatternNode> prefix = set_of(split.first);
+  std::set<PatternNode> postfix = set_of(split.second);
   return PatternSplit{prefix, postfix};
 }
 

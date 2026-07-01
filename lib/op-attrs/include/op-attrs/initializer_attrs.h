@@ -7,7 +7,13 @@
 namespace FlexFlow {
 
 InitializerAttrs make_zero_initializer();
-InitializerAttrs make_kaiming_uniform(TensorDims const &);
+InitializerAttrs make_kaiming_uniform(
+    TensorDims const &,
+    float a = 0.0,
+    KaimingInitializerMode mode = KaimingInitializerMode::FAN_IN,
+    KaimingInitializerNonlinearity nonlinearity =
+        KaimingInitializerNonlinearity::LEAKY_RELU,
+    int seed = 0);
 
 } // namespace FlexFlow
 

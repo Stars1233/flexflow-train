@@ -3,7 +3,7 @@
 
 #include "utils/graph/series_parallel/non_normal_sp_decomposition.dtg.h"
 #include "utils/graph/series_parallel/series_parallel_decomposition.dtg.h"
-#include <unordered_set>
+#include <set>
 #include <vector>
 
 namespace FlexFlow {
@@ -14,7 +14,7 @@ NonNormalSPDecomposition non_normal_series_composition(
     std::vector<NonNormalSPDecomposition> const &sp_compositions);
 
 NonNormalSPDecomposition non_normal_parallel_composition(
-    std::unordered_multiset<NonNormalSPDecomposition> const &sp_compositions);
+    std::multiset<NonNormalSPDecomposition> const &sp_compositions);
 
 NonNormalSPDecomposition as_non_normal(SeriesParallelDecomposition const &sp);
 

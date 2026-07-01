@@ -14,15 +14,15 @@ namespace FlexFlow {
 
 ComputationGraph make_empty_computation_graph();
 
-std::unordered_set<layer_guid_t> get_layers(ComputationGraph const &);
+std::set<layer_guid_t> get_layers(ComputationGraph const &);
 
 LayerAddedResult add_layer(
     ComputationGraph &computation_graph,
     LayerAttrs const &attrs,
-    std::unordered_map<TensorSlotName, tensor_guid_t> const &inputs,
-    std::unordered_map<TensorSlotName, tensor_guid_t> const &weights,
-    std::optional<std::unordered_map<TensorSlotName, CreateGrad>> const
-        &outputs = std::nullopt);
+    std::map<TensorSlotName, tensor_guid_t> const &inputs,
+    std::map<TensorSlotName, tensor_guid_t> const &weights,
+    std::optional<std::map<TensorSlotName, CreateGrad>> const &outputs =
+        std::nullopt);
 
 LayerAddedResult add_input_layer(ComputationGraph &computation_graph,
                                  TensorShape const &tensor_shape,
@@ -35,38 +35,37 @@ bool are_tensor_guid_shapes_equivalent(ComputationGraph const &cg,
 
 std::vector<layer_guid_t> topological_ordering(ComputationGraph const &cg);
 
-std::unordered_map<TensorSlotName, tensor_guid_t>
+std::map<TensorSlotName, tensor_guid_t>
     get_outgoing_tensors(ComputationGraph const &cg, layer_guid_t n);
 
-std::unordered_map<TensorSlotName, tensor_guid_t>
+std::map<TensorSlotName, tensor_guid_t>
     get_incoming_tensors(ComputationGraph const &cg, layer_guid_t n);
 
-std::unordered_map<TensorSlotName, tensor_guid_t>
+std::map<TensorSlotName, tensor_guid_t>
     get_incoming_inputs(ComputationGraph const &, layer_guid_t const &);
 
-std::unordered_map<TensorSlotName, TensorShape>
+std::map<TensorSlotName, TensorShape>
     get_incoming_input_shapes(ComputationGraph const &, layer_guid_t const &);
 
-std::unordered_map<TensorSlotName, tensor_guid_t>
+std::map<TensorSlotName, tensor_guid_t>
     get_incoming_weights(ComputationGraph const &, layer_guid_t const &);
 
-std::unordered_set<tensor_guid_t> get_all_tensors(ComputationGraph const &);
-std::unordered_map<tensor_guid_t, TensorAttrs>
+std::set<tensor_guid_t> get_all_tensors(ComputationGraph const &);
+std::map<tensor_guid_t, TensorAttrs>
     get_all_tensor_attrs(ComputationGraph const &);
 
-std::unordered_set<ComputationGraphEdge>
+std::set<ComputationGraphEdge>
     get_subgraph_incoming_edges(ComputationGraph const &,
-                                std::unordered_set<layer_guid_t> const &);
-std::unordered_set<ComputationGraphEdge>
+                                std::set<layer_guid_t> const &);
+std::set<ComputationGraphEdge>
     get_subgraph_outgoing_edges(ComputationGraph const &,
-                                std::unordered_set<layer_guid_t> const &);
-std::unordered_set<layer_guid_t>
-    get_subgraph_successors(ComputationGraph const &,
-                            std::unordered_set<layer_guid_t> const &);
+                                std::set<layer_guid_t> const &);
+std::set<layer_guid_t> get_subgraph_successors(ComputationGraph const &,
+                                               std::set<layer_guid_t> const &);
 
 LayerAttrs get_layer_attrs(ComputationGraph const &cg, layer_guid_t const &n);
 
-std::unordered_map<layer_guid_t, LayerAttrs>
+std::map<layer_guid_t, LayerAttrs>
     get_layer_attrs_mapping(ComputationGraph const &cg);
 
 layer_guid_t get_layer_by_name(ComputationGraph const &cg,

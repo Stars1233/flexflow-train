@@ -26,7 +26,7 @@ namespace FlexFlow {
 OpenKwargDataflowSubgraphResult<int, TensorSlotName>
     subgraph_matched(OpenKwargDataflowGraphView<int, TensorSlotName> const &g,
                      UnlabelledKwargDataflowGraphPatternMatch const &match) {
-  std::unordered_set<Node> matched_nodes = right_entries(match.node_assignment);
+  std::set<Node> matched_nodes = right_entries(match.node_assignment);
   return get_open_kwarg_dataflow_graph_subgraph(
       g, matched_nodes, make_counter_func());
 }
@@ -124,8 +124,8 @@ bool pattern_matches_subgraph_under(
   SubgraphConcreteFromPattern concrete_from_pattern{
       match, full_graph_values_to_subgraph_inputs};
 
-  std::unordered_set<Node> concrete_nodes = get_nodes(subgraph);
-  std::unordered_set<Node> concrete_nodes_from_match =
+  std::set<Node> concrete_nodes = get_nodes(subgraph);
+  std::set<Node> concrete_nodes_from_match =
       transform(get_pattern_nodes(pattern), concrete_from_pattern);
 
   if (concrete_nodes != concrete_nodes_from_match) {
@@ -139,9 +139,9 @@ bool pattern_matches_subgraph_under(
     }
   }
 
-  std::unordered_set<OpenKwargDataflowEdge<int, TensorSlotName>>
-      concrete_edges = get_all_open_kwarg_dataflow_edges(subgraph);
-  std::unordered_set<OpenKwargDataflowEdge<int, TensorSlotName>>
+  std::set<OpenKwargDataflowEdge<int, TensorSlotName>> concrete_edges =
+      get_all_open_kwarg_dataflow_edges(subgraph);
+  std::set<OpenKwargDataflowEdge<int, TensorSlotName>>
       concrete_edge_from_match =
           transform(get_pattern_edges(pattern),
                     [&](PatternEdge const &e)
@@ -153,9 +153,9 @@ bool pattern_matches_subgraph_under(
     return false;
   }
 
-  std::unordered_set<OpenKwargDataflowValue<int, TensorSlotName>>
-      concrete_values = get_all_open_kwarg_dataflow_values(subgraph);
-  std::unordered_set<OpenKwargDataflowValue<int, TensorSlotName>>
+  std::set<OpenKwargDataflowValue<int, TensorSlotName>> concrete_values =
+      get_all_open_kwarg_dataflow_values(subgraph);
+  std::set<OpenKwargDataflowValue<int, TensorSlotName>>
       concrete_values_from_match =
           transform(get_pattern_values(pattern),
                     [&](PatternValue const &v)
@@ -183,9 +183,8 @@ bool unlabelled_pattern_does_match(
     UnlabelledKwargDataflowGraphPatternMatch const &match,
     MatchAdditionalCriterion const &additional_criterion) {
 
-  std::unordered_set<OpenKwargDataflowValue<int, TensorSlotName>>
-      matched_by_pattern_inputs =
-          unordered_set_of(values(match.input_assignment));
+  std::set<OpenKwargDataflowValue<int, TensorSlotName>>
+      matched_by_pattern_inputs = set_of(values(match.input_assignment));
 
   ASSERT(left_entries(match.node_assignment) == get_pattern_nodes(pattern));
   ASSERT(
@@ -199,7 +198,7 @@ bool unlabelled_pattern_does_match(
   OpenKwargDataflowGraphView<int, TensorSlotName> matched_subgraph =
       subgraph_result.graph;
 
-  std::unordered_set<OpenKwargDataflowValue<int, TensorSlotName>>
+  std::set<OpenKwargDataflowValue<int, TensorSlotName>>
       full_values_split_by_subgraph =
           left_entries(subgraph_result.full_graph_values_to_subgraph_inputs);
 

@@ -262,12 +262,12 @@ public:
   TensorShape get_shape(tensor_guid_t const &) const;
 
 private:
-  std::unordered_map<TensorSlotName, tensor_guid_t> add_layer(
+  std::map<TensorSlotName, tensor_guid_t> add_layer(
       LayerAttrs const &layer,
-      std::unordered_map<TensorSlotName, tensor_guid_t> const &inputs,
-      std::unordered_map<TensorSlotName, InitializerAttrs> const &weights,
-      std::optional<std::unordered_map<TensorSlotName, CreateGrad>> const
-          &outputs = std::nullopt);
+      std::map<TensorSlotName, tensor_guid_t> const &inputs,
+      std::map<TensorSlotName, InitializerAttrs> const &weights,
+      std::optional<std::map<TensorSlotName, CreateGrad>> const &outputs =
+          std::nullopt);
 
   tensor_guid_t
       broadcast(tensor_guid_t const &, TensorDims const &, std::string const &);

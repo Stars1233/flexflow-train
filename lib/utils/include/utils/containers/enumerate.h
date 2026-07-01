@@ -3,7 +3,7 @@
 
 #include "utils/containers/enumerate_vector.h"
 #include <map>
-#include <unordered_set>
+#include <set>
 #include <vector>
 
 namespace FlexFlow {
@@ -34,7 +34,7 @@ std::map<nonnegative_int, T> enumerate(std::vector<T> const &c) {
  * the result of this function should still function as expected.
  */
 template <typename T>
-std::map<nonnegative_int, T> enumerate(std::unordered_set<T> const &c) {
+std::map<nonnegative_int, T> enumerate(std::set<T> const &c) {
   std::map<nonnegative_int, T> result;
   nonnegative_int idx = 0_n;
   for (auto const &v : c) {

@@ -3,8 +3,8 @@
 
 #include "utils/graph/digraph/digraph.h"
 #include "utils/graph/node/node_source.h"
-#include <unordered_map>
-#include <unordered_set>
+#include <map>
+#include <set>
 
 namespace FlexFlow {
 
@@ -17,19 +17,17 @@ public:
   void remove_node_unsafe(Node const &) override;
   void add_edge(Edge const &) override;
   void remove_edge(Edge const &) override;
-  std::unordered_set<Edge>
-      query_edges(DirectedEdgeQuery const &) const override;
-  std::unordered_set<Node> query_nodes(NodeQuery const &) const override;
+  std::set<Edge> query_edges(DirectedEdgeQuery const &) const override;
+  std::set<Node> query_nodes(NodeQuery const &) const override;
 
   AdjacencyDiGraph *clone() const override;
 
 private:
-  AdjacencyDiGraph(
-      NodeSource const &node_source,
-      std::unordered_map<Node, std::unordered_set<Node>> const &adjacency);
+  AdjacencyDiGraph(NodeSource const &node_source,
+                   std::map<Node, std::set<Node>> const &adjacency);
 
   NodeSource node_source;
-  std::unordered_map<Node, std::unordered_set<Node>> adjacency;
+  std::map<Node, std::set<Node>> adjacency;
 };
 CHECK_RC_COPY_VIRTUAL_COMPLIANT(AdjacencyDiGraph);
 

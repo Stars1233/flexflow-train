@@ -13,8 +13,8 @@
 #include "utils/containers/set_union.h"
 #include "utils/containers/transform.h"
 #include "utils/graph/digraph/digraph.h"
-#include "utils/hash/unordered_set.h"
-#include <unordered_set>
+#include "utils/hash/set.h"
+#include <set>
 
 namespace FlexFlow {
 
@@ -41,10 +41,9 @@ milliseconds_t task_simulator_estimate_forward_pass_time(
     return running_time.unwrap_milliseconds();
   };
 
-  auto is_allowed_to_run =
-      [&](Node const &task,
-          std::unordered_set<Node> const &in_progress_tasks,
-          std::unordered_set<Node> const &finished_tasks) -> bool {
+  auto is_allowed_to_run = [&](Node const &task,
+                               std::set<Node> const &in_progress_tasks,
+                               std::set<Node> const &finished_tasks) -> bool {
     PCGTask current_task = task_graph.node_to_task.at_l(task);
 
     if (current_task.is_tensor_movement()) {
@@ -52,15 +51,14 @@ milliseconds_t task_simulator_estimate_forward_pass_time(
     }
     assert(current_task.is_operator());
 
-    auto get_devices =
-        [&](Node const &n) -> std::unordered_set<MachineSpaceCoordinate> {
+    auto get_devices = [&](Node const &n) -> std::set<MachineSpaceCoordinate> {
       return task_graph.node_to_devices.at(n);
     };
 
-    std::unordered_set<MachineSpaceCoordinate> devices_occupied =
+    std::set<MachineSpaceCoordinate> devices_occupied =
         set_union(transform(in_progress_tasks, get_devices));
-    std::unordered_set<MachineSpaceCoordinate> required_devices =
-        get_devices(task);
+    std::set<MachineSpaceCoordinate> required_devices =
+        set_of(get_devices(task));
     return set_intersection(devices_occupied, required_devices).empty();
   };
 

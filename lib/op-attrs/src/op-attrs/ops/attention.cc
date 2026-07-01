@@ -102,12 +102,12 @@ static void check_attrs(MultiHeadAttentionAttrs const &attrs) {
          "functionality, please create an issue.");
 }
 
-std::unordered_map<TensorSlotName, IncomingTensorRole>
+std::map<TensorSlotName, IncomingTensorRole>
     get_attention_incoming_tensor_roles(MultiHeadAttentionAttrs const &attrs) {
 
   check_attrs(attrs);
 
-  std::unordered_map<TensorSlotName, IncomingTensorRole> roles = {
+  std::map<TensorSlotName, IncomingTensorRole> roles = {
       {TensorSlotName::QUERY, IncomingTensorRole::INPUT},
       {TensorSlotName::KEY, IncomingTensorRole::INPUT},
       {TensorSlotName::VALUE, IncomingTensorRole::INPUT},
@@ -233,13 +233,13 @@ tl::expected<TensorShape, std::string>
   };
 }
 
-tl::expected<std::unordered_map<TensorSlotName, TensorShape>, std::string>
+tl::expected<std::map<TensorSlotName, TensorShape>, std::string>
     get_weight_shapes(MultiHeadAttentionAttrs const &attrs,
                       TensorShape const &input_q,
                       TensorShape const &input_k,
                       TensorShape const &input_v) {
 
-  std::unordered_map<TensorSlotName, TensorShape> weight_shapes = {
+  std::map<TensorSlotName, TensorShape> weight_shapes = {
       {
           TensorSlotName::WEIGHT,
           PROPAGATE_ERR(get_weights_shape(attrs, input_q, input_k, input_v)),
@@ -416,14 +416,13 @@ positive_int get_oSize(TensorShape const &) {
   NOT_IMPLEMENTED();
 }
 
-tl::expected<std::unordered_map<TensorSlotName, ParallelTensorShape>,
-             std::string>
+tl::expected<std::map<TensorSlotName, ParallelTensorShape>, std::string>
     get_weight_shapes(MultiHeadAttentionAttrs const &attrs,
                       ParallelTensorShape const &input_q,
                       ParallelTensorShape const &input_k,
                       ParallelTensorShape const &input_v) {
 
-  std::unordered_map<TensorSlotName, ParallelTensorShape> weight_shapes = {
+  std::map<TensorSlotName, ParallelTensorShape> weight_shapes = {
       {
           TensorSlotName::WEIGHT,
           PROPAGATE_ERR(get_weights_shape(attrs, input_q, input_k, input_v)),
@@ -445,7 +444,7 @@ tl::expected<std::unordered_map<TensorSlotName, ParallelTensorShape>,
   return weight_shapes;
 }
 
-tl::expected<std::unordered_map<TensorSlotName, InitializerAttrs>, std::string>
+tl::expected<std::map<TensorSlotName, InitializerAttrs>, std::string>
     get_initializers(
         MultiHeadAttentionAttrs const &attrs,
         TensorShape const &input_q,
@@ -492,13 +491,13 @@ tl::expected<std::unordered_map<TensorSlotName, InitializerAttrs>, std::string>
       maybe_output_bias_initializer.value_or(default_output_bias_initializer);
 
   if (attrs.bias) {
-    return std::unordered_map<TensorSlotName, InitializerAttrs>{
+    return std::map<TensorSlotName, InitializerAttrs>{
         {TensorSlotName::WEIGHT, weights_initializer},
         {TensorSlotName::INPUT_BIAS, input_bias_initializer},
         {TensorSlotName::OUTPUT_BIAS, output_bias_initializer},
     };
   } else {
-    return std::unordered_map<TensorSlotName, InitializerAttrs>{
+    return std::map<TensorSlotName, InitializerAttrs>{
         {TensorSlotName::WEIGHT, weights_initializer},
     };
   }

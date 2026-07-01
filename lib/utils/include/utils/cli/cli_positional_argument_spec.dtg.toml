@@ -3,13 +3,14 @@ name = "CLIPositionalArgumentSpec"
 type = "struct"
 features = [
   "eq",
+  "ord",
   "hash",
   "fmt",
 ]
 
 includes = [
   "<optional>",
-  "<unordered_set>",
+  "<set>",
   "<string>",
 ]
 

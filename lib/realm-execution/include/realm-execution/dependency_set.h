@@ -4,7 +4,7 @@
 #include "realm-execution/atomic_dependency_set.h"
 #include "realm-execution/realm.h"
 #include "task-spec/dynamic_graph/dynamic_value_attrs.dtg.h"
-#include <unordered_map>
+#include <map>
 
 namespace FlexFlow {
 
@@ -29,8 +29,7 @@ private:
 
 private:
   Realm::Event precondition;
-  std::unordered_map<DynamicValueAttrs, AtomicDependencySet>
-      atomic_dependencies;
+  std::map<DynamicValueAttrs, AtomicDependencySet> atomic_dependencies;
 };
 
 } // namespace FlexFlow

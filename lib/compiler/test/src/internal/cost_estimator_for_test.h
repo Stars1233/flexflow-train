@@ -34,8 +34,8 @@ CostEstimator make_fake_cost_estimator(
         &get_communication_cost);
 
 CostEstimator make_fake_cost_estimator(
-    std::unordered_map<OpCostEstimateKey, OpCostMetrics> const &op_cost_map,
-    std::unordered_map<TensorSetMovement, milliseconds_t> const &comm_cost_map);
+    std::map<OpCostEstimateKey, OpCostMetrics> const &op_cost_map,
+    std::map<TensorSetMovement, milliseconds_t> const &comm_cost_map);
 
 CostEstimator make_fake_constant_cost_estimator(milliseconds_t forward_op_cost,
                                                 milliseconds_t backward_op_cost,

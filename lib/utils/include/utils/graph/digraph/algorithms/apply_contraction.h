@@ -6,7 +6,7 @@
 namespace FlexFlow {
 
 DiGraphView apply_contraction(DiGraphView const &g,
-                              std::unordered_map<Node, Node> const &nodes);
+                              std::map<Node, Node> const &nodes);
 
 } // namespace FlexFlow
 

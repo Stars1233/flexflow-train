@@ -12,8 +12,7 @@ namespace FlexFlow {
  * @note `starting_node` is not considered to be its own descendant, and is thus
  * not included in the returned set.
  **/
-std::unordered_set<Node> get_descendants(DiGraphView const &g,
-                                         Node const &starting_node);
+std::set<Node> get_descendants(DiGraphView const &g, Node const &starting_node);
 
 } // namespace FlexFlow
 

@@ -8,8 +8,8 @@ UnorderedSetUndirectedGraph::UnorderedSetUndirectedGraph() {}
 
 UnorderedSetUndirectedGraph::UnorderedSetUndirectedGraph(
     NodeSource const &node_source,
-    std::unordered_set<Node> const &nodes,
-    std::unordered_set<UndirectedEdge> const &edges)
+    std::set<Node> const &nodes,
+    std::set<UndirectedEdge> const &edges)
     : node_source(node_source), nodes(nodes), edges(edges) {}
 
 Node UnorderedSetUndirectedGraph::add_node() {
@@ -36,12 +36,12 @@ void UnorderedSetUndirectedGraph::remove_edge(UndirectedEdge const &e) {
   this->edges.erase(e);
 }
 
-std::unordered_set<Node>
+std::set<Node>
     UnorderedSetUndirectedGraph::query_nodes(NodeQuery const &q) const {
   return apply_node_query(q, this->nodes);
 }
 
-std::unordered_set<UndirectedEdge> UnorderedSetUndirectedGraph::query_edges(
+std::set<UndirectedEdge> UnorderedSetUndirectedGraph::query_edges(
     UndirectedEdgeQuery const &q) const {
   return filter(this->edges,
                 [&](UndirectedEdge const &e) { return matches_edge(q, e); });

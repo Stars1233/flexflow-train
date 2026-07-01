@@ -37,8 +37,8 @@ TEST_SUITE(FF_TEST_SUITE) {
     OpenKwargDataflowGraphView<std::string, int> lhs = mk_graph();
     OpenKwargDataflowGraphView<std::string, int> rhs = mk_graph();
 
-    std::unordered_set<Node> lhs_nodes = get_nodes(lhs);
-    std::unordered_set<Node> rhs_nodes = get_nodes(rhs);
+    std::set<Node> lhs_nodes = get_nodes(lhs);
+    std::set<Node> rhs_nodes = get_nodes(rhs);
 
     std::vector<Node> ordered_lhs_nodes = vector_of(lhs_nodes);
 

@@ -2,8 +2,8 @@
 #include "utils/containers/are_disjoint.h"
 #include "utils/containers/enumerate_vector.h"
 #include "utils/containers/extend.h"
+#include "utils/containers/set_of.h"
 #include "utils/containers/transform.h"
-#include "utils/containers/unordered_set_of.h"
 #include "utils/graph/dataflow_graph/algorithms.h"
 #include "utils/graph/node/algorithms.h"
 #include "utils/graph/open_dataflow_graph/open_dataflow_edge.h"
@@ -16,10 +16,10 @@ UnorderedSetDataflowGraph::UnorderedSetDataflowGraph() {}
 UnorderedSetDataflowGraph::UnorderedSetDataflowGraph(
     NodeSource const &node_source,
     DataflowGraphInputSource const &graph_input_source,
-    std::unordered_set<Node> const &nodes,
-    std::unordered_set<OpenDataflowEdge> const &edges,
-    std::unordered_set<DataflowOutput> const &outputs,
-    std::unordered_set<DataflowGraphInput> const &graph_inputs)
+    std::set<Node> const &nodes,
+    std::set<OpenDataflowEdge> const &edges,
+    std::set<DataflowOutput> const &outputs,
+    std::set<DataflowGraphInput> const &graph_inputs)
     : node_source(node_source), graph_input_source(graph_input_source),
       nodes(nodes), edges(edges), outputs(outputs), graph_inputs(graph_inputs) {
 }
@@ -54,27 +54,26 @@ DataflowGraphInput UnorderedSetDataflowGraph::add_input() {
   return new_graph_input;
 }
 
-std::unordered_set<Node>
+std::set<Node>
     UnorderedSetDataflowGraph::query_nodes(NodeQuery const &q) const {
   return apply_query(q.nodes, this->nodes);
 }
 
-std::unordered_set<OpenDataflowEdge> UnorderedSetDataflowGraph::query_edges(
+std::set<OpenDataflowEdge> UnorderedSetDataflowGraph::query_edges(
     OpenDataflowEdgeQuery const &q) const {
   return filter(this->edges, [&](OpenDataflowEdge const &e) {
     return open_dataflow_edge_query_includes(q, e);
   });
 }
 
-std::unordered_set<DataflowOutput> UnorderedSetDataflowGraph::query_outputs(
+std::set<DataflowOutput> UnorderedSetDataflowGraph::query_outputs(
     DataflowOutputQuery const &q) const {
   return filter(this->outputs, [&](DataflowOutput const &o) {
     return includes(q.nodes, o.node) && includes(q.output_idxs, o.idx);
   });
 }
 
-std::unordered_set<DataflowGraphInput>
-    UnorderedSetDataflowGraph::get_inputs() const {
+std::set<DataflowGraphInput> UnorderedSetDataflowGraph::get_inputs() const {
   return this->graph_inputs;
 }
 
@@ -92,7 +91,7 @@ void UnorderedSetDataflowGraph::add_node_unsafe(
     std::vector<OpenDataflowValue> const &inputs,
     std::vector<DataflowOutput> const &outputs) {
   assert(!contains(this->nodes, node));
-  assert(are_disjoint(this->outputs, unordered_set_of(outputs)));
+  assert(are_disjoint(this->outputs, set_of(outputs)));
 
   this->nodes.insert(node);
 
@@ -106,9 +105,9 @@ void UnorderedSetDataflowGraph::add_node_unsafe(
 
 void UnorderedSetDataflowGraph::inplace_materialize_from(
     DataflowGraphView const &view) {
-  std::unordered_set<Node> nodes = get_nodes(view);
-  std::unordered_set<DataflowEdge> edges = get_edges(view);
-  std::unordered_set<DataflowOutput> outputs = get_all_dataflow_outputs(view);
+  std::set<Node> nodes = get_nodes(view);
+  std::set<DataflowEdge> edges = get_edges(view);
+  std::set<DataflowOutput> outputs = get_all_dataflow_outputs(view);
 
   this->nodes = nodes;
   this->edges = transform(

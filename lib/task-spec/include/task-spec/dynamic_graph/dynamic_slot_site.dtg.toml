@@ -3,8 +3,10 @@ name = "DynamicSlotSite"
 type = "variant"
 features = [
   "eq",
+	"ord",
   "hash",
   "fmt",
+  "json",
 ]
 
 includes = [

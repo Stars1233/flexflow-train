@@ -10,8 +10,8 @@
 
 namespace FlexFlow {
 
-std::unordered_set<MultiDiEdge> get_incoming_edges(MultiDiGraphView const &g,
-                                                   Node const &n) {
+std::set<MultiDiEdge> get_incoming_edges(MultiDiGraphView const &g,
+                                         Node const &n) {
   MultiDiEdgeQuery query = MultiDiEdgeQuery{
       query_set<Node>::matchall(),
       query_set<Node>::match_single_value(n),
@@ -20,21 +20,19 @@ std::unordered_set<MultiDiEdge> get_incoming_edges(MultiDiGraphView const &g,
   return g.query_edges(query);
 }
 
-std::unordered_map<Node, std::unordered_set<MultiDiEdge>>
-    get_incoming_edges(MultiDiGraphView const &g,
-                       std::unordered_set<Node> const &ns) {
+std::map<Node, std::set<MultiDiEdge>>
+    get_incoming_edges(MultiDiGraphView const &g, std::set<Node> const &ns) {
   MultiDiEdgeQuery query = MultiDiEdgeQuery{
       query_set<Node>::matchall(),
       query_set<Node>::match_values_in(set_of(ns)),
   };
 
-  std::unordered_map<Node, std::unordered_set<MultiDiEdge>> result = map_values(
+  std::map<Node, std::set<MultiDiEdge>> result = map_values(
       group_by(g.query_edges(query),
                [&](MultiDiEdge const &e) { return g.get_multidiedge_dst(e); })
           .l_to_r(),
-      [](nonempty_unordered_set<MultiDiEdge> const &s)
-          -> std::unordered_set<MultiDiEdge> {
-        return s.unwrap_as_unordered_set();
+      [](nonempty_set<MultiDiEdge> const &s) -> std::set<MultiDiEdge> {
+        return s.unwrap_as_set();
       });
 
   for (Node const &n : ns) {

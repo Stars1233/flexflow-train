@@ -150,7 +150,7 @@ TEST_SUITE(FF_TEST_SUITE) {
 
     SUBCASE("fmt::to_string") {
       std::string result = fmt::to_string(x);
-      std::unordered_set<std::string> correct_options = {"{2, 1}", "{1, 2}"};
+      std::set<std::string> correct_options = {"{2, 1}", "{1, 2}"};
       CHECK(contains(correct_options, result));
     }
 
@@ -158,7 +158,7 @@ TEST_SUITE(FF_TEST_SUITE) {
       std::ostringstream oss;
       oss << x;
       std::string result = oss.str();
-      std::unordered_set<std::string> correct_options = {"{2, 1}", "{1, 2}"};
+      std::set<std::string> correct_options = {"{2, 1}", "{1, 2}"};
       CHECK(contains(correct_options, result));
     }
   }

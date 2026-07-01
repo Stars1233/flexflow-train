@@ -26,9 +26,9 @@ LabelledOpenDataflowGraphView<NewNodeLabel, NewValueLabel> rewrite_labels(
     return f(v, g.at(v));
   };
 
-  std::unordered_map<Node, NewNodeLabel> node_labels =
+  std::map<Node, NewNodeLabel> node_labels =
       generate_map(get_nodes(g), get_new_node_label);
-  std::unordered_map<OpenDataflowValue, NewValueLabel> value_labels =
+  std::map<OpenDataflowValue, NewValueLabel> value_labels =
       generate_map(get_open_dataflow_values(g), get_new_value_label);
   return with_labelling(g, node_labels, value_labels);
 }

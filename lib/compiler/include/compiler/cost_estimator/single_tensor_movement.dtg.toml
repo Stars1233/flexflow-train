@@ -10,14 +10,14 @@ features = [
 includes = [
   "compiler/cost_estimator/communication_edge.h",
   "utils/units/num_bytes_t.h",
-  "<unordered_map>",
+  "<map>",
 ]
 
 src_includes = [
-  "utils/fmt/unordered_map.h",
-  "utils/hash/unordered_map.h",
+  "utils/fmt/map.h",
+  "utils/hash/map.h",
 ]
 
 [[fields]]
 name = "edge_to_size"
-type = "std::unordered_map<::FlexFlow::CommunicationEdge, ::FlexFlow::num_bytes_t>"
+type = "std::map<::FlexFlow::CommunicationEdge, ::FlexFlow::num_bytes_t>"

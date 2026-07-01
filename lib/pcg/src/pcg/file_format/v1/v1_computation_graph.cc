@@ -1,6 +1,6 @@
 #include "pcg/file_format/v1/v1_computation_graph.h"
 #include "pcg/file_format/v1/graphs/v1_labelled_kwarg_dataflow_graph.h"
-#include "utils/bidict/algorithms/transform_values.h"
+#include "utils/bidict/algorithms/bidict_transform_values.h"
 #include "utils/graph/instances/unordered_set_labelled_open_kwarg_dataflow_graph.h"
 #include "utils/graph/labelled_kwarg_dataflow_graph/labelled_kwarg_dataflow_graph.h"
 
@@ -21,7 +21,7 @@ std::pair<V1ComputationGraph, bidict<nonnegative_int, layer_guid_t>>
                                            TensorAttrs,
                                            TensorSlotName>(cg.raw_graph);
   V1ComputationGraph v1_cg = V1ComputationGraph{raw.first};
-  bidict<nonnegative_int, layer_guid_t> v1_node_ids = transform_values(
+  bidict<nonnegative_int, layer_guid_t> v1_node_ids = bidict_transform_values(
       raw.second, [](Node const &n) { return layer_guid_t{n}; });
 
   return {v1_cg, v1_node_ids};

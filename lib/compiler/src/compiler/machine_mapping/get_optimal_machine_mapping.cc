@@ -27,7 +27,7 @@
 #include "utils/containers/get_all_assignments.h"
 #include "utils/containers/keys.h"
 #include "utils/containers/set_minus.h"
-#include "utils/containers/unordered_set_of.h"
+#include "utils/containers/set_of.h"
 #include "utils/exception.h"
 #include "utils/overload.h"
 
@@ -90,37 +90,35 @@ MachineMappingResult
                                     &parallel_split_transformation) {
 
   auto get_boundary_machine_view_assignments =
-      [&](std::unordered_set<BinaryTreePath> const &boundary_layers,
+      [&](std::set<BinaryTreePath> const &boundary_layers,
           MachineMappingProblemTree const &root,
           BinaryTreePathEntry const &prefix)
-      -> std::unordered_set<ParallelLayerGuidObliviousMachineMapping> {
+      -> std::set<ParallelLayerGuidObliviousMachineMapping> {
     MachineMappingConstraints sub_constraints =
         restrict_to_child(constraints, prefix);
 
     ASSERT(get_all_layers(sub_constraints) == get_all_leaf_paths(root));
 
-    std::unordered_set<BinaryTreePath> unconstrained_boundary_layers =
-        set_minus(boundary_layers, get_constrained_layers(sub_constraints));
+    std::set<BinaryTreePath> unconstrained_boundary_layers = set_minus(
+        boundary_layers, set_of(get_constrained_layers(sub_constraints)));
 
-    std::unordered_map<BinaryTreePath, std::unordered_set<MachineView>>
-        allowed = generate_map(
-            unconstrained_boundary_layers,
-            [&](BinaryTreePath const &l) -> std::unordered_set<MachineView> {
-              UnmappedRuntimeOnlyOpCostEstimateKey leaf =
-                  mm_problem_tree_get_subtree_at_path(root, l)
-                      .value()
-                      .get<UnmappedRuntimeOnlyOpCostEstimateKey>();
-              return context.allowed_machine_views(leaf, resources);
-            });
+    std::map<BinaryTreePath, std::set<MachineView>> allowed =
+        generate_map(unconstrained_boundary_layers,
+                     [&](BinaryTreePath const &l) -> std::set<MachineView> {
+                       UnmappedRuntimeOnlyOpCostEstimateKey leaf =
+                           mm_problem_tree_get_subtree_at_path(root, l)
+                               .value()
+                               .get<UnmappedRuntimeOnlyOpCostEstimateKey>();
+                       return context.allowed_machine_views(leaf, resources);
+                     });
 
-    std::unordered_set<std::unordered_map<BinaryTreePath, MachineView>>
-        assignments = get_all_assignments(allowed);
+    std::set<std::map<BinaryTreePath, MachineView>> assignments =
+        get_all_assignments(allowed);
 
-    return transform(
-        assignments,
-        [](std::unordered_map<BinaryTreePath, MachineView> const &m) {
-          return ParallelLayerGuidObliviousMachineMapping{m};
-        });
+    return transform(assignments,
+                     [](std::map<BinaryTreePath, MachineView> const &m) {
+                       return ParallelLayerGuidObliviousMachineMapping{m};
+                     });
   };
 
   auto eval_pre_boundary_mapping =
@@ -255,7 +253,7 @@ MachineMappingResult get_optimal_machine_mapping(
         return parallel_combine(resource_split, left_result, right_result);
       };
 
-  std::unordered_set<MachineMappingResult> parallel_results = transform(
+  std::set<MachineMappingResult> parallel_results = transform(
       get_machine_resource_splits(resources), evaluate_resource_split);
 
   return minimize_runtime(series_result,
@@ -269,10 +267,10 @@ MachineMappingResult get_optimal_machine_mapping(
     MachineComputeResourceSlice const &resource,
     MachineMappingConstraints const &constraints) {
 
-  std::unordered_set<MachineView> candidates = [&] {
+  std::set<MachineView> candidates = [&] {
     std::optional<MachineView> machine_view = require_only_root(constraints);
     if (machine_view.has_value()) {
-      return std::unordered_set{machine_view.value()};
+      return std::set{machine_view.value()};
     } else {
       return context.allowed_machine_views(leaf, resource);
     }
@@ -287,7 +285,7 @@ MachineMappingResult get_optimal_machine_mapping(
     return make_singleton_machine_mapping_result(cost, machine_view);
   };
 
-  std::unordered_set<MachineMappingResult> candidate_results =
+  std::set<MachineMappingResult> candidate_results =
       transform(candidates, get_mapping_result);
 
   return get_mapping_with_minimal_runtime(candidate_results);

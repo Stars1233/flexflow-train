@@ -1,5 +1,5 @@
 #include "utils/orthotope/dim_domain.h"
-#include "test/utils/doctest/fmt/unordered_set.h"
+#include "test/utils/doctest/fmt/set.h"
 #include "utils/orthotope/dim_ordering.h"
 #include <doctest/doctest.h>
 
@@ -13,8 +13,8 @@ TEST_SUITE(FF_TEST_SUITE) {
         {1, 3_p},
     }};
 
-    std::unordered_set<int> result = get_domain_dims(domain);
-    std::unordered_set<int> correct = {
+    std::set<int> result = get_domain_dims(domain);
+    std::set<int> correct = {
         3,
         7,
         1,
@@ -31,7 +31,7 @@ TEST_SUITE(FF_TEST_SUITE) {
     }};
 
     SUBCASE("allowed is a strict subset of the dims") {
-      std::unordered_set<int> allowed = {
+      std::set<int> allowed = {
           3,
           1,
       };
@@ -46,7 +46,7 @@ TEST_SUITE(FF_TEST_SUITE) {
     }
 
     SUBCASE("allowed is the same as dims") {
-      std::unordered_set<int> allowed = {
+      std::set<int> allowed = {
           3,
           7,
           1,
@@ -59,7 +59,7 @@ TEST_SUITE(FF_TEST_SUITE) {
     }
 
     SUBCASE("allowed is empty") {
-      std::unordered_set<int> allowed = {};
+      std::set<int> allowed = {};
 
       DimDomain<int> result = restrict_domain_to_dims(domain, allowed);
       DimDomain<int> correct = DimDomain<int>{{}};
@@ -68,7 +68,7 @@ TEST_SUITE(FF_TEST_SUITE) {
     }
 
     SUBCASE("allowed is mutually exclusive with dims") {
-      std::unordered_set<int> allowed = {
+      std::set<int> allowed = {
           6,
           8,
       };
@@ -80,7 +80,7 @@ TEST_SUITE(FF_TEST_SUITE) {
     }
 
     SUBCASE("allowed is overlapping with dims") {
-      std::unordered_set<int> allowed = {
+      std::set<int> allowed = {
           6,
           8,
           7,
@@ -95,7 +95,7 @@ TEST_SUITE(FF_TEST_SUITE) {
     }
 
     SUBCASE("allowed is a superset of dims") {
-      std::unordered_set<int> allowed = {
+      std::set<int> allowed = {
           6,
           8,
           7,
@@ -135,7 +135,7 @@ TEST_SUITE(FF_TEST_SUITE) {
         2_p,
     }};
 
-    std::unordered_set<int> dims = {3, 7, 1};
+    std::set<int> dims = {3, 7, 1};
 
     DimDomain<int> result = dim_domain_from_orthotope(
         orthotope, dims, make_default_dim_ordering<int>());

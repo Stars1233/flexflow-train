@@ -15,6 +15,17 @@ E at_idx(std::vector<E> const &v, nonnegative_int idx) {
   return v.at(idx.unwrap_nonnegative());
 }
 
+template <typename E>
+E at_idx(std::set<E> const &v, nonnegative_int idx) {
+  ASSERT(idx < v.size());
+
+  auto b = v.cbegin();
+  for (int i = 0; i < idx; i++) {
+    b++;
+  };
+  return *b;
+}
+
 } // namespace FlexFlow
 
 #endif

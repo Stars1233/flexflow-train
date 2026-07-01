@@ -3,10 +3,17 @@
 #include "op-attrs/operator_task_space.h"
 #include "op-attrs/parallel_tensor_space_coordinate.h"
 #include "pcg/mapped_parallel_computation_graph/operator_atomic_task_shard_binding.h"
-#include "utils/bidict/algorithms/transform_values.h"
+#include "utils/bidict/algorithms/bidict_from_unstructured_relation.h"
+#include "utils/bidict/algorithms/bidict_transform_values.h"
+#include "utils/bidict/algorithms/right_entries.h"
 #include "utils/bidict/generate_bidict.h"
 #include "utils/containers/are_all_distinct.h"
+#include "utils/containers/contains.h"
+#include "utils/containers/keys.h"
+#include "utils/containers/map_values.h"
 #include "utils/containers/require_all_same.h"
+#include "utils/containers/require_all_same1.h"
+#include "utils/containers/set_of.h"
 #include "utils/containers/sorted.h"
 #include "utils/containers/transform.h"
 #include "utils/containers/vector_of.h"
@@ -19,14 +26,13 @@ MappedOperatorTaskGroup::MappedOperatorTaskGroup(
     bidict<MachineSpaceCoordinate, OperatorAtomicTaskShardBinding> const
         &shard_bindings)
     : shard_bindings(shard_bindings) {
-  std::vector<std::unordered_set<TensorSlotName>> binding_slot_sets =
-      transform(vector_of(shard_bindings.right_values()),
-                [&](OperatorAtomicTaskShardBinding const &s)
-                    -> std::unordered_set<TensorSlotName> {
-                  return keys(s.tensor_coords);
-                });
+  std::vector<std::set<TensorSlotName>> binding_slot_sets = transform(
+      vector_of(shard_bindings.right_values()),
+      [&](OperatorAtomicTaskShardBinding const &s) -> std::set<TensorSlotName> {
+        return keys(s.tensor_coords);
+      });
 
-  std::unordered_set<TensorSlotName> slot_names =
+  std::set<TensorSlotName> slot_names =
       require_all_same(binding_slot_sets).value();
 
   for (TensorSlotName const &slot_name : slot_names) {
@@ -38,8 +44,6 @@ MappedOperatorTaskGroup::MappedOperatorTaskGroup(
         [&](OperatorAtomicTaskShardBinding const &signature) {
           return ptensor_space_coord_for_slot_name(signature, slot_name);
         });
-
-    ASSERT(are_all_distinct(coords_for_key));
 
     std::vector<num_ptensor_parallel_dims_t> coord_dims_for_key =
         transform(coords_for_key, [](ParallelTensorSpaceCoordinate const &c) {
@@ -95,12 +99,28 @@ bidict<MachineSpaceCoordinate, OperatorAtomicTaskShardBinding> const &
 bidict<ParallelTensorSpaceCoordinate, MachineSpaceCoordinate>
     get_tensor_bindings_for_slot_name(MappedOperatorTaskGroup const &task_group,
                                       TensorSlotName const &slot_name) {
-  return transform_values(task_group.get_shard_bindings(),
-                          [&](OperatorAtomicTaskShardBinding const &b) {
-                            return ptensor_space_coord_for_slot_name(b,
-                                                                     slot_name);
-                          })
-      .reversed();
+  std::set<TensorSlotName> slot_names =
+      get_slot_names_for_task_group(task_group);
+  ASSERT(contains(slot_names, slot_name));
+
+  std::map<MachineSpaceCoordinate, ParallelTensorSpaceCoordinate> m =
+      map_values(task_group.get_shard_bindings().as_map(),
+                 [&](OperatorAtomicTaskShardBinding const &b)
+                     -> ParallelTensorSpaceCoordinate {
+                   return ptensor_space_coord_for_slot_name(b, slot_name);
+                 });
+
+  return bidict_from_unstructured_relation(set_of(m)).reversed();
+}
+
+std::set<TensorSlotName>
+    get_slot_names_for_task_group(MappedOperatorTaskGroup const &g) {
+  return require_all_same1(
+      transform(vector_of(right_entries(g.get_shard_bindings())),
+                [&](OperatorAtomicTaskShardBinding const &shard_bindings)
+                    -> std::set<TensorSlotName> {
+                  return keys(shard_bindings.tensor_coords);
+                }));
 }
 
 nlohmann::json

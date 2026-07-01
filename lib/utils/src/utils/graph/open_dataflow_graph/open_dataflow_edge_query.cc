@@ -58,9 +58,9 @@ OpenDataflowEdgeQuery
   };
 }
 
-std::unordered_set<OpenDataflowEdge> apply_open_dataflow_edge_query(
-    OpenDataflowEdgeQuery const &q,
-    std::unordered_set<OpenDataflowEdge> const &es) {
+std::set<OpenDataflowEdge>
+    apply_open_dataflow_edge_query(OpenDataflowEdgeQuery const &q,
+                                   std::set<OpenDataflowEdge> const &es) {
   return filter(es, [&](OpenDataflowEdge const &e) {
     return open_dataflow_edge_query_includes(q, e);
   });

@@ -57,7 +57,7 @@ TEST_SUITE(FF_TEST_SUITE) {
     }
 
     SUBCASE("properly sorts a set of dimensions") {
-      std::unordered_set<parallel_tensor_dim_idx_t> input = {
+      std::set<parallel_tensor_dim_idx_t> input = {
           sum_dim_idx(),
           shard_dim_idx(ff_dim_t{1_n}),
           shard_dim_idx(ff_dim_t{0_n}),

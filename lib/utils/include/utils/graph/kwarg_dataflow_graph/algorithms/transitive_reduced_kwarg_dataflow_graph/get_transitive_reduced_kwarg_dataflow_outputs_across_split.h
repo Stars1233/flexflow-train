@@ -9,7 +9,7 @@
 namespace FlexFlow {
 
 template <typename SlotName>
-std::unordered_set<KwargDataflowOutput<SlotName>>
+std::set<KwargDataflowOutput<SlotName>>
     get_transitive_reduced_kwarg_dataflow_outputs_across_split(
         TransitiveReducedKwargDataflowGraphView<SlotName> const &tr_g,
         BinarySeriesSplit const &split) {

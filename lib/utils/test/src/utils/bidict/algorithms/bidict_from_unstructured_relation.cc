@@ -6,7 +6,7 @@ using namespace ::FlexFlow;
 TEST_SUITE(FF_TEST_SUITE) {
   TEST_CASE("bidict_from_unstructured_relation") {
     SUBCASE("relation is one-to-one") {
-      std::unordered_set<std::pair<int, std::string>> input = {
+      std::set<std::pair<int, std::string>> input = {
           {1, "one"},
           {2, "two"},
       };
@@ -22,7 +22,7 @@ TEST_SUITE(FF_TEST_SUITE) {
     }
 
     SUBCASE("relation is one-to-many") {
-      std::unordered_set<std::pair<int, std::string>> input = {
+      std::set<std::pair<int, std::string>> input = {
           {1, "one"},
           {1, "ONE"},
           {2, "two"},
@@ -32,7 +32,7 @@ TEST_SUITE(FF_TEST_SUITE) {
     }
 
     SUBCASE("relation is many-to-one") {
-      std::unordered_set<std::pair<int, std::string>> input = {
+      std::set<std::pair<int, std::string>> input = {
           {1, "odd"},
           {2, "even"},
           {3, "odd"},
@@ -42,7 +42,7 @@ TEST_SUITE(FF_TEST_SUITE) {
     }
 
     SUBCASE("relation is none of the above") {
-      std::unordered_set<std::pair<int, std::string>> input = {
+      std::set<std::pair<int, std::string>> input = {
           {1, "odd"},
           {1, "ODD"},
           {2, "even"},

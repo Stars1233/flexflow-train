@@ -24,10 +24,10 @@ TEST_SUITE(FF_TEST_SUITE) {
     SUBCASE("without bias") {
       MultiHeadAttentionAttrs attrs = make_attrs(/*bias=*/false);
 
-      std::unordered_map<TensorSlotName, IncomingTensorRole> result =
+      std::map<TensorSlotName, IncomingTensorRole> result =
           get_attention_incoming_tensor_roles(attrs);
-      std::unordered_map<TensorSlotName, IncomingTensorRole> correct =
-          std::unordered_map<TensorSlotName, IncomingTensorRole>{
+      std::map<TensorSlotName, IncomingTensorRole> correct =
+          std::map<TensorSlotName, IncomingTensorRole>{
               {
                   TensorSlotName::KEY,
                   IncomingTensorRole::INPUT,
@@ -52,10 +52,10 @@ TEST_SUITE(FF_TEST_SUITE) {
     SUBCASE("with bias") {
       MultiHeadAttentionAttrs attrs = make_attrs(/*bias=*/true);
 
-      std::unordered_map<TensorSlotName, IncomingTensorRole> result =
+      std::map<TensorSlotName, IncomingTensorRole> result =
           get_attention_incoming_tensor_roles(attrs);
-      std::unordered_map<TensorSlotName, IncomingTensorRole> correct =
-          std::unordered_map<TensorSlotName, IncomingTensorRole>{
+      std::map<TensorSlotName, IncomingTensorRole> correct =
+          std::map<TensorSlotName, IncomingTensorRole>{
               {
                   TensorSlotName::KEY,
                   IncomingTensorRole::INPUT,

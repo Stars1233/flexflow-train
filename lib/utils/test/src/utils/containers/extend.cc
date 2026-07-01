@@ -1,5 +1,5 @@
 #include "utils/containers/extend.h"
-#include "test/utils/doctest/fmt/unordered_set.h"
+#include "test/utils/doctest/fmt/set.h"
 #include "test/utils/doctest/fmt/vector.h"
 #include <doctest/doctest.h>
 
@@ -16,12 +16,12 @@ TEST_SUITE(FF_TEST_SUITE) {
     CHECK(result == correct);
   }
 
-  TEST_CASE("extend(std::unordered_set<T> &, C)") {
-    std::unordered_set<int> result = {1, 2, 3};
+  TEST_CASE("extend(std::set<T> &, C)") {
+    std::set<int> result = {1, 2, 3};
     std::vector<int> rhs = {3, 3, 4, 5};
     extend(result, rhs);
 
-    std::unordered_set<int> correct = {1, 2, 3, 4, 5};
+    std::set<int> correct = {1, 2, 3, 4, 5};
 
     CHECK(result == correct);
   }

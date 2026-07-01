@@ -13,10 +13,9 @@ struct OpenKwargDataflowGraph
     : virtual public OpenKwargDataflowGraphView<GraphInputName, SlotName> {
 public:
   KwargNodeAddedResult<SlotName> add_node(
-      std::unordered_map<SlotName,
-                         OpenKwargDataflowValue<GraphInputName, SlotName>> const
+      std::map<SlotName, OpenKwargDataflowValue<GraphInputName, SlotName>> const
           &inputs,
-      std::unordered_set<SlotName> const &outputs) {
+      std::set<SlotName> const &outputs) {
     return this->get_interface().add_node(inputs, outputs);
   }
 

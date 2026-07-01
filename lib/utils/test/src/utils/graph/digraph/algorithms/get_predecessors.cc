@@ -22,7 +22,7 @@ TEST_SUITE(FF_TEST_SUITE) {
                   DirectedEdge{n.at(4), n.at(1)},
               });
 
-    std::unordered_map<Node, std::unordered_set<Node>> correct = {
+    std::map<Node, std::set<Node>> correct = {
         {n.at(0), {}},
         {n.at(1), {n.at(0), n.at(4)}},
         {n.at(2), {n.at(1)}},
@@ -31,8 +31,7 @@ TEST_SUITE(FF_TEST_SUITE) {
         {n.at(5), {n.at(1)}},
     };
 
-    std::unordered_map<Node, std::unordered_set<Node>> result =
-        get_predecessors(g);
+    std::map<Node, std::set<Node>> result = get_predecessors(g);
 
     CHECK(result == correct);
   }

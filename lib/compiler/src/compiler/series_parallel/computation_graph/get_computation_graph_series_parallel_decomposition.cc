@@ -13,13 +13,13 @@ namespace FlexFlow {
 
 std::string render_preprocessed_computation_graph_for_sp_decomposition(
     ComputationGraph const &cg) {
-  std::unordered_set<layer_guid_t> weight_and_input_layers =
+  std::set<layer_guid_t> weight_and_input_layers =
       filter(get_layers(cg), [&](layer_guid_t const &l) {
         ComputationGraphOpAttrs op_attrs = get_layer_attrs(cg, l).op_attrs;
         return op_attrs.has<WeightAttrs>() || op_attrs.has<InputAttrs>();
       });
 
-  std::unordered_set<layer_guid_t> weight_and_input_layer_successors =
+  std::set<layer_guid_t> weight_and_input_layer_successors =
       get_subgraph_successors(cg, weight_and_input_layers);
 
   // dot has is incapable of rendering the number of edges in the all-to-all
@@ -65,13 +65,13 @@ std::optional<SeriesParallelDecomposition>
   }
 
   DiGraphView preprocessed_digraph = [&] {
-    std::unordered_set<layer_guid_t> weight_and_input_layers =
+    std::set<layer_guid_t> weight_and_input_layers =
         filter(get_layers(cg), [&](layer_guid_t const &l) {
           ComputationGraphOpAttrs op_attrs = get_layer_attrs(cg, l).op_attrs;
           return op_attrs.has<WeightAttrs>() || op_attrs.has<InputAttrs>();
         });
 
-    std::unordered_set<layer_guid_t> weight_and_input_layer_successors =
+    std::set<layer_guid_t> weight_and_input_layer_successors =
         get_subgraph_successors(cg, weight_and_input_layers);
 
     DiGraph digraph = materialize_digraph_view<AdjacencyDiGraph>(cg.raw_graph);

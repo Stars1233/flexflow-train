@@ -42,6 +42,9 @@ bidict<ParallelTensorSpaceCoordinate, MachineSpaceCoordinate>
     get_tensor_bindings_for_slot_name(MappedOperatorTaskGroup const &,
                                       TensorSlotName const &);
 
+std::set<TensorSlotName>
+    get_slot_names_for_task_group(MappedOperatorTaskGroup const &);
+
 nlohmann::json
     mapped_operator_task_group_as_dot_json(MappedOperatorTaskGroup const &);
 

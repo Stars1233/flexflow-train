@@ -9,10 +9,9 @@
 #include <fstream>
 #include <map>
 #include <optional>
+#include <set>
 #include <sstream>
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
 
 namespace FlexFlow {
@@ -28,9 +27,9 @@ private:
   size_t node_id = 0;
   size_t subgraph_id = 0;
   std::map<T, size_t> node_ids;
-  std::unordered_map<size_t, std::unordered_set<size_t>> subgraphs;
-  std::unordered_map<size_t, std::unordered_set<size_t>> subgraph_children;
-  std::unordered_map<size_t, std::optional<size_t>> subgraph_parents;
+  std::map<size_t, std::set<size_t>> subgraphs;
+  std::map<size_t, std::set<size_t>> subgraph_children;
+  std::map<size_t, std::optional<size_t>> subgraph_parents;
   std::optional<std::ofstream> owned_fstream = std::nullopt;
   std::ostream *out = nullptr;
 

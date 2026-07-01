@@ -5,7 +5,7 @@ namespace FlexFlow {
 
 using SlotName = ordered_value_type<0>;
 
-template std::unordered_set<KwargDataflowInput<SlotName>>
+template std::set<KwargDataflowInput<SlotName>>
     get_all_kwarg_dataflow_inputs(KwargDataflowGraphView<SlotName> const &);
 
 } // namespace FlexFlow

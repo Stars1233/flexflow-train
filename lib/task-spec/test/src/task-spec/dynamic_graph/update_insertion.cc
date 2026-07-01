@@ -52,15 +52,17 @@ TEST_SUITE(FF_TEST_SUITE) {
             /*per_device_op_state=*/std::nullopt,
         },
         /*outputs=*/
-        std::unordered_map<DynamicTensorSlot, DynamicValueAttrs>{
+        std::map<DynamicTensorSlot, DynamicValueAttrs>{
             {
                 DynamicTensorSlot{
                     /*slot_name=*/TensorSlotName::OUTPUT,
                     /*slot_tensor_role=*/mk_dynamic_tensor_role_fwd(),
+                    /*task_shard=*/std::nullopt,
                 },
                 DynamicValueAttrs{
                     /*tensor_guid=*/tensor_guid,
                     /*parallel_tensor_shape=*/std::nullopt,
+                    /*create_grad=*/std::nullopt,
                     /*shard_coord=*/std::nullopt,
                     /*mapping=*/std::nullopt,
                     /*accessor=*/std::nullopt,
@@ -96,10 +98,12 @@ TEST_SUITE(FF_TEST_SUITE) {
                                 /*slot_name=*/TensorSlotName::OUTPUT,
                                 /*slot_tensor_role=*/
                                 mk_dynamic_tensor_role_fwd(),
+                                /*task_shard=*/std::nullopt,
                             },
                             DynamicValueAttrs{
                                 /*tensor_guid=*/tensor_guid,
                                 /*parallel_tensor_shape=*/std::nullopt,
+                                /*create_grad=*/std::nullopt,
                                 /*shard_coord=*/std::nullopt,
                                 /*mapping=*/std::nullopt,
                                 /*accessor=*/std::nullopt,
@@ -111,10 +115,12 @@ TEST_SUITE(FF_TEST_SUITE) {
                                 /*slot_name=*/TensorSlotName::OUTPUT,
                                 /*slot_tensor_role=*/
                                 mk_dynamic_tensor_role_bwd(),
+                                /*task_shard=*/std::nullopt,
                             },
                             DynamicValueAttrs{
                                 /*tensor_guid=*/tensor_guid,
                                 /*parallel_tensor_shape=*/std::nullopt,
+                                /*create_grad=*/std::nullopt,
                                 /*shard_coord=*/std::nullopt,
                                 /*mapping=*/std::nullopt,
                                 /*accessor=*/std::nullopt,
@@ -127,10 +133,12 @@ TEST_SUITE(FF_TEST_SUITE) {
                                 /*slot_tensor_role=*/
                                 mk_dynamic_tensor_role_opt(
                                     OptimizerSlotName::SGD_V),
+                                /*task_shard=*/std::nullopt,
                             },
                             DynamicValueAttrs{
                                 /*tensor_guid=*/tensor_guid,
                                 /*parallel_tensor_shape=*/std::nullopt,
+                                /*create_grad=*/std::nullopt,
                                 /*shard_coord=*/std::nullopt,
                                 /*mapping=*/std::nullopt,
                                 /*accessor=*/std::nullopt,

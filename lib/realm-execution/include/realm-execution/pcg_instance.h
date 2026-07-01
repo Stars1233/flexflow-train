@@ -83,8 +83,7 @@ PCGInstance create_pcg_instance(
     MappedParallelComputationGraph const &mpcg,
     OptimizerAttrs const &optimizer_attrs,
     std::optional<ParallelLossConfig> const &loss,
-    std::unordered_map<DynamicValueAttrs, DynamicTensorAccessor> const
-        &input_tensors,
+    std::map<DynamicValueAttrs, DynamicTensorAccessor> const &input_tensors,
     ProfilingSettings const &profiling_settings,
     DistributedFfHandle const &ff_handle,
     DeviceType device_type);
@@ -100,25 +99,25 @@ PCGInstance create_pcg_instance(
  *
  * \relates PCGInstance
  */
-std::unordered_map<dynamic_layer_guid_t, Realm::Event>
+std::map<dynamic_layer_guid_t, Realm::Event>
     perform_all_passes_for_pcg_instance(
         PCGInstance &pcg_instance,
         ProfilingSettings const &profiling_settings,
         DistributedFfHandle const &ff_handle);
 
-std::unordered_map<dynamic_layer_guid_t, Realm::Event>
+std::map<dynamic_layer_guid_t, Realm::Event>
     perform_forward_pass_for_pcg_instance(
         PCGInstance &pcg_instance,
         ProfilingSettings const &profiling_settings,
         DistributedFfHandle const &ff_handle);
 
-std::unordered_map<dynamic_layer_guid_t, Realm::Event>
+std::map<dynamic_layer_guid_t, Realm::Event>
     perform_backward_pass_for_pcg_instance(
         PCGInstance &pcg_instance,
         ProfilingSettings const &profiling_settings,
         DistributedFfHandle const &ff_handle);
 
-std::unordered_map<dynamic_layer_guid_t, Realm::Event>
+std::map<dynamic_layer_guid_t, Realm::Event>
     perform_update_pass_for_pcg_instance(
         PCGInstance &pcg_instance,
         ProfilingSettings const &profiling_settings,

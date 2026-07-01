@@ -10,7 +10,7 @@
 
 namespace FlexFlow {
 
-std::unordered_map<TensorSlotName, IncomingTensorRole>
+std::map<TensorSlotName, IncomingTensorRole>
     get_conv2d_incoming_tensor_roles(Conv2DAttrs const &);
 
 TensorShape get_kernel_shape(Conv2DAttrs const &attrs,
@@ -19,7 +19,7 @@ TensorShape get_bias_shape(Conv2DAttrs const &attrs, TensorShape const &input);
 TensorShape get_output_shape(Conv2DAttrs const &attrs,
                              TensorShape const &input);
 
-std::unordered_map<TensorSlotName, TensorShape>
+std::map<TensorSlotName, TensorShape>
     get_weight_shapes(Conv2DAttrs const &attrs, TensorShape const &input_shape);
 
 ParallelTensorShape get_kernel_shape(Conv2DAttrs const &attrs,
@@ -29,11 +29,11 @@ ParallelTensorShape get_bias_shape(Conv2DAttrs const &attrs,
 ParallelTensorShape get_output_shape(Conv2DAttrs const &attrs,
                                      ParallelTensorShape const &input_shape);
 
-std::unordered_map<TensorSlotName, ParallelTensorShape>
+std::map<TensorSlotName, ParallelTensorShape>
     get_weight_shapes(Conv2DAttrs const &attrs,
                       ParallelTensorShape const &input_shape);
 
-std::unordered_map<TensorSlotName, InitializerAttrs> get_initializers(
+std::map<TensorSlotName, InitializerAttrs> get_initializers(
     Conv2DAttrs const &attrs,
     TensorShape const &input_shape,
     std::optional<InitializerAttrs> kernel_initializer = std::nullopt,

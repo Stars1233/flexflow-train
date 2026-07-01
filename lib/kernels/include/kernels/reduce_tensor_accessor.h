@@ -22,7 +22,7 @@ struct CPUReduceTensorAccessorInDims {
   template <typename F>
   void operator()(GenericTensorAccessorR const &input,
                   GenericTensorAccessorW &output,
-                  std::unordered_set<ff_dim_t> const &dims_to_reduce,
+                  std::set<ff_dim_t> const &dims_to_reduce,
                   F &&f) {
     using T = real_type_t<DT>;
 
@@ -60,7 +60,7 @@ struct CPUReduceTensorAccessorInDims {
 template <typename F>
 GenericTensorAccessorW
     reduce_tensor_accessor_in_dims(GenericTensorAccessorR const &input,
-                                   std::unordered_set<ff_dim_t> const &dims,
+                                   std::set<ff_dim_t> const &dims,
                                    Allocator &output_allocator,
                                    F &&f) {
 
@@ -89,7 +89,7 @@ real_type_t<DT>
                                        F &&f) {
   Allocator cpu_allocator = create_local_cpu_memory_allocator();
 
-  std::unordered_set<ff_dim_t> input_dims = get_ff_dim_t_set(input.shape.dims);
+  std::set<ff_dim_t> input_dims = get_ff_dim_t_set(input.shape.dims);
   GenericTensorAccessorW reduced =
       reduce_tensor_accessor_in_dims(input, input_dims, cpu_allocator, f);
 

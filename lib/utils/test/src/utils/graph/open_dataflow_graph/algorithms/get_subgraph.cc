@@ -1,4 +1,5 @@
 #include "utils/graph/open_dataflow_graph/algorithms/get_subgraph.h"
+#include "test/utils/doctest/fmt/set.h"
 #include "utils/bidict/algorithms/left_entries.h"
 #include "utils/containers/contains.h"
 #include "utils/containers/get_only.h"
@@ -12,7 +13,7 @@ using namespace ::FlexFlow;
 
 TEST_SUITE(FF_TEST_SUITE) {
   TEST_CASE("get_full_graph_values_to_subgraph_inputs(OpenDataflowGraphView, "
-            "std::unordered_set<Node>) ") {
+            "std::set<Node>) ") {
     OpenDataflowGraph graph =
         OpenDataflowGraph::create<UnorderedSetDataflowGraph>();
 
@@ -36,14 +37,14 @@ TEST_SUITE(FF_TEST_SUITE) {
         graph.add_node({OpenDataflowValue{i2}, v1, v2}, 1_n);
     Node n3 = n3_added.node;
 
-    std::unordered_set<Node> subgraph_nodes = {n1, n2, n3};
+    std::set<Node> subgraph_nodes = {n1, n2, n3};
 
     bidict<OpenDataflowValue, DataflowGraphInput>
         full_graph_values_to_subgraph_inputs =
             get_full_graph_values_to_subgraph_inputs(graph, subgraph_nodes);
 
     SUBCASE("left entries are correct") {
-      std::unordered_set<OpenDataflowValue> correct = {
+      std::set<OpenDataflowValue> correct = {
           v0, OpenDataflowValue{i1}, OpenDataflowValue{i2}};
       CHECK(left_entries(full_graph_values_to_subgraph_inputs) == correct);
     }
@@ -53,14 +54,13 @@ TEST_SUITE(FF_TEST_SUITE) {
             i1);
       CHECK(full_graph_values_to_subgraph_inputs.at_l(OpenDataflowValue{i2}) ==
             i2);
-      std::unordered_set<DataflowGraphInput> inputs = {i1, i2};
+      std::set<DataflowGraphInput> inputs = {i1, i2};
       CHECK(!contains(inputs, full_graph_values_to_subgraph_inputs.at_l(v0)));
     }
   }
 
-  TEST_CASE(
-      "get_subgraph_data(OpenDataflowGraphView, std::unordered_set<Node>, "
-      "bidict<OpenDataflowValue, DataflowGraphInput>)") {
+  TEST_CASE("get_subgraph_data(OpenDataflowGraphView, std::set<Node>, "
+            "bidict<OpenDataflowValue, DataflowGraphInput>)") {
     SUBCASE("2-node graph without inputs") {
       OpenDataflowGraph graph =
           OpenDataflowGraph::create<UnorderedSetDataflowGraph>();
@@ -73,7 +73,7 @@ TEST_SUITE(FF_TEST_SUITE) {
       Node n1 = n1_added.node;
 
       SUBCASE("subgraph is full graph") {
-        std::unordered_set<Node> subgraph_nodes = {n0, n1};
+        std::set<Node> subgraph_nodes = {n0, n1};
 
         bidict<OpenDataflowValue, DataflowGraphInput>
             full_graph_values_to_subgraph_inputs =
@@ -100,7 +100,7 @@ TEST_SUITE(FF_TEST_SUITE) {
       }
 
       SUBCASE("subgraph is n0") {
-        std::unordered_set<Node> subgraph_nodes = {n0};
+        std::set<Node> subgraph_nodes = {n0};
 
         bidict<OpenDataflowValue, DataflowGraphInput>
             full_graph_values_to_subgraph_inputs =
@@ -119,7 +119,7 @@ TEST_SUITE(FF_TEST_SUITE) {
       }
 
       SUBCASE("subgraph is n1") {
-        std::unordered_set<Node> subgraph_nodes = {n1};
+        std::set<Node> subgraph_nodes = {n1};
 
         bidict<OpenDataflowValue, DataflowGraphInput>
             full_graph_values_to_subgraph_inputs =
@@ -144,7 +144,7 @@ TEST_SUITE(FF_TEST_SUITE) {
       }
 
       SUBCASE("subgraph is empty") {
-        std::unordered_set<Node> subgraph_nodes = {};
+        std::set<Node> subgraph_nodes = {};
 
         bidict<OpenDataflowValue, DataflowGraphInput>
             full_graph_values_to_subgraph_inputs =
@@ -177,7 +177,7 @@ TEST_SUITE(FF_TEST_SUITE) {
       Node n2 = n2_added.node;
 
       SUBCASE("subgraph is full graph") {
-        std::unordered_set<Node> subgraph_nodes = {n0, n1, n2};
+        std::set<Node> subgraph_nodes = {n0, n1, n2};
 
         bidict<OpenDataflowValue, DataflowGraphInput>
             full_graph_values_to_subgraph_inputs =
@@ -215,7 +215,7 @@ TEST_SUITE(FF_TEST_SUITE) {
       }
 
       SUBCASE("subgraph is (n0, n1) split") {
-        std::unordered_set<Node> subgraph_nodes = {n0, n1};
+        std::set<Node> subgraph_nodes = {n0, n1};
 
         bidict<OpenDataflowValue, DataflowGraphInput>
             full_graph_values_to_subgraph_inputs =
@@ -247,7 +247,7 @@ TEST_SUITE(FF_TEST_SUITE) {
       }
 
       SUBCASE("subgraph is (n0, n1) split") {
-        std::unordered_set<Node> subgraph_nodes = {n0, n1};
+        std::set<Node> subgraph_nodes = {n0, n1};
 
         bidict<OpenDataflowValue, DataflowGraphInput>
             full_graph_values_to_subgraph_inputs =
@@ -279,7 +279,7 @@ TEST_SUITE(FF_TEST_SUITE) {
       }
 
       SUBCASE("subgraph is (n0, n2) split") {
-        std::unordered_set<Node> subgraph_nodes = {n0, n2};
+        std::set<Node> subgraph_nodes = {n0, n2};
 
         bidict<OpenDataflowValue, DataflowGraphInput>
             full_graph_values_to_subgraph_inputs =
@@ -310,7 +310,7 @@ TEST_SUITE(FF_TEST_SUITE) {
       }
 
       SUBCASE("subgraph is (n1, n2) split") {
-        std::unordered_set<Node> subgraph_nodes = {n1, n2};
+        std::set<Node> subgraph_nodes = {n1, n2};
 
         bidict<OpenDataflowValue, DataflowGraphInput>
             full_graph_values_to_subgraph_inputs =

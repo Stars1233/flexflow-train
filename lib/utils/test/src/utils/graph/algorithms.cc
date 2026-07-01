@@ -32,7 +32,7 @@ TEST_SUITE(FF_TEST_SUITE) {
                  DirectedEdge{n.at(1), n.at(3)},
                  DirectedEdge{n.at(2), n.at(3)}});
 
-      std::unordered_set<std::vector<Node>> corrects = {
+      std::set<std::vector<Node>> corrects = {
           {n.at(0), n.at(1), n.at(3), n.at(2), n.at(3)},
           {n.at(0), n.at(2), n.at(3), n.at(1), n.at(3)}};
       std::vector<Node> result = get_unchecked_dfs_ordering(g, {n.at(0)});
@@ -52,7 +52,7 @@ TEST_SUITE(FF_TEST_SUITE) {
                DirectedEdge{n.at(4), n.at(5)}});
 
     SUBCASE("branching path") {
-      std::unordered_set<std::vector<Node>> corrects = {
+      std::set<std::vector<Node>> corrects = {
           {n.at(0), n.at(1), n.at(2), n.at(3), n.at(4), n.at(5)},
           {n.at(0), n.at(2), n.at(1), n.at(3), n.at(4), n.at(5)}};
       std::vector<Node> result = get_bfs_ordering(g, {n.at(0)});
@@ -75,8 +75,8 @@ TEST_SUITE(FF_TEST_SUITE) {
                  DirectedEdge{n.at(1), n.at(2)},
                  DirectedEdge{n.at(2), n.at(0)},
                  DirectedEdge{n.at(2), n.at(1)}});
-      std::unordered_set<std::vector<Node>> corrects = {
-          {n.at(0), n.at(1), n.at(2)}, {n.at(0), n.at(2), n.at(1)}};
+      std::set<std::vector<Node>> corrects = {{n.at(0), n.at(1), n.at(2)},
+                                              {n.at(0), n.at(2), n.at(1)}};
       std::vector<Node> result = get_bfs_ordering(g, {n.at(0)});
       CHECK(contains(corrects, result));
     }
@@ -111,7 +111,7 @@ TEST_SUITE(FF_TEST_SUITE) {
 
     SUBCASE("branching") {
       g.add_edge(DirectedEdge{n.at(1), n.at(3)});
-      std::unordered_set<std::vector<Node>> corrects = {
+      std::set<std::vector<Node>> corrects = {
           {n.at(0), n.at(1), n.at(2), n.at(3)},
           {n.at(0), n.at(1), n.at(3), n.at(2)}};
       std::vector<Node> result = get_dfs_ordering(g, {n.at(0)});

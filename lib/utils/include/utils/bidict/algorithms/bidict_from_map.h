@@ -6,7 +6,7 @@
 namespace FlexFlow {
 
 template <typename L, typename R>
-bidict<L, R> bidict_from_map(std::unordered_map<L, R> const &m) {
+bidict<L, R> bidict_from_map(std::map<L, R> const &m) {
   bidict<L, R> result;
   for (auto const &[k, v] : m) {
     ASSERT(!result.contains_r(v));
@@ -16,7 +16,7 @@ bidict<L, R> bidict_from_map(std::unordered_map<L, R> const &m) {
 }
 
 template <typename L, typename R>
-bidict<L, R> bidict_from_map(std::map<L, R> const &m) {
+bidict<L, R> bidict_from_map(std::unordered_map<L, R> const &m) {
   bidict<L, R> result;
   for (auto const &[k, v] : m) {
     ASSERT(!result.contains_r(v));

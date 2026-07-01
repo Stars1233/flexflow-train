@@ -1,8 +1,8 @@
 #ifndef _FLEXFLOW_LIB_UTILS_INCLUDE_UTILS_CONTAINERS_REQUIRE_SAME_H
 #define _FLEXFLOW_LIB_UTILS_INCLUDE_UTILS_CONTAINERS_REQUIRE_SAME_H
 
-#include "utils/exception.h"
 #include <fmt/format.h>
+#include <libassert/assert.hpp>
 
 namespace FlexFlow {
 

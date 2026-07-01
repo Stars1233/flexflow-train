@@ -16,9 +16,6 @@
 #include "utils/graph/open_kwarg_dataflow_graph/algorithms/get_incoming_open_kwarg_dataflow_values_for_node.h"
 #include "utils/many_to_one/invert_many_to_one.h"
 #include "utils/many_to_one/many_to_one_from_map.h"
-#include "utils/many_to_one/many_to_one_from_unstructured_relation.h"
-#include "utils/many_to_one/unstructured_relation_from_many_to_one.h"
-#include "utils/one_to_many/unstructured_relation_from_one_to_many.h"
 #include "utils/overload.h"
 
 namespace FlexFlow {
@@ -36,10 +33,9 @@ static std::optional<UnlabelledKwargDataflowGraphPatternMatch>
       empty_unlabelled_pattern_match();
   match.node_assignment.equate(pattern_node, graph_node);
 
-  std::unordered_map<TensorSlotName, PatternValue> pattern_outputs =
+  std::map<TensorSlotName, PatternValue> pattern_outputs =
       get_outputs_from_pattern_node(pattern, pattern_node);
-  std::unordered_map<TensorSlotName,
-                     OpenKwargDataflowValue<int, TensorSlotName>>
+  std::map<TensorSlotName, OpenKwargDataflowValue<int, TensorSlotName>>
       graph_outputs = map_values(
           get_outgoing_kwarg_dataflow_outputs_for_node(graph, graph_node),
           [](KwargDataflowOutput<TensorSlotName> const &o) {
@@ -50,17 +46,15 @@ static std::optional<UnlabelledKwargDataflowGraphPatternMatch>
     return std::nullopt;
   }
 
-  std::unordered_map<TensorSlotName, PatternValue> pattern_node_inputs =
+  std::map<TensorSlotName, PatternValue> pattern_node_inputs =
       get_inputs_to_pattern_node(pattern, pattern_node);
-  std::unordered_set<PatternInput> pattern_graph_inputs =
-      get_pattern_inputs(pattern);
+  std::set<PatternInput> pattern_graph_inputs = get_pattern_inputs(pattern);
 
-  ASSERT(unordered_set_of(values(pattern_node_inputs)) ==
+  ASSERT(set_of(values(pattern_node_inputs)) ==
          transform(pattern_graph_inputs,
                    [](PatternInput const &i) { return PatternValue{i}; }));
 
-  std::unordered_map<TensorSlotName,
-                     OpenKwargDataflowValue<int, TensorSlotName>>
+  std::map<TensorSlotName, OpenKwargDataflowValue<int, TensorSlotName>>
       graph_node_inputs =
           get_incoming_open_kwarg_dataflow_values_for_node(graph, graph_node);
 

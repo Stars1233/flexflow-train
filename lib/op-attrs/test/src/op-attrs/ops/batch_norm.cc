@@ -21,9 +21,9 @@ TEST_SUITE(FF_TEST_SUITE) {
     SUBCASE("affine = true") {
       BatchNormAttrs attrs = make_attrs(/*affine=*/true);
 
-      std::unordered_map<TensorSlotName, IncomingTensorRole> result =
+      std::map<TensorSlotName, IncomingTensorRole> result =
           get_batch_norm_incoming_tensor_roles(attrs);
-      std::unordered_map<TensorSlotName, IncomingTensorRole> correct = {
+      std::map<TensorSlotName, IncomingTensorRole> correct = {
           {
               TensorSlotName::INPUT,
               IncomingTensorRole::INPUT,
@@ -44,9 +44,9 @@ TEST_SUITE(FF_TEST_SUITE) {
     SUBCASE("affine = false") {
       BatchNormAttrs attrs = make_attrs(/*affine=*/false);
 
-      std::unordered_map<TensorSlotName, IncomingTensorRole> result =
+      std::map<TensorSlotName, IncomingTensorRole> result =
           get_batch_norm_incoming_tensor_roles(attrs);
-      std::unordered_map<TensorSlotName, IncomingTensorRole> correct = {
+      std::map<TensorSlotName, IncomingTensorRole> correct = {
           {
               TensorSlotName::INPUT,
               IncomingTensorRole::INPUT,

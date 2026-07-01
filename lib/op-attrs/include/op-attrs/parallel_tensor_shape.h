@@ -38,8 +38,7 @@ ParallelTensorShape
 TensorShape get_piece_shape(ParallelTensorShape const &);
 num_bytes_t get_piece_size_in_bytes(ParallelTensorShape const &);
 
-std::unordered_set<ReplicaParallelDim>
-    replica_dims(ParallelTensorShape const &);
+std::set<ReplicaParallelDim> replica_dims(ParallelTensorShape const &);
 
 positive_int get_num_replica_dims(ParallelTensorShape const &);
 positive_int get_num_replicas(ParallelTensorShape const &);
@@ -60,7 +59,7 @@ TensorShape get_reduced_shape(ParallelTensorShape const &);
 ParallelDim get_parallel_dim_at_idx(ParallelTensorShape const &shape,
                                     parallel_tensor_dim_idx_t idx);
 
-std::unordered_set<parallel_tensor_dim_idx_t>
+std::set<parallel_tensor_dim_idx_t>
     get_parallel_tensor_dim_indices(ParallelTensorShape const &shape);
 
 } // namespace FlexFlow

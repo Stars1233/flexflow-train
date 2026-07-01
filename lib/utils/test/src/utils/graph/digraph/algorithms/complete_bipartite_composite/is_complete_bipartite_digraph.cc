@@ -8,7 +8,7 @@ using namespace ::FlexFlow;
 
 TEST_SUITE(FF_TEST_SUITE) {
   TEST_CASE("is_complete_bipartite_digraph(UndirectedGraphView, "
-            "std::unordered_set)") {
+            "std::set)") {
     DiGraph g = DiGraph::create<AdjacencyDiGraph>();
 
     SUBCASE("simple bipartite graph") {
@@ -25,7 +25,7 @@ TEST_SUITE(FF_TEST_SUITE) {
                 });
 
       SUBCASE("source group") {
-        std::unordered_set<Node> group1 = {n.at(0), n.at(1), n.at(2)};
+        std::set<Node> group1 = {n.at(0), n.at(1), n.at(2)};
 
         bool result = is_complete_bipartite_digraph(g, group1);
         bool correct = true;
@@ -34,7 +34,7 @@ TEST_SUITE(FF_TEST_SUITE) {
       }
 
       SUBCASE("sink group") {
-        std::unordered_set<Node> group1 = {n.at(3), n.at(4)};
+        std::set<Node> group1 = {n.at(3), n.at(4)};
 
         bool result = is_complete_bipartite_digraph(g, group1);
         bool correct = false;
@@ -52,7 +52,7 @@ TEST_SUITE(FF_TEST_SUITE) {
                     DirectedEdge{n.at(0), n.at(3)},
                     DirectedEdge{n.at(1), n.at(3)},
                 });
-      std::unordered_set<Node> group1 = {n.at(0), n.at(1)};
+      std::set<Node> group1 = {n.at(0), n.at(1)};
 
       bool result = is_complete_bipartite_digraph(g, group1);
       bool correct = false;
@@ -71,7 +71,7 @@ TEST_SUITE(FF_TEST_SUITE) {
                     DirectedEdge{n.at(1), n.at(3)},
                     DirectedEdge{n.at(2), n.at(3)},
                 });
-      std::unordered_set<Node> group1 = {n.at(0), n.at(1)};
+      std::set<Node> group1 = {n.at(0), n.at(1)};
 
       bool result = is_complete_bipartite_digraph(g, group1);
       bool correct = false;
@@ -89,7 +89,7 @@ TEST_SUITE(FF_TEST_SUITE) {
                     DirectedEdge{n.at(2), n.at(1)},
                     DirectedEdge{n.at(1), n.at(3)},
                 });
-      std::unordered_set<Node> group1 = {n.at(0), n.at(1)};
+      std::set<Node> group1 = {n.at(0), n.at(1)};
 
       bool result = is_complete_bipartite_digraph(g, group1);
       bool correct = false;
@@ -107,7 +107,7 @@ TEST_SUITE(FF_TEST_SUITE) {
                     DirectedEdge{n.at(1), n.at(2)},
                     DirectedEdge{n.at(1), n.at(3)},
                 });
-      std::unordered_set<Node> group1 = {n.at(0)};
+      std::set<Node> group1 = {n.at(0)};
 
       bool result = is_complete_bipartite_digraph(g, group1);
       bool correct = false;

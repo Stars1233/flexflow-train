@@ -11,7 +11,7 @@ namespace FlexFlow {
 
 FFOrdered<ShardParallelDim> ff_ordered_shard_dims(ParallelTensorDims const &);
 FFOrdered<positive_int> ff_ordered_shard_degrees(ParallelTensorDims const &);
-std::unordered_set<ReplicaParallelDim> replica_dims(ParallelTensorDims const &);
+std::set<ReplicaParallelDim> replica_dims(ParallelTensorDims const &);
 
 /* size_t get_volume(ParallelTensorDims const &); */
 num_ptensor_shard_dims_t num_shard_dims(ParallelTensorDims const &);

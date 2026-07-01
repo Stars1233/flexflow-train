@@ -33,7 +33,7 @@ std::optional<ComputationGraphBinarySPDecomposition>
         ComputationGraph const &);
 bool is_left_associative(ComputationGraphBinarySPDecomposition const &);
 bool is_right_associative(ComputationGraphBinarySPDecomposition const &);
-std::unordered_multiset<layer_guid_t>
+std::multiset<layer_guid_t>
     get_layers(ComputationGraphBinarySPDecomposition const &);
 
 V1BinarySPDecomposition

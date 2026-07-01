@@ -8,8 +8,9 @@
 #include "task-spec/dynamic_graph/dynamic_tensor_role.h"
 #include "task-spec/dynamic_graph/training_operation_attrs.dtg.h"
 #include "utils/containers/generate_map.h"
+#include "utils/containers/map_from_unordered.h"
+#include <map>
 #include <optional>
-#include <unordered_map>
 #include <utility>
 
 namespace FlexFlow {
@@ -30,46 +31,49 @@ DynamicOpenDataflowGraph
         /*per_device_op_state=*/std::nullopt,
     };
 
-    std::unordered_map<DynamicTensorSlot, DynamicValueAttrs> result_inputs =
-        transform(
-            get_incoming_tensors(cg, layer),
-            [&](TensorSlotName const &slot_name, tensor_guid_t const &tensor) {
-              TensorAttrs attrs = get_tensor_attrs(cg, tensor);
-              return std::pair<DynamicTensorSlot, DynamicValueAttrs>{
-                  DynamicTensorSlot{
-                      /*slot_name=*/slot_name,
-                      /*slot_tensor_role=*/std::nullopt,
-                  },
-                  DynamicValueAttrs{
-                      /*tensor_guid=*/dynamic_tensor_guid_t{tensor},
-                      /*parallel_tensor_shape=*/lift_to_parallel(attrs.shape),
-                      /*shard_coord=*/std::nullopt,
-                      /*mapping=*/std::nullopt,
-                      /*accessor=*/std::nullopt,
-                      /*role=*/std::nullopt,
-                  },
-              };
-            });
-    std::unordered_map<DynamicTensorSlot, DynamicValueAttrs> result_outputs =
-        transform(
-            get_outgoing_tensors(cg, layer),
-            [&](TensorSlotName const &slot_name, tensor_guid_t const &tensor) {
-              TensorAttrs attrs = get_tensor_attrs(cg, tensor);
-              return std::pair<DynamicTensorSlot, DynamicValueAttrs>{
-                  DynamicTensorSlot{
-                      /*slot_name=*/slot_name,
-                      /*slot_tensor_role=*/std::nullopt,
-                  },
-                  DynamicValueAttrs{
-                      /*tensor_guid=*/dynamic_tensor_guid_t{tensor},
-                      /*parallel_tensor_shape=*/lift_to_parallel(attrs.shape),
-                      /*shard_coord=*/std::nullopt,
-                      /*mapping=*/std::nullopt,
-                      /*accessor=*/std::nullopt,
-                      /*role=*/std::nullopt,
-                  },
-              };
-            });
+    std::map<DynamicTensorSlot, DynamicValueAttrs> result_inputs = transform(
+        get_incoming_tensors(cg, layer),
+        [&](TensorSlotName const &slot_name, tensor_guid_t const &tensor) {
+          TensorAttrs attrs = get_tensor_attrs(cg, tensor);
+          return std::pair<DynamicTensorSlot, DynamicValueAttrs>{
+              DynamicTensorSlot{
+                  /*slot_name=*/slot_name,
+                  /*slot_tensor_role=*/std::nullopt,
+                  /*task_shard=*/std::nullopt,
+              },
+              DynamicValueAttrs{
+                  /*tensor_guid=*/dynamic_tensor_guid_t{tensor},
+                  /*parallel_tensor_shape=*/lift_to_parallel(attrs.shape),
+                  /*create_grad=*/(attrs.create_grad == CreateGrad::YES),
+                  /*shard_coord=*/std::nullopt,
+                  /*mapping=*/std::nullopt,
+                  /*accessor=*/std::nullopt,
+                  /*role=*/std::nullopt,
+              },
+          };
+        });
+
+    std::map<DynamicTensorSlot, DynamicValueAttrs> result_outputs = transform(
+        get_outgoing_tensors(cg, layer),
+        [&](TensorSlotName const &slot_name, tensor_guid_t const &tensor) {
+          TensorAttrs attrs = get_tensor_attrs(cg, tensor);
+          return std::pair<DynamicTensorSlot, DynamicValueAttrs>{
+              DynamicTensorSlot{
+                  /*slot_name=*/slot_name,
+                  /*slot_tensor_role=*/std::nullopt,
+                  /*task_shard=*/std::nullopt,
+              },
+              DynamicValueAttrs{
+                  /*tensor_guid=*/dynamic_tensor_guid_t{tensor},
+                  /*parallel_tensor_shape=*/lift_to_parallel(attrs.shape),
+                  /*create_grad=*/(attrs.create_grad == CreateGrad::YES),
+                  /*shard_coord=*/std::nullopt,
+                  /*mapping=*/std::nullopt,
+                  /*accessor=*/std::nullopt,
+                  /*role=*/std::nullopt,
+              },
+          };
+        });
 
     result.invocations.emplace(result_inputs, result_attrs, result_outputs);
   }

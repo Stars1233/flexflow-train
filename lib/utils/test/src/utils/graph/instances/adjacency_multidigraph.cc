@@ -11,22 +11,20 @@ TEST_SUITE(FF_TEST_SUITE) {
   TEST_CASE("AdjacencyMultiDiGraph") {
     MultiDiGraph g = MultiDiGraph::create<AdjacencyMultiDiGraph>();
 
-    auto check_state =
-        [&](std::unordered_set<Node> const &correct_nodes,
-            std::unordered_set<MultiDiEdge> const &correct_edges) {
-          {
-            std::unordered_set<Node> result = g.query_nodes(node_query_all());
-            std::unordered_set<Node> correct = correct_nodes;
-            REQUIRE(result == correct);
-          }
+    auto check_state = [&](std::set<Node> const &correct_nodes,
+                           std::set<MultiDiEdge> const &correct_edges) {
+      {
+        std::set<Node> result = g.query_nodes(node_query_all());
+        std::set<Node> correct = correct_nodes;
+        REQUIRE(result == correct);
+      }
 
-          {
-            std::unordered_set<MultiDiEdge> result =
-                g.query_edges(multidiedge_query_all());
-            std::unordered_set<MultiDiEdge> correct = correct_edges;
-            REQUIRE(result == correct);
-          }
-        };
+      {
+        std::set<MultiDiEdge> result = g.query_edges(multidiedge_query_all());
+        std::set<MultiDiEdge> correct = correct_edges;
+        REQUIRE(result == correct);
+      }
+    };
 
     check_state({}, {});
 
@@ -79,8 +77,8 @@ TEST_SUITE(FF_TEST_SUITE) {
           query_set<Node>::matchall(),
       };
 
-      std::unordered_set<MultiDiEdge> result = g.query_edges(input);
-      std::unordered_set<MultiDiEdge> correct = {e1, e2, e3};
+      std::set<MultiDiEdge> result = g.query_edges(input);
+      std::set<MultiDiEdge> correct = {e1, e2, e3};
       CHECK(result == correct);
     }
 
@@ -90,8 +88,8 @@ TEST_SUITE(FF_TEST_SUITE) {
           query_set<Node>::match_single_value(n1),
       };
 
-      std::unordered_set<MultiDiEdge> result = g.query_edges(input);
-      std::unordered_set<MultiDiEdge> correct = {e1, e2, e4};
+      std::set<MultiDiEdge> result = g.query_edges(input);
+      std::set<MultiDiEdge> correct = {e1, e2, e4};
       CHECK(result == correct);
     }
 
@@ -100,8 +98,8 @@ TEST_SUITE(FF_TEST_SUITE) {
           query_set<Node>::match_single_value(n1),
           query_set<Node>::match_single_value(n2),
       };
-      std::unordered_set<MultiDiEdge> result = g.query_edges(input);
-      std::unordered_set<MultiDiEdge> correct = {e3};
+      std::set<MultiDiEdge> result = g.query_edges(input);
+      std::set<MultiDiEdge> correct = {e3};
       CHECK(result == correct);
     }
 
@@ -111,8 +109,8 @@ TEST_SUITE(FF_TEST_SUITE) {
           query_set<Node>::match_single_value(n1),
       };
 
-      std::unordered_set<MultiDiEdge> result = g.query_edges(input);
-      std::unordered_set<MultiDiEdge> correct = {e1, e2};
+      std::set<MultiDiEdge> result = g.query_edges(input);
+      std::set<MultiDiEdge> correct = {e1, e2};
       CHECK(result == correct);
     }
 
@@ -132,34 +130,33 @@ TEST_SUITE(FF_TEST_SUITE) {
       MultiDiGraphView g2 = g;
       SUBCASE("nodes") {
         g.add_node();
-        std::unordered_set<Node> result = g2.query_nodes(node_query_all());
-        std::unordered_set<Node> correct = {n1, n2};
+        std::set<Node> result = g2.query_nodes(node_query_all());
+        std::set<Node> correct = {n1, n2};
         CHECK(result == correct);
       }
       SUBCASE("edges") {
         g.add_edge(n1, n2);
-        std::unordered_set<MultiDiEdge> result =
-            g2.query_edges(multidiedge_query_all());
-        std::unordered_set<MultiDiEdge> correct = {e1, e2, e3, e4};
+        std::set<MultiDiEdge> result = g2.query_edges(multidiedge_query_all());
+        std::set<MultiDiEdge> correct = {e1, e2, e3, e4};
         CHECK(result == correct);
       }
     }
 
     SUBCASE("materialize_copy_of") {
-      std::unordered_set<Node> correct_nodes = get_nodes(g);
-      std::unordered_map<MultiDiEdge, DirectedEdge> correct_edges =
+      std::set<Node> correct_nodes = get_nodes(g);
+      std::map<MultiDiEdge, DirectedEdge> correct_edges =
           get_multidiedge_to_diedge_map(g);
 
       MultiDiGraph g2 =
           MultiDiGraph::materialize_copy_of<AdjacencyMultiDiGraph>(g);
 
       SUBCASE("nodes") {
-        std::unordered_set<Node> result_nodes = get_nodes(g2);
+        std::set<Node> result_nodes = get_nodes(g2);
         CHECK(result_nodes == correct_nodes);
       }
 
       SUBCASE("edges") {
-        std::unordered_map<MultiDiEdge, DirectedEdge> result_edges =
+        std::map<MultiDiEdge, DirectedEdge> result_edges =
             get_multidiedge_to_diedge_map(g);
         CHECK(result_edges == correct_edges);
       }

@@ -8,7 +8,7 @@ namespace FlexFlow {
 
 bool is_connected_to(UndirectedEdge const &e, Node const &n);
 
-std::unordered_set<Node> get_endpoints(UndirectedEdge const &);
+std::set<Node> get_endpoints(UndirectedEdge const &);
 
 } // namespace FlexFlow
 

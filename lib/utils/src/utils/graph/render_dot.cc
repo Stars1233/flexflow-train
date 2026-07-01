@@ -22,7 +22,7 @@ std::string escape_dot_string(std::string const &s) {
 }
 
 std::string render_dot_node_attrs(
-    std::unordered_map<std::string, std::string> const &node_attrs) {
+    std::map<std::string, std::string> const &node_attrs) {
   std::ostringstream oss;
   for (auto const &[k, v] : node_attrs) {
     oss << fmt::format(
@@ -32,7 +32,7 @@ std::string render_dot_node_attrs(
 }
 
 std::string render_node_label(
-    LabelledDataflowGraphView<std::unordered_map<std::string, std::string>,
+    LabelledDataflowGraphView<std::map<std::string, std::string>,
                               std::string> const &g,
     Node const &n) {
   std::vector<DataflowInput> n_inputs = get_dataflow_inputs(g, n);
@@ -59,14 +59,14 @@ std::string render_node_label(
   return oss.str();
 }
 
-std::string render_dot(
-    LabelledDataflowGraphView<std::unordered_map<std::string, std::string>,
-                              std::string> const &g) {
+std::string
+    render_dot(LabelledDataflowGraphView<std::map<std::string, std::string>,
+                                         std::string> const &g) {
   std::vector<std::string> lines;
   lines.push_back("digraph {");
 
   for (Node const &n : get_nodes(g)) {
-    std::unordered_map<std::string, std::string> node_attrs = g.at(n);
+    std::map<std::string, std::string> node_attrs = g.at(n);
     node_attrs.at("label") = render_node_label(g, n);
     node_attrs["shape"] = "record";
 

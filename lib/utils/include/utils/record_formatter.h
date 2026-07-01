@@ -63,7 +63,7 @@ RecordFormatter mk_kv_record(std::string const &k, std::optional<T> const &v) {
 }
 
 template <typename K, typename V>
-RecordFormatter mk_record_for_map(std::unordered_map<K, V> const &m) {
+RecordFormatter mk_record_for_map(std::map<K, V> const &m) {
   RecordFormatter result = mk_empty_record(Orientation::VERTICAL);
 
   for (K const &k : sorted(keys(m))) {

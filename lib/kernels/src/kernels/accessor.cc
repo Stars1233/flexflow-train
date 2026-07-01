@@ -98,6 +98,26 @@ bool GenericTensorAccessorW::operator!=(
   return this->tie() != other.tie();
 }
 
+bool GenericTensorAccessorW::operator<(
+    GenericTensorAccessorW const &other) const {
+  return this->tie() < other.tie();
+}
+
+bool GenericTensorAccessorW::operator<=(
+    GenericTensorAccessorW const &other) const {
+  return this->tie() <= other.tie();
+}
+
+bool GenericTensorAccessorW::operator>(
+    GenericTensorAccessorW const &other) const {
+  return this->tie() > other.tie();
+}
+
+bool GenericTensorAccessorW::operator>=(
+    GenericTensorAccessorW const &other) const {
+  return this->tie() >= other.tie();
+}
+
 int32_t *GenericTensorAccessorW::get_int32_ptr() const {
   return this->get<DataType::INT32>();
 }
@@ -148,6 +168,26 @@ bool GenericTensorAccessorR::operator==(
 bool GenericTensorAccessorR::operator!=(
     GenericTensorAccessorR const &other) const {
   return this->tie() != other.tie();
+}
+
+bool GenericTensorAccessorR::operator<(
+    GenericTensorAccessorR const &other) const {
+  return this->tie() < other.tie();
+}
+
+bool GenericTensorAccessorR::operator<=(
+    GenericTensorAccessorR const &other) const {
+  return this->tie() <= other.tie();
+}
+
+bool GenericTensorAccessorR::operator>(
+    GenericTensorAccessorR const &other) const {
+  return this->tie() > other.tie();
+}
+
+bool GenericTensorAccessorR::operator>=(
+    GenericTensorAccessorR const &other) const {
+  return this->tie() >= other.tie();
 }
 
 int32_t const *GenericTensorAccessorR::get_int32_ptr() const {

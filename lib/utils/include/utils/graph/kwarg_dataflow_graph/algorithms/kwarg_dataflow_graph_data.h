@@ -13,10 +13,9 @@ template <typename SlotName>
 void require_kwarg_dataflow_graph_data_is_valid(
     KwargDataflowGraphData<SlotName> const &data) {
 
-  std::unordered_set<Node> nodes_from_edges = flatmap(
-      data.edges,
-      [](KwargDataflowEdge<SlotName> const &e) -> std::unordered_set<Node> {
-        return std::unordered_set{
+  std::set<Node> nodes_from_edges = flatmap(
+      data.edges, [](KwargDataflowEdge<SlotName> const &e) -> std::set<Node> {
+        return std::set{
             e.src.node,
             e.dst.node,
         };
@@ -24,13 +23,13 @@ void require_kwarg_dataflow_graph_data_is_valid(
 
   ASSERT(is_subseteq_of(nodes_from_edges, data.nodes));
 
-  std::unordered_set<Node> nodes_from_outputs = transform(
+  std::set<Node> nodes_from_outputs = transform(
       data.outputs,
       [](KwargDataflowOutput<SlotName> const &o) -> Node { return o.node; });
 
   ASSERT(is_subseteq_of(nodes_from_outputs, data.nodes));
 
-  std::unordered_set<KwargDataflowOutput<SlotName>> outputs_from_edges =
+  std::set<KwargDataflowOutput<SlotName>> outputs_from_edges =
       transform(data.edges,
                 [](KwargDataflowEdge<SlotName> const &e)
                     -> KwargDataflowOutput<SlotName> { return e.src; });

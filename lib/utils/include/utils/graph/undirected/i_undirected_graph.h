@@ -12,8 +12,7 @@ struct IUndirectedGraph : public IUndirectedGraphView {
   virtual void add_edge(UndirectedEdge const &) = 0;
   virtual void remove_edge(UndirectedEdge const &) = 0;
 
-  virtual std::unordered_set<Node>
-      query_nodes(NodeQuery const &query) const = 0;
+  virtual std::set<Node> query_nodes(NodeQuery const &query) const = 0;
 
   virtual IUndirectedGraph *clone() const = 0;
 };

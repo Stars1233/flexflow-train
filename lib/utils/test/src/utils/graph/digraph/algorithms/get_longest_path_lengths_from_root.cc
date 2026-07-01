@@ -20,7 +20,7 @@ TEST_SUITE(FF_TEST_SUITE) {
 
       add_edges(g, edges);
 
-      std::unordered_map<Node, nonnegative_int> expected_lengths = {
+      std::map<Node, nonnegative_int> expected_lengths = {
           {n.at(0), 1_n},
           {n.at(1), 2_n},
           {n.at(2), 3_n},
@@ -46,7 +46,7 @@ TEST_SUITE(FF_TEST_SUITE) {
 
       add_edges(g, edges);
 
-      std::unordered_map<Node, nonnegative_int> expected_lengths = {
+      std::map<Node, nonnegative_int> expected_lengths = {
           {n.at(0), 1_n},
           {n.at(1), 2_n},
           {n.at(2), 3_n},

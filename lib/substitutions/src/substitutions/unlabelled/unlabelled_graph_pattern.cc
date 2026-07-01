@@ -23,27 +23,23 @@ bool is_singleton_pattern(UnlabelledGraphPattern const &pattern) {
   return num_nodes(pattern) == 1;
 }
 
-std::unordered_set<PatternNode>
-    get_pattern_nodes(UnlabelledGraphPattern const &p) {
+std::set<PatternNode> get_pattern_nodes(UnlabelledGraphPattern const &p) {
   return transform(get_nodes(p.raw_graph),
                    [](Node const &n) { return PatternNode{n}; });
 }
 
-std::unordered_set<PatternValue>
-    get_pattern_values(UnlabelledGraphPattern const &p) {
+std::set<PatternValue> get_pattern_values(UnlabelledGraphPattern const &p) {
   return transform(get_all_open_kwarg_dataflow_values(p.raw_graph),
                    pattern_value_from_raw_open_kwarg_dataflow_value);
 }
 
-std::unordered_set<PatternInput>
-    get_pattern_inputs(UnlabelledGraphPattern const &p) {
+std::set<PatternInput> get_pattern_inputs(UnlabelledGraphPattern const &p) {
   return transform(
       get_all_kwarg_dataflow_graph_inputs(p.raw_graph),
       [](KwargDataflowGraphInput<int> const &i) { return PatternInput{i}; });
 }
 
-std::unordered_set<PatternEdge>
-    get_pattern_edges(UnlabelledGraphPattern const &p) {
+std::set<PatternEdge> get_pattern_edges(UnlabelledGraphPattern const &p) {
   return transform(get_all_open_kwarg_dataflow_edges(p.raw_graph),
                    pattern_edge_from_raw_open_dataflow_edge);
 }
@@ -54,7 +50,7 @@ std::vector<PatternNode>
                    [](Node const &n) { return PatternNode{n}; });
 }
 
-std::unordered_map<TensorSlotName, PatternValue>
+std::map<TensorSlotName, PatternValue>
     get_inputs_to_pattern_node(UnlabelledGraphPattern const &p,
                                PatternNode const &n) {
   return map_values(
@@ -64,7 +60,7 @@ std::unordered_map<TensorSlotName, PatternValue>
       });
 }
 
-std::unordered_map<TensorSlotName, PatternValue>
+std::map<TensorSlotName, PatternValue>
     get_outputs_from_pattern_node(UnlabelledGraphPattern const &p,
                                   PatternNode const &n) {
   return map_values(
@@ -77,7 +73,7 @@ std::unordered_map<TensorSlotName, PatternValue>
 
 UnlabelledGraphPatternSubgraphResult
     get_pattern_subgraph(UnlabelledGraphPattern const &p,
-                         std::unordered_set<PatternNode> const &n) {
+                         std::set<PatternNode> const &n) {
   OpenKwargDataflowSubgraphResult raw_result =
       get_open_kwarg_dataflow_graph_subgraph(
           p.raw_graph,

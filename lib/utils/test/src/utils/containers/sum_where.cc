@@ -1,6 +1,6 @@
 #include "utils/containers/sum_where.h"
 #include <doctest/doctest.h>
-#include <unordered_set>
+#include <set>
 #include <vector>
 
 using namespace ::FlexFlow;

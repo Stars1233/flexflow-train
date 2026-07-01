@@ -3,7 +3,7 @@
 
 namespace FlexFlow {
 
-std::unordered_set<DirectedEdge>
+std::set<DirectedEdge>
     IMultiDiGraphView::query_edges(DirectedEdgeQuery const &q) const {
   return transform(this->query_edges(MultiDiEdgeQuery{q.srcs, q.dsts}),
                    [&](MultiDiEdge const &e) {

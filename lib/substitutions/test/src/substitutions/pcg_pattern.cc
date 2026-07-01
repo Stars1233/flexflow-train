@@ -65,12 +65,12 @@ TEST_SUITE(FF_TEST_SUITE) {
           get_parallel_layer_by_name(pcg, x_matmul_name);
       parallel_layer_guid_t y_matmul =
           get_parallel_layer_by_name(pcg, y_matmul_name);
-      std::unordered_map<TensorSlotName, parallel_tensor_guid_t> x_incoming =
+      std::map<TensorSlotName, parallel_tensor_guid_t> x_incoming =
           get_incoming_tensors(pcg, x_matmul);
       REQUIRE(x_incoming.size() == 2);
 
       parallel_tensor_guid_t x_weights = x_incoming.at(TensorSlotName::WEIGHT);
-      std::unordered_map<TensorSlotName, parallel_tensor_guid_t> y_incoming =
+      std::map<TensorSlotName, parallel_tensor_guid_t> y_incoming =
           get_incoming_tensors(pcg, y_matmul);
       REQUIRE(y_incoming.size() == 2);
       parallel_tensor_guid_t y_weights = y_incoming.at(TensorSlotName::WEIGHT);
@@ -166,8 +166,8 @@ TEST_SUITE(FF_TEST_SUITE) {
 
       PCGPattern pattern = PCGPattern{g};
 
-      std::unordered_set<PCGPatternMatch> result = unordered_set_of(
-          find_pattern_matches(pattern, sub_pcg_from_full_pcg(pcg)));
+      std::set<PCGPatternMatch> result =
+          set_of(find_pattern_matches(pattern, sub_pcg_from_full_pcg(pcg)));
 
       PCGPatternMatch match1 = PCGPatternMatch{
           bidict<PatternNode, parallel_layer_guid_t>{
@@ -197,7 +197,7 @@ TEST_SUITE(FF_TEST_SUITE) {
                open_parallel_tensor_guid_from_closed(x_weights)},
           }};
 
-      std::unordered_set<PCGPatternMatch> correct = {match1, match2};
+      std::set<PCGPatternMatch> correct = {match1, match2};
 
       CHECK(result == correct);
     }
@@ -350,8 +350,8 @@ TEST_SUITE(FF_TEST_SUITE) {
 
       PCGPattern pattern = PCGPattern{g};
 
-      std::unordered_set<PCGPatternMatch> result = unordered_set_of(
-          find_pattern_matches(pattern, sub_pcg_from_full_pcg(pcg)));
+      std::set<PCGPatternMatch> result =
+          set_of(find_pattern_matches(pattern, sub_pcg_from_full_pcg(pcg)));
 
       CHECK(result.size() == 3);
     }

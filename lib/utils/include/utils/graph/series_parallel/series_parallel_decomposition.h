@@ -13,10 +13,10 @@ std::variant<SeriesSplit, ParallelSplit, Node> internal_to_final_ast(
 SeriesParallelDecomposition
     to_final_ast(std::variant<IntermediateSpDecompositionTree, Node> const &);
 
-std::unordered_multiset<Node> get_nodes(SeriesParallelDecomposition const &sp);
-std::unordered_multiset<Node> get_nodes(SeriesSplit const &);
-std::unordered_multiset<Node> get_nodes(ParallelSplit const &);
-std::unordered_multiset<Node> get_nodes(Node const &);
+std::multiset<Node> get_nodes(SeriesParallelDecomposition const &sp);
+std::multiset<Node> get_nodes(SeriesSplit const &);
+std::multiset<Node> get_nodes(ParallelSplit const &);
+std::multiset<Node> get_nodes(Node const &);
 
 bool has_no_duplicate_nodes(SeriesParallelDecomposition const &sp);
 
@@ -30,8 +30,7 @@ nonnegative_int num_nodes(SeriesParallelDecomposition const &sp);
 SeriesParallelDecomposition series_composition(
     std::vector<SeriesParallelDecomposition> const &sp_compositions);
 SeriesParallelDecomposition parallel_composition(
-    std::unordered_multiset<SeriesParallelDecomposition> const
-        &sp_compositions);
+    std::multiset<SeriesParallelDecomposition> const &sp_compositions);
 
 } // namespace FlexFlow
 

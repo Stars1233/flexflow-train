@@ -38,10 +38,9 @@ LabelledOpenKwargDataflowGraphView<NewNodeLabel,
       [&](OpenKwargDataflowValue<GraphInputName, SlotName> const &v)
       -> NewValueLabel { return f(v, g.at(v)); };
 
-  std::unordered_map<Node, NewNodeLabel> node_labels =
+  std::map<Node, NewNodeLabel> node_labels =
       generate_map(get_nodes(g), get_new_node_label);
-  std::unordered_map<OpenKwargDataflowValue<GraphInputName, SlotName>,
-                     NewValueLabel>
+  std::map<OpenKwargDataflowValue<GraphInputName, SlotName>, NewValueLabel>
       value_labels = generate_map(get_all_open_kwarg_dataflow_values(g),
                                   get_new_value_label);
   return open_kwarg_dataflow_graph_view_with_labelling(

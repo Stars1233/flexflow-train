@@ -6,7 +6,7 @@
 namespace FlexFlow {
 
 template <typename SlotName>
-std::unordered_map<SlotName, KwargDataflowOutput<SlotName>>
+std::map<SlotName, KwargDataflowOutput<SlotName>>
     get_outgoing_kwarg_dataflow_outputs_for_node(
         KwargDataflowGraphView<SlotName> const &g, Node const &n) {
   KwargDataflowOutputQuery<SlotName> query = KwargDataflowOutputQuery<SlotName>{
@@ -14,7 +14,7 @@ std::unordered_map<SlotName, KwargDataflowOutput<SlotName>>
       /*output_idxs=*/query_set<SlotName>::matchall(),
   };
 
-  std::unordered_map<SlotName, KwargDataflowOutput<SlotName>> result;
+  std::map<SlotName, KwargDataflowOutput<SlotName>> result;
 
   for (KwargDataflowOutput<SlotName> const &output : g.query_outputs(query)) {
     result.insert({output.slot_name, output});

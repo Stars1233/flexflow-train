@@ -2,24 +2,60 @@
 #define _FLEXFLOW_LIB_PCG_INCLUDE_PCG_MAPPED_PARALLEL_COMPUTATION_GRAPH_MAPPED_PARALLEL_COMPUTATION_GRAPH_H
 
 #include "pcg/mapped_parallel_computation_graph/mapped_parallel_computation_graph.dtg.h"
+#include "pcg/mapped_parallel_computation_graph/mapped_parallel_layer_invocation_info.dtg.h"
 #include "pcg/parallel_computation_graph/parallel_computation_graph.h"
 
 namespace FlexFlow {
 
-std::unordered_set<parallel_layer_guid_t>
+std::set<parallel_layer_guid_t>
     mpcg_get_parallel_layers(MappedParallelComputationGraph const &);
+
+std::set<MappedParallelLayerInvocationInfo>
+    mpcg_get_invocation_set(MappedParallelComputationGraph const &);
+
 MappedOperatorTaskGroup
     mpcg_get_mapping_for_layer(MappedParallelComputationGraph const &,
                                parallel_layer_guid_t);
 
 ParallelComputationGraph pcg_from_mpcg(MappedParallelComputationGraph const &);
 
-std::unordered_set<ParallelComputationGraphEdge>
+parallel_layer_guid_t
+    mpcg_get_source_layer(MappedParallelComputationGraph const &,
+                          parallel_tensor_guid_t const &);
+
+PCGOperatorAttrs mpcg_get_pcg_op_attrs(MappedParallelComputationGraph const &,
+                                       parallel_layer_guid_t const &);
+
+ParallelTensorAttrs
+    mpcg_get_parallel_tensor_attrs(MappedParallelComputationGraph const &,
+                                   parallel_tensor_guid_t const &);
+
+std::map<TensorSlotName, ParallelComputationGraphEdge>
+    mpcg_get_incoming_edges(MappedParallelComputationGraph const &,
+                            parallel_layer_guid_t const &);
+
+std::set<ParallelComputationGraphEdge>
+    mpcg_get_outgoing_edges(MappedParallelComputationGraph const &,
+                            parallel_layer_guid_t const &);
+
+ManyToOne<TensorSlotName, parallel_tensor_guid_t>
+    mpcg_get_incoming_tensors(MappedParallelComputationGraph const &,
+                              parallel_layer_guid_t const &);
+
+bidict<TensorSlotName, parallel_tensor_guid_t>
+    mpcg_get_outgoing_tensors(MappedParallelComputationGraph const &,
+                              parallel_layer_guid_t const &);
+
+std::set<ParallelComputationGraphEdge>
     mpcg_get_edges(MappedParallelComputationGraph const &);
+
+std::set<parallel_tensor_use_t>
+    mpcg_get_parallel_tensor_uses(MappedParallelComputationGraph const &,
+                                  parallel_tensor_guid_t const &);
 
 MappedParallelComputationGraph mapped_pcg_from_pcg_and_mapped_op_task_groups(
     ParallelComputationGraph const &pcg,
-    std::unordered_map<parallel_layer_guid_t, MappedOperatorTaskGroup> const
+    std::map<parallel_layer_guid_t, MappedOperatorTaskGroup> const
         &mapped_op_task_groups);
 
 MappedParallelComputationGraph

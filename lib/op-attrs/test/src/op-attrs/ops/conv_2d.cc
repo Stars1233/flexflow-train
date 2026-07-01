@@ -22,9 +22,9 @@ TEST_SUITE(FF_TEST_SUITE) {
     SUBCASE("with bias") {
       Conv2DAttrs attrs = make_attrs(/*use_bias=*/true);
 
-      std::unordered_map<TensorSlotName, IncomingTensorRole> result =
+      std::map<TensorSlotName, IncomingTensorRole> result =
           get_conv2d_incoming_tensor_roles(attrs);
-      std::unordered_map<TensorSlotName, IncomingTensorRole> correct = {
+      std::map<TensorSlotName, IncomingTensorRole> correct = {
           {
               TensorSlotName::INPUT,
               IncomingTensorRole::INPUT,
@@ -45,9 +45,9 @@ TEST_SUITE(FF_TEST_SUITE) {
     SUBCASE("without bias") {
       Conv2DAttrs attrs = make_attrs(/*use_bias=*/false);
 
-      std::unordered_map<TensorSlotName, IncomingTensorRole> result =
+      std::map<TensorSlotName, IncomingTensorRole> result =
           get_conv2d_incoming_tensor_roles(attrs);
-      std::unordered_map<TensorSlotName, IncomingTensorRole> correct = {
+      std::map<TensorSlotName, IncomingTensorRole> correct = {
           {
               TensorSlotName::INPUT,
               IncomingTensorRole::INPUT,

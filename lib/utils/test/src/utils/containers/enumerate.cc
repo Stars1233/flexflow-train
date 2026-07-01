@@ -1,11 +1,11 @@
 #include "utils/containers/enumerate.h"
 #include "test/utils/doctest/fmt/map.h"
+#include "test/utils/doctest/fmt/multiset.h"
 #include "test/utils/doctest/fmt/pair.h"
-#include "test/utils/doctest/fmt/unordered_multiset.h"
-#include "test/utils/doctest/fmt/unordered_set.h"
+#include "test/utils/doctest/fmt/set.h"
 #include "test/utils/doctest/fmt/vector.h"
 #include "utils/containers/keys.h"
-#include "utils/containers/unordered_multiset_of.h"
+#include "utils/containers/multiset_of.h"
 #include "utils/containers/values.h"
 #include "utils/containers/vector_of.h"
 #include <doctest/doctest.h>
@@ -43,14 +43,14 @@ TEST_SUITE(FF_TEST_SUITE) {
     }
   }
 
-  TEST_CASE("enumerate(std::unordered_set<T>)") {
-    std::unordered_set<std::string> input = {"A", "B", "C", "D"};
+  TEST_CASE("enumerate(std::set<T>)") {
+    std::set<std::string> input = {"A", "B", "C", "D"};
 
-    std::unordered_set<nonnegative_int> correct_keys = {0_n, 1_n, 2_n, 3_n};
-    std::unordered_multiset<std::string> correct_values = {"A", "B", "C", "D"};
+    std::set<nonnegative_int> correct_keys = {0_n, 1_n, 2_n, 3_n};
+    std::multiset<std::string> correct_values = {"A", "B", "C", "D"};
     std::map<nonnegative_int, std::string> result = enumerate(input);
 
     CHECK(keys(result) == correct_keys);
-    CHECK(unordered_multiset_of(values(result)) == correct_values);
+    CHECK(multiset_of(values(result)) == correct_values);
   }
 }

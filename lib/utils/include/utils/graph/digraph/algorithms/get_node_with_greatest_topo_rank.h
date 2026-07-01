@@ -5,7 +5,7 @@
 
 namespace FlexFlow {
 
-Node get_node_with_greatest_topo_rank(std::unordered_set<Node> const &,
+Node get_node_with_greatest_topo_rank(std::set<Node> const &,
                                       DiGraphView const &);
 
 } // namespace FlexFlow

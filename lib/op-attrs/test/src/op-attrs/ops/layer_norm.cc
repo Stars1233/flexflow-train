@@ -20,9 +20,9 @@ TEST_SUITE(FF_TEST_SUITE) {
     SUBCASE("elementwise_affine = true") {
       LayerNormAttrs attrs = make_attrs(/*elementwise_affine=*/true);
 
-      std::unordered_map<TensorSlotName, IncomingTensorRole> result =
+      std::map<TensorSlotName, IncomingTensorRole> result =
           get_layer_norm_incoming_tensor_roles(attrs);
-      std::unordered_map<TensorSlotName, IncomingTensorRole> correct = {
+      std::map<TensorSlotName, IncomingTensorRole> correct = {
           {
               TensorSlotName::INPUT,
               IncomingTensorRole::INPUT,
@@ -43,9 +43,9 @@ TEST_SUITE(FF_TEST_SUITE) {
     SUBCASE("elementwise_affine = false") {
       LayerNormAttrs attrs = make_attrs(/*elementwise_affine=*/false);
 
-      std::unordered_map<TensorSlotName, IncomingTensorRole> result =
+      std::map<TensorSlotName, IncomingTensorRole> result =
           get_layer_norm_incoming_tensor_roles(attrs);
-      std::unordered_map<TensorSlotName, IncomingTensorRole> correct = {
+      std::map<TensorSlotName, IncomingTensorRole> correct = {
           {
               TensorSlotName::INPUT,
               IncomingTensorRole::INPUT,

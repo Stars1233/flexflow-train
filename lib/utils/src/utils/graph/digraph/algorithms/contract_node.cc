@@ -3,7 +3,7 @@
 
 namespace FlexFlow {
 
-std::unordered_set<DirectedEdge>
+std::set<DirectedEdge>
     ContractNodeView::query_edges(DirectedEdgeQuery const &q) const {
   return transform(g.query_edges(q), [&](DirectedEdge const &e) {
     DirectedEdge result = e;
@@ -17,8 +17,7 @@ std::unordered_set<DirectedEdge>
   });
 }
 
-std::unordered_set<Node>
-    ContractNodeView::query_nodes(NodeQuery const &q) const {
+std::set<Node> ContractNodeView::query_nodes(NodeQuery const &q) const {
   return transform(g.query_nodes(q), [&](Node const &n) {
     if (n == this->from) {
       return this->to;

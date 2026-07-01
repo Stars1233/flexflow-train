@@ -12,7 +12,7 @@
 namespace FlexFlow {
 
 MachineMappingConstraints get_unconstrained_solution_for_layers(
-    std::unordered_set<BinaryTreePath> const &layers) {
+    std::set<BinaryTreePath> const &layers) {
   return MachineMappingConstraints{
       generate_map(layers,
                    [](BinaryTreePath const &) -> std::optional<MachineView> {
@@ -21,7 +21,7 @@ MachineMappingConstraints get_unconstrained_solution_for_layers(
   };
 }
 
-std::unordered_set<BinaryTreePath>
+std::set<BinaryTreePath>
     get_unconstrained_layers(MachineMappingConstraints const &constraints) {
 
   return keys(filter_values(
@@ -29,7 +29,7 @@ std::unordered_set<BinaryTreePath>
       [](std::optional<MachineView> const &mv) { return !mv.has_value(); }));
 }
 
-std::unordered_set<BinaryTreePath>
+std::set<BinaryTreePath>
     get_constrained_layers(MachineMappingConstraints const &constraints) {
 
   return keys(filter_values(
@@ -37,7 +37,7 @@ std::unordered_set<BinaryTreePath>
       [](std::optional<MachineView> const &mv) { return mv.has_value(); }));
 }
 
-std::unordered_set<BinaryTreePath>
+std::set<BinaryTreePath>
     get_all_layers(MachineMappingConstraints const &partial_solution) {
   return keys(partial_solution.machine_views);
 }
@@ -103,8 +103,7 @@ MachineMappingConstraints with_additional_constraints(
 
 std::optional<MachineView>
     require_only_root(MachineMappingConstraints const &constraints) {
-  ASSERT(keys(constraints.machine_views) ==
-             std::unordered_set{binary_tree_root_path()},
+  ASSERT(keys(constraints.machine_views) == std::set{binary_tree_root_path()},
          fmt::format("require_only_root expected constraints to have only a "
                      "single key (the root path), but received {}",
                      constraints));

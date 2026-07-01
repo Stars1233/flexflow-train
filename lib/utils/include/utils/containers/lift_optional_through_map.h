@@ -5,17 +5,17 @@
 #include "utils/containers/map_values.h"
 #include "utils/containers/values.h"
 #include <libassert/assert.hpp>
+#include <map>
 #include <optional>
-#include <unordered_map>
 
 namespace FlexFlow {
 
 template <typename K, typename V>
-static std::optional<std::unordered_map<K, V>> lift_optional_through_map(
-    std::unordered_map<K, std::optional<V>> const &m) {
+static std::optional<std::map<K, V>>
+    lift_optional_through_map(std::map<K, std::optional<V>> const &m) {
   ASSERT(!m.empty());
 
-  std::unordered_multiset<std::optional<V>> m_values = values(m);
+  std::multiset<std::optional<V>> m_values = values(m);
 
   bool has_all_values = all_of(m_values, [](std::optional<V> const &t) -> bool {
     return t.has_value();

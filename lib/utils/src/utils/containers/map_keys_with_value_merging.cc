@@ -1,4 +1,5 @@
 #include "utils/containers/map_keys_with_value_merging.h"
+#include "utils/archetypes/ordered_value_type.h"
 #include "utils/archetypes/value_type.h"
 
 namespace FlexFlow {
@@ -12,5 +13,13 @@ using MergeF = std::function<V(V const &, V const &)>;
 
 template std::unordered_map<K2, V> map_keys_with_value_merging(
     std::unordered_map<K, V> const &, F &&, MergeF &&);
+
+using O_K = ordered_value_type<0>;
+using O_K2 = ordered_value_type<2>;
+
+using O_F = std::function<O_K2(O_K const &)>;
+
+template std::map<O_K2, V>
+    map_keys_with_value_merging(std::map<O_K, V> const &, O_F &&, MergeF &&);
 
 } // namespace FlexFlow

@@ -1,5 +1,5 @@
 #include "kernels/allocation.h"
-#include <unordered_set>
+#include <set>
 
 namespace FlexFlow {
 
@@ -15,7 +15,7 @@ struct LocalCudaAllocator : public IAllocator {
   DeviceType get_allocation_device_type() const override;
 
 private:
-  std::unordered_set<void *> ptrs;
+  std::set<void *> ptrs;
 };
 CHECK_RC_COPY_VIRTUAL_COMPLIANT(LocalCudaAllocator);
 

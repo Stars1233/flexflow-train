@@ -15,9 +15,9 @@
 
 namespace FlexFlow {
 
-std::unordered_map<TensorSlotName, IncomingTensorRole>
+std::map<TensorSlotName, IncomingTensorRole>
     get_layer_norm_incoming_tensor_roles(LayerNormAttrs const &attrs) {
-  std::unordered_map<TensorSlotName, IncomingTensorRole> result = {
+  std::map<TensorSlotName, IncomingTensorRole> result = {
       {TensorSlotName::INPUT, IncomingTensorRole::INPUT},
   };
 
@@ -100,7 +100,7 @@ tl::expected<TensorShape, std::string>
   return get_gamma_weights_shape(attrs, input_shape);
 }
 
-tl::expected<std::unordered_map<TensorSlotName, TensorShape>, std::string>
+tl::expected<std::map<TensorSlotName, TensorShape>, std::string>
     get_weight_shapes(LayerNormAttrs const &attrs,
                       TensorShape const &input_shape) {
 
@@ -109,7 +109,7 @@ tl::expected<std::unordered_map<TensorSlotName, TensorShape>, std::string>
   TensorShape beta_shape =
       PROPAGATE_ERR(get_beta_weights_shape(attrs, input_shape));
 
-  return std::unordered_map<TensorSlotName, TensorShape>{
+  return std::map<TensorSlotName, TensorShape>{
       {
           TensorSlotName::GAMMA,
           gamma_shape,
@@ -220,8 +220,7 @@ tl::expected<ParallelTensorShape, std::string>
   return get_gamma_weights_shape(attrs, input_shape);
 }
 
-tl::expected<std::unordered_map<TensorSlotName, ParallelTensorShape>,
-             std::string>
+tl::expected<std::map<TensorSlotName, ParallelTensorShape>, std::string>
     get_weight_shapes(LayerNormAttrs const &attrs,
                       ParallelTensorShape const &input_shape) {
 
@@ -230,7 +229,7 @@ tl::expected<std::unordered_map<TensorSlotName, ParallelTensorShape>,
   ParallelTensorShape beta_shape =
       PROPAGATE_ERR(get_beta_weights_shape(attrs, input_shape));
 
-  return std::unordered_map<TensorSlotName, ParallelTensorShape>{
+  return std::map<TensorSlotName, ParallelTensorShape>{
       {
           TensorSlotName::GAMMA,
           gamma_shape,
@@ -242,7 +241,7 @@ tl::expected<std::unordered_map<TensorSlotName, ParallelTensorShape>,
   };
 }
 
-std::unordered_map<TensorSlotName, InitializerAttrs>
+std::map<TensorSlotName, InitializerAttrs>
     get_initializers(LayerNormAttrs const &attrs) {
   if (attrs.elementwise_affine) {
     InitializerAttrs gamma_initializer =

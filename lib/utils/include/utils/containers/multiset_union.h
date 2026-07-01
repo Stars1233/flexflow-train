@@ -32,8 +32,8 @@ std::multiset<T> multiset_union(std::multiset<T> const &lhs,
 }
 
 template <typename C, typename T = typename C::value_type::value_type>
-std::unordered_multiset<T> multiset_union(C const &c) {
-  std::unordered_multiset<T> result;
+std::multiset<T> multiset_union(C const &c) {
+  std::multiset<T> result;
   for (auto const &s : c) {
     for (T const &element : s) {
       result.insert(element);

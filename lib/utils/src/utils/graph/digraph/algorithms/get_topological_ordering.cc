@@ -14,8 +14,8 @@ static std::vector<Node>
     get_unchecked_topological_ordering(DiGraphView const &g) {
   auto dfs_view = unchecked_dfs(g, get_initial_nodes(g));
   std::vector<Node> order;
-  std::unordered_set<Node> seen;
-  std::unordered_map<Node, std::unordered_set<Node>> predecessors =
+  std::set<Node> seen;
+  std::map<Node, std::set<Node>> predecessors =
       get_predecessors(g, get_nodes(g));
 
   auto all_predecessors_seen = [&](Node const &n) -> bool {

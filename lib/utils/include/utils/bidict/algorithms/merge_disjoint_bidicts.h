@@ -7,14 +7,16 @@
 
 namespace FlexFlow {
 
-template <typename K, typename V>
-bidict<K, V> merge_disjoint_bidicts(std::set<bidict<K, V>> const &bidicts) {
-  return foldl(
-      bidicts,
-      bidict<K, V>{},
-      [](bidict<K, V> const &accum, bidict<K, V> const &x) -> bidict<K, V> {
-        return binary_merge_disjoint_bidicts(accum, x);
-      });
+template <typename C,
+          typename K = typename C::value_type::key_type,
+          typename V = typename C::value_type::mapped_type>
+bidict<K, V> merge_disjoint_bidicts(C const &c) {
+  bidict<K, V> empty = {};
+  return foldl(c,
+               /*init=*/empty,
+               [](bidict<K, V> const &lhs, bidict<K, V> const &rhs) {
+                 return binary_merge_disjoint_bidicts(lhs, rhs);
+               });
 }
 
 } // namespace FlexFlow

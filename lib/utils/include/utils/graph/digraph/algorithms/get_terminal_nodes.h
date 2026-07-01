@@ -8,7 +8,7 @@ namespace FlexFlow {
 /**
  * @brief Returns the set of nodes in the graph with no outgoing edges.
  */
-std::unordered_set<Node> get_terminal_nodes(DiGraphView const &graph);
+std::set<Node> get_terminal_nodes(DiGraphView const &graph);
 
 } // namespace FlexFlow
 

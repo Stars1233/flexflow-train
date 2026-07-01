@@ -3,7 +3,7 @@
 #include "utils/containers/minimum.h"
 #include "utils/containers/transform.h"
 #include "utils/exception.h"
-#include "utils/fmt/unordered_set.h"
+#include "utils/fmt/set.h"
 
 namespace FlexFlow {
 

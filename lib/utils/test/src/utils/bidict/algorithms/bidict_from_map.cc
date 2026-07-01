@@ -4,9 +4,9 @@
 using namespace ::FlexFlow;
 
 TEST_SUITE(FF_TEST_SUITE) {
-  TEST_CASE("bidict_from_map(std::unordered_map<L, R>)") {
+  TEST_CASE("bidict_from_map(std::map<L, R>)") {
     SUBCASE("map values do not contain duplicates") {
-      std::unordered_map<int, std::string> input = {
+      std::map<int, std::string> input = {
           {1, "one"},
           {2, "two"},
           {3, "three"},
@@ -23,7 +23,7 @@ TEST_SUITE(FF_TEST_SUITE) {
     }
 
     SUBCASE("map values contain duplicates") {
-      std::unordered_map<int, std::string> input = {
+      std::map<int, std::string> input = {
           {1, "odd"},
           {2, "even"},
           {3, "odd"},

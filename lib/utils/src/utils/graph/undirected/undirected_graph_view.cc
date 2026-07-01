@@ -2,13 +2,12 @@
 
 namespace FlexFlow {
 
-std::unordered_set<UndirectedEdge>
+std::set<UndirectedEdge>
     UndirectedGraphView::query_edges(UndirectedEdgeQuery const &q) const {
   return this->get_ptr().query_edges(q);
 }
 
-std::unordered_set<Node>
-    UndirectedGraphView::query_nodes(NodeQuery const &q) const {
+std::set<Node> UndirectedGraphView::query_nodes(NodeQuery const &q) const {
   return this->get_ptr().query_nodes(q);
 }
 

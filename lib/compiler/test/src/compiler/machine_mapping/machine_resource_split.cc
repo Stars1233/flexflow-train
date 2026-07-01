@@ -1,7 +1,7 @@
 #include "compiler/machine_mapping/machine_resource_split.h"
 #include "pcg/machine_compute_specification.dtg.h"
 #include "test/utils/doctest/fmt/pair.h"
-#include "test/utils/doctest/fmt/unordered_set.h"
+#include "test/utils/doctest/fmt/set.h"
 #include "utils/hash/pair.h"
 #include <doctest/doctest.h>
 
@@ -15,9 +15,9 @@ TEST_SUITE(FF_TEST_SUITE) {
           /*num_gpus_per_node=*/1_p,
       };
 
-      std::unordered_set<MachineResourceSplit> result =
+      std::set<MachineResourceSplit> result =
           get_machine_resource_splits(input);
-      std::unordered_set<MachineResourceSplit> correct = {};
+      std::set<MachineResourceSplit> correct = {};
 
       CHECK(result == correct);
     }
@@ -28,10 +28,10 @@ TEST_SUITE(FF_TEST_SUITE) {
           /*num_gpus_per_node=*/2_p,
       };
 
-      std::unordered_set<MachineResourceSplit> result =
+      std::set<MachineResourceSplit> result =
           get_machine_resource_splits(input);
 
-      std::unordered_set<MachineResourceSplit> correct = {
+      std::set<MachineResourceSplit> correct = {
           MachineResourceSplit{
               /*offset=*/1_p,
               /*dimension=*/MachineSpecificationDimension::INTRA_NODE,
@@ -50,10 +50,10 @@ TEST_SUITE(FF_TEST_SUITE) {
           /*num_gpus_per_node=*/1_p,
       };
 
-      std::unordered_set<MachineResourceSplit> result =
+      std::set<MachineResourceSplit> result =
           get_machine_resource_splits(input);
 
-      std::unordered_set<MachineResourceSplit> correct = {
+      std::set<MachineResourceSplit> correct = {
           MachineResourceSplit{
               /*offset=*/1_p,
               /*dimension=*/MachineSpecificationDimension::INTER_NODE,
@@ -85,10 +85,10 @@ TEST_SUITE(FF_TEST_SUITE) {
           /*num_gpus_per_node=*/8_p,
       };
 
-      std::unordered_set<MachineResourceSplit> result =
+      std::set<MachineResourceSplit> result =
           get_machine_resource_splits(input);
 
-      std::unordered_set<MachineResourceSplit> correct = {
+      std::set<MachineResourceSplit> correct = {
           MachineResourceSplit{
               /*offset=*/1_p,
               /*dimension=*/MachineSpecificationDimension::INTRA_NODE,

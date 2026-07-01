@@ -29,9 +29,9 @@ TEST_SUITE(FF_TEST_SUITE) {
 
       layer_guid_t input_layer = get_layer_by_name(cg, input_name);
 
-      std::unordered_map<TensorSlotName, tensor_guid_t> result =
+      std::map<TensorSlotName, tensor_guid_t> result =
           get_incoming_inputs(cg, input_layer);
-      std::unordered_map<TensorSlotName, tensor_guid_t> correct = {};
+      std::map<TensorSlotName, tensor_guid_t> correct = {};
 
       CHECK(result == correct);
     }
@@ -56,9 +56,9 @@ TEST_SUITE(FF_TEST_SUITE) {
 
       layer_guid_t layer = get_layer_by_name(cg, layer_name);
 
-      std::unordered_map<TensorSlotName, tensor_guid_t> result =
+      std::map<TensorSlotName, tensor_guid_t> result =
           get_incoming_inputs(cg, layer);
-      std::unordered_map<TensorSlotName, tensor_guid_t> correct = {
+      std::map<TensorSlotName, tensor_guid_t> correct = {
           {
               TensorSlotName::INPUT,
               input,
@@ -95,9 +95,9 @@ TEST_SUITE(FF_TEST_SUITE) {
 
       layer_guid_t dense_layer = get_layer_by_name(cg, layer_name);
 
-      std::unordered_map<TensorSlotName, tensor_guid_t> result =
+      std::map<TensorSlotName, tensor_guid_t> result =
           get_incoming_inputs(cg, dense_layer);
-      std::unordered_map<TensorSlotName, tensor_guid_t> correct = {
+      std::map<TensorSlotName, tensor_guid_t> correct = {
           {
               TensorSlotName::INPUT,
               input,
@@ -130,9 +130,9 @@ TEST_SUITE(FF_TEST_SUITE) {
 
       layer_guid_t input_layer = get_layer_by_name(cg, input_name);
 
-      std::unordered_map<TensorSlotName, tensor_guid_t> result =
+      std::map<TensorSlotName, tensor_guid_t> result =
           get_incoming_weights(cg, input_layer);
-      std::unordered_map<TensorSlotName, tensor_guid_t> correct = {};
+      std::map<TensorSlotName, tensor_guid_t> correct = {};
 
       CHECK(result == correct);
     }
@@ -159,9 +159,9 @@ TEST_SUITE(FF_TEST_SUITE) {
 
       layer_guid_t layer = get_layer_by_name(cg, layer_name);
 
-      std::unordered_map<TensorSlotName, tensor_guid_t> result =
+      std::map<TensorSlotName, tensor_guid_t> result =
           get_incoming_weights(cg, layer);
-      std::unordered_map<TensorSlotName, tensor_guid_t> correct = {};
+      std::map<TensorSlotName, tensor_guid_t> correct = {};
 
       CHECK(result == correct);
     }
@@ -239,9 +239,9 @@ TEST_SUITE(FF_TEST_SUITE) {
                                                     },
                                                 });
 
-      std::unordered_map<TensorSlotName, tensor_guid_t> result =
+      std::map<TensorSlotName, tensor_guid_t> result =
           get_incoming_weights(cg, linear_added.layer);
-      std::unordered_map<TensorSlotName, tensor_guid_t> correct = {
+      std::map<TensorSlotName, tensor_guid_t> correct = {
           {
               TensorSlotName::WEIGHT,
               t_projection_weight,

@@ -10,30 +10,29 @@ namespace FlexFlow {
 template <typename SlotName>
 struct KwargDataflowGraph : virtual public KwargDataflowGraphView<SlotName> {
 public:
-  KwargNodeAddedResult<SlotName> add_node(
-      std::unordered_map<SlotName, KwargDataflowOutput<SlotName>> const &inputs,
-      std::unordered_set<SlotName> const &outputs) {
+  KwargNodeAddedResult<SlotName>
+      add_node(std::map<SlotName, KwargDataflowOutput<SlotName>> const &inputs,
+               std::set<SlotName> const &outputs) {
     return this->get_interface().add_node(inputs, outputs);
   }
 
   void add_node_unsafe(
       Node const &node,
-      std::unordered_map<SlotName, KwargDataflowOutput<SlotName>> const &inputs,
-      std::unordered_map<SlotName, KwargDataflowOutput<SlotName>> const
-          &outputs) {
+      std::map<SlotName, KwargDataflowOutput<SlotName>> const &inputs,
+      std::map<SlotName, KwargDataflowOutput<SlotName>> const &outputs) {
     return this->get_interface().add_node_unsafe(node, inputs, outputs);
   }
 
-  std::unordered_set<Node> query_nodes(NodeQuery const &q) const {
+  std::set<Node> query_nodes(NodeQuery const &q) const {
     return this->get_interface().query_nodes(q);
   }
 
-  std::unordered_set<KwargDataflowEdge<SlotName>>
+  std::set<KwargDataflowEdge<SlotName>>
       query_edges(KwargDataflowEdgeQuery<SlotName> const &q) const {
     return this->get_interface().query_edges(q);
   }
 
-  std::unordered_set<KwargDataflowOutput<SlotName>>
+  std::set<KwargDataflowOutput<SlotName>>
       query_outputs(KwargDataflowOutputQuery<SlotName> const &q) const {
     return this->get_interface().query_outputs(q);
   }

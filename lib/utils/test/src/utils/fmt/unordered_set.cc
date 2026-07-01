@@ -1,6 +1,6 @@
 #include "utils/fmt/unordered_set.h"
-#include "test/utils/doctest/fmt/unordered_multiset.h"
-#include "utils/containers/unordered_multiset_of.h"
+#include "test/utils/doctest/fmt/multiset.h"
+#include "utils/containers/multiset_of.h"
 #include "utils/hash-utils.h"
 #include <doctest/doctest.h>
 
@@ -49,6 +49,6 @@ TEST_SUITE(FF_TEST_SUITE) {
     std::string result = fmt::to_string(input);
     std::string correct = "{0, 1, 2, 3}";
     CHECK(result != correct);
-    CHECK(unordered_multiset_of(result) == unordered_multiset_of(correct));
+    CHECK(multiset_of(result) == multiset_of(correct));
   }
 }

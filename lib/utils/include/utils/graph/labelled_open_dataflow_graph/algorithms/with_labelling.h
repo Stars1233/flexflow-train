@@ -13,26 +13,26 @@ public:
   OpenDataflowGraphLabellingWrapper() = delete;
   OpenDataflowGraphLabellingWrapper(
       OpenDataflowGraphView const &unlabelled,
-      std::unordered_map<Node, NodeLabel> const &node_labels,
-      std::unordered_map<OpenDataflowValue, ValueLabel> const &value_labels)
+      std::map<Node, NodeLabel> const &node_labels,
+      std::map<OpenDataflowValue, ValueLabel> const &value_labels)
       : unlabelled(unlabelled), node_labels(node_labels),
         value_labels(value_labels) {}
 
-  std::unordered_set<Node> query_nodes(NodeQuery const &q) const override {
+  std::set<Node> query_nodes(NodeQuery const &q) const override {
     return this->unlabelled.query_nodes(q);
   }
 
-  std::unordered_set<OpenDataflowEdge>
+  std::set<OpenDataflowEdge>
       query_edges(OpenDataflowEdgeQuery const &q) const override {
     return this->unlabelled.query_edges(q);
   }
 
-  std::unordered_set<DataflowOutput>
+  std::set<DataflowOutput>
       query_outputs(DataflowOutputQuery const &q) const override {
     return this->unlabelled.query_outputs(q);
   }
 
-  std::unordered_set<DataflowGraphInput> get_inputs() const override {
+  std::set<DataflowGraphInput> get_inputs() const override {
     return this->unlabelled.get_inputs();
   }
 
@@ -54,15 +54,15 @@ public:
 
 private:
   OpenDataflowGraphView unlabelled;
-  std::unordered_map<Node, NodeLabel> node_labels;
-  std::unordered_map<OpenDataflowValue, ValueLabel> value_labels;
+  std::map<Node, NodeLabel> node_labels;
+  std::map<OpenDataflowValue, ValueLabel> value_labels;
 };
 
 template <typename NodeLabel, typename ValueLabel>
 LabelledOpenDataflowGraphView<NodeLabel, ValueLabel> with_labelling(
     OpenDataflowGraphView const &g,
-    std::unordered_map<Node, NodeLabel> const &node_labels,
-    std::unordered_map<OpenDataflowValue, ValueLabel> const &value_labels) {
+    std::map<Node, NodeLabel> const &node_labels,
+    std::map<OpenDataflowValue, ValueLabel> const &value_labels) {
   return LabelledOpenDataflowGraphView<NodeLabel, ValueLabel>::template create<
       OpenDataflowGraphLabellingWrapper<NodeLabel, ValueLabel>>(
       g, node_labels, value_labels);

@@ -1,0 +1,23 @@
+namespace = "FlexFlow"
+name = "dynamic_value_id_t"
+type = "variant"
+features = [
+  "eq",
+  "ord",
+  "hash",
+  "json",
+  "fmt",
+]
+
+includes = [
+  "task-spec/dynamic_graph/dynamic_internal_value_id_t.dtg.h",
+  "task-spec/dynamic_graph/dynamic_external_value_id_t.dtg.h",
+]
+
+[[values]]
+type = "::FlexFlow::dynamic_internal_value_id_t"
+key = "internal"
+
+[[values]]
+type = "::FlexFlow::dynamic_external_value_id_t"
+key = "external"

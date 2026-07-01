@@ -15,7 +15,7 @@ namespace FlexFlow {
 
 MachineSpaceCoordinate concretize_abstracted_device(
     AbstractedDevice const &abstracted_device,
-    std::unordered_map<BinaryTreePath, MachineSpaceStencil> const &stencils) {
+    std::map<BinaryTreePath, MachineSpaceStencil> const &stencils) {
 
   return machine_space_stencil_compute_machine_coord(
       stencils.at(abstracted_device.operator_tree_path),

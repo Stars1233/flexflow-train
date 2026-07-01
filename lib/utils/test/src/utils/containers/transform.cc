@@ -1,6 +1,6 @@
 #include "utils/containers/transform.h"
 #include "test/utils/doctest/fmt/optional.h"
-#include "test/utils/doctest/fmt/unordered_set.h"
+#include "test/utils/doctest/fmt/set.h"
 #include "test/utils/doctest/fmt/vector.h"
 #include <doctest/doctest.h>
 
@@ -15,11 +15,11 @@ TEST_SUITE(FF_TEST_SUITE) {
     CHECK(result == correct);
   }
 
-  TEST_CASE("transform(std::unordered_set<In>, F)") {
-    std::unordered_set<int> input = {1, 2, 3};
-    std::unordered_set<std::string> result =
+  TEST_CASE("transform(std::set<In>, F)") {
+    std::set<int> input = {1, 2, 3};
+    std::set<std::string> result =
         transform(input, [](int x) { return std::to_string(x); });
-    std::unordered_set<std::string> correct = {"1", "2", "3"};
+    std::set<std::string> correct = {"1", "2", "3"};
     CHECK(result == correct);
   }
 

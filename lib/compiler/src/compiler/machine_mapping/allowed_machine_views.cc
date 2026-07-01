@@ -10,13 +10,13 @@
 #include "utils/containers/filter.h"
 #include "utils/containers/get_all_permutations_with_repetition.h"
 #include "utils/containers/map_from_keys_and_values.h"
+#include "utils/containers/multiset_of.h"
 #include "utils/containers/product.h"
 #include "utils/containers/range.h"
 #include "utils/containers/repeat_element.h"
+#include "utils/containers/set_of.h"
 #include "utils/containers/sorted.h"
 #include "utils/containers/transform.h"
-#include "utils/containers/unordered_multiset_of.h"
-#include "utils/containers/unordered_set_of.h"
 #include "utils/containers/zip.h"
 #include "utils/nonnegative_int/nonnegative_range.h"
 #include "utils/nonnegative_int/num_elements.h"
@@ -47,7 +47,7 @@ bool is_valid_machine_view(MachineView const &mv,
  * returned set contains a valid machine view (i.e. it's possible for all
  * the returned `MachineView`s to be invalid)
  */
-static std::unordered_set<MachineView>
+static std::set<MachineView>
     get_candidate_machine_views(MachineComputeResourceSlice const &machine_spec,
                                 OperatorTaskSpace const &task_space) {
 
@@ -64,9 +64,9 @@ static std::unordered_set<MachineView>
                    positive_int{min_num_devices_with_full_stride_volume});
   };
 
-  auto get_candidate_strides = [&](std::vector<positive_int> const &tensor_dims,
-                                   positive_int total_devices)
-      -> std::unordered_multiset<MultiDimensionalStride> {
+  auto get_candidate_strides =
+      [&](std::vector<positive_int> const &tensor_dims,
+          positive_int total_devices) -> std::multiset<MultiDimensionalStride> {
     positive_int max_stride_upper_bound =
         get_max_stride_upper_bound(tensor_dims, total_devices);
 
@@ -76,12 +76,11 @@ static std::unordered_set<MachineView>
             max_stride_upper_bound.nonnegative_int_from_positive_int() + 1_n),
         [](nonnegative_int stride) { return stride_t{positive_int{stride}}; });
 
-    std::unordered_multiset<std::vector<stride_t>> raw_stride_vectors =
-        cartesian_product(
-            repeat_element(/*num_times=*/num_elements(tensor_dims),
-                           /*element=*/single_stride_range));
+    std::multiset<std::vector<stride_t>> raw_stride_vectors = cartesian_product(
+        repeat_element(/*num_times=*/num_elements(tensor_dims),
+                       /*element=*/single_stride_range));
 
-    std::unordered_multiset<MultiDimensionalStride> strides =
+    std::multiset<MultiDimensionalStride> strides =
         transform(raw_stride_vectors, [](auto const &stride_vec) {
           return MultiDimensionalStride{stride_vec};
         });
@@ -90,8 +89,8 @@ static std::unordered_set<MachineView>
   };
 
   auto get_candidate_starts = [](MachineComputeResourceSlice const &slice)
-      -> std::unordered_set<MachineSpaceCoordinate> {
-    std::unordered_set<MachineSpaceCoordinate> result;
+      -> std::set<MachineSpaceCoordinate> {
+    std::set<MachineSpaceCoordinate> result;
     for (nonnegative_int node_idx : nonnegative_range(slice.num_nodes)) {
       for (nonnegative_int device_idx :
            nonnegative_range(slice.num_gpus_per_node)) {
@@ -102,8 +101,8 @@ static std::unordered_set<MachineView>
   };
 
   auto get_candidate_dimensions = [](OperatorTaskSpace const &task_space)
-      -> std::unordered_multiset<std::vector<MachineSpecificationDimension>> {
-    std::unordered_set<MachineSpecificationDimension> options = {
+      -> std::multiset<std::vector<MachineSpecificationDimension>> {
+    std::set<MachineSpecificationDimension> options = {
         MachineSpecificationDimension::INTER_NODE,
         MachineSpecificationDimension::INTRA_NODE};
     return get_all_permutations_with_repetition(
@@ -117,19 +116,19 @@ static std::unordered_set<MachineView>
 
   positive_int total_devices = get_total_num_devices_in_slice(machine_spec);
 
-  std::unordered_multiset<MultiDimensionalStride> candidate_strides =
+  std::multiset<MultiDimensionalStride> candidate_strides =
       get_candidate_strides(tensor_dims, total_devices);
   ASSERT(candidate_strides.size() > 0);
 
-  std::unordered_set<MachineSpaceCoordinate> candidate_starts =
+  std::set<MachineSpaceCoordinate> candidate_starts =
       get_candidate_starts(machine_spec);
   ASSERT(candidate_starts.size() > 0);
 
-  std::unordered_multiset<std::vector<MachineSpecificationDimension>>
+  std::multiset<std::vector<MachineSpecificationDimension>>
       candidate_dimensions = get_candidate_dimensions(task_space);
   ASSERT(candidate_dimensions.size() > 0);
 
-  std::unordered_set<MachineView> machine_views;
+  std::set<MachineView> machine_views;
 
   for (MultiDimensionalStride const &strides : candidate_strides) {
     for (MachineSpaceCoordinate start : candidate_starts) {
@@ -144,11 +143,11 @@ static std::unordered_set<MachineView>
   return machine_views;
 }
 
-std::unordered_set<MachineView>
+std::set<MachineView>
     get_allowed_machine_views(MachineComputeResourceSlice const &machine_spec,
                               OperatorTaskSpace const &task_space) {
 
-  std::unordered_set<MachineView> views =
+  std::set<MachineView> views =
       get_candidate_machine_views(machine_spec, task_space);
   return filter(views, [&](MachineView const &mv) {
     return is_valid_machine_view(mv, task_space, machine_spec);

@@ -6,13 +6,13 @@
 
 namespace FlexFlow {
 
-std::unordered_set<PatternNode> get_nodes(PatternEdge const &e) {
-  return e.visit<std::unordered_set<PatternNode>>(overload{
+std::set<PatternNode> get_nodes(PatternEdge const &e) {
+  return e.visit<std::set<PatternNode>>(overload{
       [](InputPatternEdge const &ee) {
-        return std::unordered_set<PatternNode>{get_dst_node(ee)};
+        return std::set<PatternNode>{get_dst_node(ee)};
       },
       [](StandardPatternEdge const &ee) {
-        return std::unordered_set<PatternNode>{
+        return std::set<PatternNode>{
             get_src_node(ee),
             get_dst_node(ee),
         };

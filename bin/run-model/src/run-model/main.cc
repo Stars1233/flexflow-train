@@ -71,47 +71,47 @@ int main(int argc, char **argv) {
   char **realm_argv = realm_args.data();
   RealmManager manager(&realm_argc, &realm_argv);
 
-  ControllerTaskResult result = manager.start_controller([&](RealmContext
-                                                                 &ctx) {
-    MappedParallelComputationGraph mpcg = [&]() {
-      std::ifstream f(mapped_pcg_json);
-      nlohmann::json mpcg_json = nlohmann::json::parse(f);
-      return from_v1(mpcg_json.get<V1MappedParallelComputationGraph>());
-    }();
+  ControllerTaskResult result =
+      manager.start_controller([&](RealmContext &ctx) {
+        MappedParallelComputationGraph mpcg = [&]() {
+          std::ifstream f(mapped_pcg_json);
+          nlohmann::json mpcg_json = nlohmann::json::parse(f);
+          return from_v1(mpcg_json.get<V1MappedParallelComputationGraph>());
+        }();
 
-    // instantiate computation graph
-    OptimizerAttrs optimizer_attrs =
-        OptimizerAttrs{SGDOptimizerAttrs{/*lr=*/0.001,
-                                         /*momentum=*/0.9,
-                                         /*nesterov=*/false,
-                                         /*weight_decay=*/0.001}};
+        // instantiate computation graph
+        OptimizerAttrs optimizer_attrs =
+            OptimizerAttrs{SGDOptimizerAttrs{/*lr=*/0.001,
+                                             /*momentum=*/0.9,
+                                             /*nesterov=*/false,
+                                             /*weight_decay=*/0.001}};
 
-    std::unordered_map<DynamicValueAttrs, DynamicTensorAccessor> input_tensors;
+        std::map<DynamicValueAttrs, DynamicTensorAccessor> input_tensors;
 
-    DistributedFfHandle device_handle =
-        create_distributed_ff_handle(ctx,
-                                     /*workSpaceSize=*/1024 * 1024,
-                                     /*allowTensorOpMathConversion=*/true);
+        DistributedFfHandle device_handle =
+            create_distributed_ff_handle(ctx,
+                                         /*workSpaceSize=*/1024 * 1024,
+                                         /*allowTensorOpMathConversion=*/true);
 
-    PCGInstance pcg_instance = create_pcg_instance(
-        /*ctx=*/ctx,
-        /*mpcg=*/mpcg,
-        /*optimizer=*/optimizer_attrs,
-        /*loss=*/std::nullopt,
-        /*input_tensors=*/input_tensors,
-        /*profiling_settings=*/ProfilingSettings{0, 0},
-        /*device_handle=*/device_handle,
-        /*device_type=*/DeviceType::GPU);
+        PCGInstance pcg_instance = create_pcg_instance(
+            /*ctx=*/ctx,
+            /*mpcg=*/mpcg,
+            /*optimizer=*/optimizer_attrs,
+            /*loss=*/std::nullopt,
+            /*input_tensors=*/input_tensors,
+            /*profiling_settings=*/ProfilingSettings{0, 0},
+            /*device_handle=*/device_handle,
+            /*device_type=*/DeviceType::GPU);
 
-    // begin training loop
-    int num_epochs = 5;
-    for (int i = 0; i < num_epochs; i++) {
-      perform_all_passes_for_pcg_instance(
-          /*instance=*/pcg_instance,
-          /*profiling_settings=*/ProfilingSettings{0, 1},
-          /*device_handle=*/device_handle);
-    }
-  });
+        // begin training loop
+        int num_epochs = 5;
+        for (int i = 0; i < num_epochs; i++) {
+          perform_all_passes_for_pcg_instance(
+              /*instance=*/pcg_instance,
+              /*profiling_settings=*/ProfilingSettings{0, 1},
+              /*device_handle=*/device_handle);
+        }
+      });
   result.wait();
 
   return 0;

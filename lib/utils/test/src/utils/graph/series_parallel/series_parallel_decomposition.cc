@@ -1,5 +1,5 @@
 #include "utils/graph/series_parallel/series_parallel_decomposition.h"
-#include "test/utils/doctest/fmt/unordered_multiset.h"
+#include "test/utils/doctest/fmt/multiset.h"
 #include <doctest/doctest.h>
 
 using namespace ::FlexFlow;
@@ -84,8 +84,8 @@ TEST_SUITE(FF_TEST_SUITE) {
             }},
         }}};
 
-    std::unordered_multiset<Node> result = get_nodes(input);
-    std::unordered_multiset<Node> correct = {
+    std::multiset<Node> result = get_nodes(input);
+    std::multiset<Node> correct = {
         Node{1},
         Node{2},
         Node{2},
@@ -112,8 +112,8 @@ TEST_SUITE(FF_TEST_SUITE) {
         Node{7},
     }};
 
-    std::unordered_multiset<Node> result = get_nodes(input);
-    std::unordered_multiset<Node> correct = {
+    std::multiset<Node> result = get_nodes(input);
+    std::multiset<Node> correct = {
         Node{1},
         Node{2},
         Node{3},
@@ -139,8 +139,8 @@ TEST_SUITE(FF_TEST_SUITE) {
         }},
     }};
 
-    std::unordered_multiset<Node> result = get_nodes(input);
-    std::unordered_multiset<Node> correct = {
+    std::multiset<Node> result = get_nodes(input);
+    std::multiset<Node> correct = {
         Node{1},
         Node{2},
         Node{4},
@@ -153,8 +153,8 @@ TEST_SUITE(FF_TEST_SUITE) {
 
   TEST_CASE("get_nodes(Node)") {
     Node input = Node{5};
-    std::unordered_multiset<Node> result = get_nodes(input);
-    std::unordered_multiset<Node> correct = {input};
+    std::multiset<Node> result = get_nodes(input);
+    std::multiset<Node> correct = {input};
     CHECK(result == correct);
   }
 }

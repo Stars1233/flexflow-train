@@ -2,7 +2,7 @@
 #define _FLEXFLOW_LIB_KERNELS_INCLUDE_KERNELS_LOCAL_CPU_ALLOCATOR_H
 
 #include "kernels/allocation.h"
-#include <unordered_set>
+#include <set>
 
 namespace FlexFlow {
 
@@ -18,7 +18,7 @@ struct LocalCPUAllocator : public IAllocator {
   DeviceType get_allocation_device_type() const override;
 
 private:
-  std::unordered_map<void *, std::unique_ptr<void, decltype(&free)>> ptrs;
+  std::map<void *, std::unique_ptr<void, decltype(&free)>> ptrs;
 };
 CHECK_RC_COPY_VIRTUAL_COMPLIANT(LocalCPUAllocator);
 

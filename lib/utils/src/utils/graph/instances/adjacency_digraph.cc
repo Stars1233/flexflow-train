@@ -8,7 +8,7 @@ AdjacencyDiGraph::AdjacencyDiGraph() {}
 
 AdjacencyDiGraph::AdjacencyDiGraph(
     NodeSource const &node_source,
-    std::unordered_map<Node, std::unordered_set<Node>> const &adjacency)
+    std::map<Node, std::set<Node>> const &adjacency)
     : node_source(node_source), adjacency(adjacency) {}
 
 AdjacencyDiGraph *AdjacencyDiGraph::clone() const {
@@ -41,9 +41,9 @@ void AdjacencyDiGraph::remove_edge(DirectedEdge const &e) {
   this->adjacency.at(e.src).erase(e.dst);
 }
 
-std::unordered_set<DirectedEdge>
+std::set<DirectedEdge>
     AdjacencyDiGraph::query_edges(DirectedEdgeQuery const &query) const {
-  std::unordered_set<DirectedEdge> result;
+  std::set<DirectedEdge> result;
   for (auto const &src_kv : query_keys(query.srcs, this->adjacency)) {
     for (auto const &dst : apply_query(query.dsts, src_kv.second)) {
       result.insert(DirectedEdge{src_kv.first, dst});
@@ -52,8 +52,7 @@ std::unordered_set<DirectedEdge>
   return result;
 }
 
-std::unordered_set<Node>
-    AdjacencyDiGraph::query_nodes(NodeQuery const &query) const {
+std::set<Node> AdjacencyDiGraph::query_nodes(NodeQuery const &query) const {
   return apply_query(query.nodes, keys(this->adjacency));
 }
 

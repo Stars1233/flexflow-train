@@ -7,13 +7,13 @@
 #include "substitutions/unlabelled/standard_pattern_edge.dtg.h"
 #include "utils/graph/open_dataflow_graph/open_dataflow_edge.dtg.h"
 #include "utils/graph/open_kwarg_dataflow_graph/open_kwarg_dataflow_edge.dtg.h"
-#include <unordered_set>
+#include <set>
 
 namespace FlexFlow {
 
 PatternNode get_dst_node(PatternEdge const &);
 
-std::unordered_set<PatternNode> get_nodes(PatternEdge const &);
+std::set<PatternNode> get_nodes(PatternEdge const &);
 bool is_input_edge(PatternEdge const &);
 bool is_standard_edge(PatternEdge const &);
 

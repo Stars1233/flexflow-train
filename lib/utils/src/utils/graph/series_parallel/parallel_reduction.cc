@@ -3,8 +3,8 @@
 #include "utils/containers/contains_key.h"
 #include "utils/containers/get_one_of.h"
 #include "utils/containers/group_by.h"
+#include "utils/containers/set_of.h"
 #include "utils/containers/transform.h"
-#include "utils/containers/unordered_set_of.h"
 #include "utils/containers/values.h"
 #include "utils/graph/digraph/directed_edge.dtg.h"
 #include "utils/graph/multidigraph/algorithms/get_directed_edge.h"
@@ -13,9 +13,9 @@
 #include "utils/graph/multidigraph/multidigraph.h"
 #include "utils/graph/node/algorithms.h"
 #include "utils/graph/series_parallel/extended_parallel_reduction.dtg.h"
-#include "utils/hash/unordered_set.h"
-#include <unordered_map>
-#include <unordered_set>
+#include "utils/hash/set.h"
+#include <map>
+#include <set>
 
 namespace FlexFlow {
 
@@ -27,7 +27,7 @@ ParallelReduction make_parallel_reduction(MultiDiEdge const &e1,
 std::optional<ParallelReduction>
     find_parallel_reduction(MultiDiGraphView const &g) {
 
-  std::unordered_map<DirectedEdge, MultiDiEdge> seen;
+  std::map<DirectedEdge, MultiDiEdge> seen;
   for (MultiDiEdge const &edge : get_edges(g)) {
     DirectedEdge diedge = get_directed_edge(g, edge);
     if (contains_key(seen, diedge)) {
@@ -38,22 +38,20 @@ std::optional<ParallelReduction>
   return std::nullopt;
 }
 
-std::unordered_set<ExtendedParallelReduction>
+std::set<ExtendedParallelReduction>
     find_all_extended_parallel_reductions(MultiDiGraphView const &g) {
-  std::unordered_map<DirectedEdge, std::unordered_set<MultiDiEdge>>
-      reduction_groups;
+  std::map<DirectedEdge, std::set<MultiDiEdge>> reduction_groups;
   for (MultiDiEdge const &edge : get_edges(g)) {
     reduction_groups[get_directed_edge(g, edge)].insert(edge);
   }
 
-  std::unordered_set<std::unordered_set<MultiDiEdge>> reductions = filter(
-      unordered_set_of(values(reduction_groups)),
-      [](std::unordered_set<MultiDiEdge> const &s) { return s.size() > 1; });
+  std::set<std::set<MultiDiEdge>> reductions =
+      filter(set_of(values(reduction_groups)),
+             [](std::set<MultiDiEdge> const &s) { return s.size() > 1; });
 
-  return transform(reductions,
-                   [&](std::unordered_set<MultiDiEdge> const &edges) {
-                     return ExtendedParallelReduction{edges};
-                   });
+  return transform(reductions, [&](std::set<MultiDiEdge> const &edges) {
+    return ExtendedParallelReduction{edges};
+  });
 }
 
 MultiDiEdge apply_parallel_reduction(MultiDiGraph &g,

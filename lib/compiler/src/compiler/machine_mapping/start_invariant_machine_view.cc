@@ -65,7 +65,7 @@ MachineSpaceOffset get_machine_space_offset(
   return get_machine_space_offset_from_coordinate(dummy_start, ms_coord);
 }
 
-std::unordered_set<MachineSpaceOffset> get_machine_space_offsets(
+std::set<MachineSpaceOffset> get_machine_space_offsets(
     OperatorTaskSpace const &task,
     StartInvariantMachineView const &start_inv_machine_view) {
   return transform(

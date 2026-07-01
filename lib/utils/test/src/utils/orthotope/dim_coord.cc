@@ -1,5 +1,5 @@
 #include "utils/orthotope/dim_coord.h"
-#include "test/utils/doctest/fmt/unordered_set.h"
+#include "test/utils/doctest/fmt/set.h"
 #include "utils/orthotope/dim_ordering.h"
 #include <doctest/doctest.h>
 
@@ -14,7 +14,7 @@ TEST_SUITE(FF_TEST_SUITE) {
     }};
 
     SUBCASE("lifted dims are a superset of coord dims") {
-      std::unordered_set<int> lifted_dims = {1, 3, 6, 7};
+      std::set<int> lifted_dims = {1, 3, 6, 7};
 
       DimCoord<int> result = lift_dim_coord(coord, lifted_dims);
       DimCoord<int> correct = DimCoord<int>{{
@@ -28,7 +28,7 @@ TEST_SUITE(FF_TEST_SUITE) {
     }
 
     SUBCASE("lifted dims are the same as coord dims") {
-      std::unordered_set<int> lifted_dims = {1, 3, 7};
+      std::set<int> lifted_dims = {1, 3, 7};
 
       DimCoord<int> result = lift_dim_coord(coord, lifted_dims);
       DimCoord<int> correct = coord;
@@ -37,13 +37,13 @@ TEST_SUITE(FF_TEST_SUITE) {
     }
 
     SUBCASE("lifted dims are a subset of coord dims") {
-      std::unordered_set<int> lifted_dims = {1, 7};
+      std::set<int> lifted_dims = {1, 7};
 
       CHECK_THROWS(lift_dim_coord(coord, lifted_dims));
     }
 
     SUBCASE("lifted dims are overlapping with coord dims") {
-      std::unordered_set<int> lifted_dims = {1, 2, 7};
+      std::set<int> lifted_dims = {1, 2, 7};
 
       CHECK_THROWS(lift_dim_coord(coord, lifted_dims));
     }
@@ -104,10 +104,9 @@ TEST_SUITE(FF_TEST_SUITE) {
           {7, 2_p},
       }};
 
-      std::unordered_set<DimCoord<int>> result =
-          get_coords_in_dim_domain(dim_domain);
+      std::set<DimCoord<int>> result = get_coords_in_dim_domain(dim_domain);
 
-      std::unordered_set<DimCoord<int>> correct = {
+      std::set<DimCoord<int>> correct = {
           DimCoord<int>{{
               {7, 0_n},
           }},
@@ -125,8 +124,7 @@ TEST_SUITE(FF_TEST_SUITE) {
           {2, 3_p},
       }};
 
-      std::unordered_set<DimCoord<int>> result =
-          get_coords_in_dim_domain(dim_domain);
+      std::set<DimCoord<int>> result = get_coords_in_dim_domain(dim_domain);
 
       auto mk_dim_coord = [](nonnegative_int dim7, nonnegative_int dim2) {
         return DimCoord<int>{{
@@ -135,7 +133,7 @@ TEST_SUITE(FF_TEST_SUITE) {
         }};
       };
 
-      std::unordered_set<DimCoord<int>> correct = {
+      std::set<DimCoord<int>> correct = {
           mk_dim_coord(0_n, 0_n),
           mk_dim_coord(0_n, 1_n),
           mk_dim_coord(0_n, 2_n),
@@ -153,8 +151,7 @@ TEST_SUITE(FF_TEST_SUITE) {
           {2, 3_p},
       }};
 
-      std::unordered_set<DimCoord<int>> result =
-          get_coords_in_dim_domain(dim_domain);
+      std::set<DimCoord<int>> result = get_coords_in_dim_domain(dim_domain);
 
       auto mk_dim_coord = [](nonnegative_int dim7, nonnegative_int dim2) {
         return DimCoord<int>{{
@@ -163,7 +160,7 @@ TEST_SUITE(FF_TEST_SUITE) {
         }};
       };
 
-      std::unordered_set<DimCoord<int>> correct = {
+      std::set<DimCoord<int>> correct = {
           mk_dim_coord(0_n, 0_n),
           mk_dim_coord(0_n, 1_n),
           mk_dim_coord(0_n, 2_n),
@@ -175,10 +172,9 @@ TEST_SUITE(FF_TEST_SUITE) {
     SUBCASE("zero-dimensional dim domain") {
       DimDomain<int> dim_domain = DimDomain<int>{{}};
 
-      std::unordered_set<DimCoord<int>> result =
-          get_coords_in_dim_domain(dim_domain);
+      std::set<DimCoord<int>> result = get_coords_in_dim_domain(dim_domain);
 
-      std::unordered_set<DimCoord<int>> correct = {
+      std::set<DimCoord<int>> correct = {
           DimCoord<int>{{}},
       };
 

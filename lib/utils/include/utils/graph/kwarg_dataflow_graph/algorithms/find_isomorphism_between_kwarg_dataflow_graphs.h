@@ -15,7 +15,7 @@ std::optional<bidict<Node, Node>>
         KwargDataflowGraphView<SlotName> const &lhs,
         KwargDataflowGraphView<SlotName> const &rhs) {
 
-  std::unordered_set<OpenKwargDataflowGraphIsomorphism<int>> open_isomorphisms =
+  std::set<OpenKwargDataflowGraphIsomorphism<int>> open_isomorphisms =
       find_isomorphisms_between_open_kwarg_dataflow_graphs(
           view_as_open_kwarg_dataflow_graph<int, SlotName>(lhs),
           view_as_open_kwarg_dataflow_graph<int, SlotName>(rhs));

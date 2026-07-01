@@ -118,7 +118,7 @@ These <em>GraphView</em> objects represent read-only (i.e., immutable) graphs.
 Similar to C++'s \c const semantics, <em>Graphs</em> can be coerced \ref graph-footnote-2 "[2]" to <em>GraphViews</em>, but not the other way around.
 To transform a <em>GraphView</em> (e.g., \ref DiGraphView) to a <em>Graph</em> (e.g., \ref DiGraph), we can perform an explicit copy with a <em>materialize function</em> (e.g., \ref materialize_digraph_view).
 Both <em>Graph</em> and <em>GraphView</em> types follow normal value semantics.
-This may seem wasteful (oftentimes graphs are large objects that are passed around via reference to avoid making additional copies), but the <em>Graph</em> and <em>GraphView</em> types internally implement copy-on-write optimizations to only perform the minimum number of actual copies while maintaining immutability and lifetime safety (if you allocate a \ref DiGraph use for example \ref "get_subgraph(DiGraphView const &, std::unordered_set<Node> const &)" "get_subgraph" to get a \ref DiGraphView representing a part of this graph, modifications to the underlying \ref DiGraph will not be mirrored in the \ref DiGraphView and the \ref DiGraphView will remain valid even after the base \ref DiGraph leaves scope.
+This may seem wasteful (oftentimes graphs are large objects that are passed around via reference to avoid making additional copies), but the <em>Graph</em> and <em>GraphView</em> types internally implement copy-on-write optimizations to only perform the minimum number of actual copies while maintaining immutability and lifetime safety (if you allocate a \ref DiGraph use for example \ref "get_subgraph(DiGraphView const &, std::set<Node> const &)" "get_subgraph" to get a \ref DiGraphView representing a part of this graph, modifications to the underlying \ref DiGraph will not be mirrored in the \ref DiGraphView and the \ref DiGraphView will remain valid even after the base \ref DiGraph leaves scope.
 
 At this point, however, we still have not discussed how to create a graph.
 The user-facing graph interface is intentionally separated from the underlying graph representations, so representations can be changed without requiring any user-side code modifications besides the choice of which implementation to use.
@@ -209,7 +209,7 @@ While the interfaces of these graphs differ slightly from the core graph variant
 Note that all of the labelled graph types require that each element of the labelled types have a label, which is enforced via the interfaces they provide.
 Partial labelling can be implement via wrapping the label type in \c std::optional.
 Interacting with \c Node and \c Edge objects is still necessary to use the labelled graph types: intuitively the labelled graph types can be thought of as a pair of a core graph variant and a hash map the maps nodes/edges to labels.
-As such, the labelled graph types provide the typical \ref LabelledDataflowGraph::at method (as on \c std::unordered_map \ref graph-footnote-3 "[3]") and can be coerced to their underlying core graph variants.
+As such, the labelled graph types provide the typical \ref LabelledDataflowGraph::at method (as on \c std::map \ref graph-footnote-3 "[3]") and can be coerced to their underlying core graph variants.
 
 \section graph-internals Internals
 

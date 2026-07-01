@@ -2,9 +2,9 @@
 #include "utils/containers/filter.h"
 #include "utils/containers/get_only.h"
 #include "utils/containers/group_by.h"
+#include "utils/containers/multiset_of.h"
 #include "utils/containers/slice.h"
 #include "utils/containers/transform.h"
-#include "utils/containers/unordered_multiset_of.h"
 #include "utils/fmt/variant.h"
 #include "utils/graph/digraph/algorithms/get_initial_nodes.h"
 #include "utils/graph/digraph/algorithms/get_predecessors.h"
@@ -18,7 +18,7 @@
 #include "utils/graph/series_parallel/series_parallel_decomposition.h"
 #include "utils/variant.h"
 #include <libassert/assert.hpp>
-#include <unordered_set>
+#include <set>
 
 namespace FlexFlow {
 
@@ -34,7 +34,7 @@ static NonNormalSeriesSplit cut_off_head(NonNormalSeriesSplit const &s) {
  *  with coalescing: S(1, P( S(2,5), S(3,4) ))
  */
 static NonNormalSPDecomposition parallel_composition_with_coalescing(
-    std::unordered_set<NonNormalSeriesSplit> const &strands) {
+    std::set<NonNormalSeriesSplit> const &strands) {
   if (strands.size() == 1) {
     return NonNormalSPDecomposition{get_only(strands)};
   }
@@ -48,18 +48,18 @@ static NonNormalSPDecomposition parallel_composition_with_coalescing(
     return strand.children.at(0);
   };
 
-  std::unordered_set<NonNormalSeriesSplit> non_empty_strands =
+  std::set<NonNormalSeriesSplit> non_empty_strands =
       filter(strands, is_non_empty_strand);
 
   OneToMany<std::variant<NonNormalParallelSplit, Node>, NonNormalSeriesSplit>
       strands_grouped_by_head = group_by(non_empty_strands, strand_head);
 
   // recursively coalesce the strands
-  std::unordered_multiset<NonNormalSPDecomposition> coalesced_strands;
+  std::multiset<NonNormalSPDecomposition> coalesced_strands;
   for (auto const &[head, strands_with_head] :
        strands_grouped_by_head.l_to_r()) {
-    std::unordered_set<NonNormalSeriesSplit> tails =
-        transform(strands_with_head.unwrap_as_unordered_set(), cut_off_head);
+    std::set<NonNormalSeriesSplit> tails =
+        transform(strands_with_head.unwrap_as_set(), cut_off_head);
     NonNormalSPDecomposition parallel_comp =
         parallel_composition_with_coalescing(tails);
 
@@ -78,7 +78,7 @@ static NonNormalSPDecomposition parallel_composition_with_coalescing(
 static SeriesParallelDecomposition
     work_duplicating_sp_ization_unchecked_with_coalescing(
         DiGraphView const &g) {
-  std::unordered_map<Node, NonNormalSeriesSplit> node_to_sp;
+  std::map<Node, NonNormalSeriesSplit> node_to_sp;
 
   Node source = get_only(get_initial_nodes(g));
   node_to_sp.emplace(source, NonNormalSeriesSplit{{source}});
@@ -87,7 +87,7 @@ static SeriesParallelDecomposition
     if (node == source) {
       continue;
     }
-    std::unordered_set<NonNormalSeriesSplit> predecessors_as_sp =
+    std::set<NonNormalSeriesSplit> predecessors_as_sp =
         transform(get_predecessors(g, node),
                   [&](Node const &p) { return node_to_sp.at(p); });
 
@@ -108,14 +108,13 @@ static SeriesParallelDecomposition
 
 static SeriesParallelDecomposition
     work_duplicating_sp_ization_unchecked(DiGraphView const &g) {
-  std::unordered_map<Node, NonNormalSPDecomposition> node_to_sp;
+  std::map<Node, NonNormalSPDecomposition> node_to_sp;
 
   for (Node const &node : get_topological_ordering(g)) {
 
-    std::unordered_multiset<NonNormalSPDecomposition> predecessors_as_sp =
-        unordered_multiset_of(
-            transform(get_predecessors(g, node),
-                      [&](Node const &p) { return node_to_sp.at(p); }));
+    std::multiset<NonNormalSPDecomposition> predecessors_as_sp =
+        multiset_of(transform(get_predecessors(g, node),
+                              [&](Node const &p) { return node_to_sp.at(p); }));
 
     NonNormalSPDecomposition parallel_comp =
         non_normal_parallel_composition(predecessors_as_sp);

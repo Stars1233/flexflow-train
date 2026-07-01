@@ -1,7 +1,7 @@
 #ifndef _FLEXFLOW_LIB_UTILS_INCLUDE_UTILS_GRAPH_OPEN_KWARG_DATAFLOW_GRAPH_ALGORITHMS_OPEN_KWARG_DATAFLOW_GRAPHS_ARE_ISOMORPHIC_UNDER_H
 #define _FLEXFLOW_LIB_UTILS_INCLUDE_UTILS_GRAPH_OPEN_KWARG_DATAFLOW_GRAPH_ALGORITHMS_OPEN_KWARG_DATAFLOW_GRAPHS_ARE_ISOMORPHIC_UNDER_H
 
-#include "utils/bidict/algorithms/transform_values.h"
+#include "utils/bidict/algorithms/bidict_transform_values.h"
 #include "utils/graph/open_kwarg_dataflow_graph/algorithms/get_open_kwarg_dataflow_graph_data.h"
 #include "utils/graph/open_kwarg_dataflow_graph/algorithms/open_kwarg_dataflow_graph_data.dtg.h"
 #include "utils/graph/open_kwarg_dataflow_graph/algorithms/open_kwarg_dataflow_graph_isomorphism.dtg.h"
@@ -17,7 +17,7 @@ bool open_kwarg_dataflow_graphs_are_isomorphic_under(
     OpenKwargDataflowGraphView<GraphInputName, SlotName> const &dst,
     OpenKwargDataflowGraphIsomorphism<GraphInputName> const &isomorphism) {
   bidict<NewNode, Node> new_node_to_old_node =
-      transform_values(isomorphism.node_mapping, [](Node const &n) {
+      bidict_transform_values(isomorphism.node_mapping, [](Node const &n) {
         return NewNode{n};
       }).reversed();
 

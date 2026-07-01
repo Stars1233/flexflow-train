@@ -3,22 +3,24 @@ name = "InternalDynamicSlotSite"
 type = "struct"
 features = [
   "eq",
+	"ord",
   "hash",
   "fmt",
+  "json",
 ]
 
 includes = [
-  "task-spec/dynamic_graph/dynamic_node_invocation.dtg.h",
   "pcg/tensor_direction.dtg.h",
   "task-spec/dynamic_graph/dynamic_tensor_slot.h",
+  "task-spec/dynamic_graph/dynamic_invocation_id_t.dtg.h",
 ]
 
 src_includes = [
 ]
 
 [[fields]]
-name = "invocation"
-type = "::FlexFlow::DynamicNodeInvocation"
+name = "invocation_id"
+type = "::FlexFlow::dynamic_invocation_id_t"
 
 [[fields]]
 name = "direction"

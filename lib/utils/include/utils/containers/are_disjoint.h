@@ -11,6 +11,11 @@ bool are_disjoint(std::unordered_set<T> const &l,
   return set_intersection<T>(l, r).empty();
 }
 
+template <typename T>
+bool are_disjoint(std::set<T> const &l, std::set<T> const &r) {
+  return set_intersection<T>(l, r).empty();
+}
+
 } // namespace FlexFlow
 
 #endif

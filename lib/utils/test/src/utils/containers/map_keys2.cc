@@ -1,5 +1,5 @@
 #include "utils/containers/map_keys2.h"
-#include "test/utils/doctest/fmt/unordered_map.h"
+#include "test/utils/doctest/fmt/map.h"
 #include <doctest/doctest.h>
 
 using namespace ::FlexFlow;
@@ -7,7 +7,7 @@ using namespace ::FlexFlow;
 TEST_SUITE(FF_TEST_SUITE) {
   TEST_CASE("map_keys2") {
     SUBCASE("output keys are unique") {
-      std::unordered_map<int, std::string> m = {
+      std::map<int, std::string> m = {
           {1, "aa"},
           {2, "aaaaa"},
       };
@@ -16,9 +16,9 @@ TEST_SUITE(FF_TEST_SUITE) {
         return std::to_string(k + v.size());
       };
 
-      std::unordered_map<std::string, std::string> result = map_keys2(m, f);
+      std::map<std::string, std::string> result = map_keys2(m, f);
 
-      std::unordered_map<std::string, std::string> correct = {
+      std::map<std::string, std::string> correct = {
           {"3", "aa"},
           {"7", "aaaaa"},
       };
@@ -27,7 +27,7 @@ TEST_SUITE(FF_TEST_SUITE) {
     }
 
     SUBCASE("output keys are non-unique") {
-      std::unordered_map<int, std::string> m = {
+      std::map<int, std::string> m = {
           {1, "aa"},
           {2, "aaaaa"},
       };

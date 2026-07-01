@@ -25,8 +25,7 @@ std::pair<Realm::RegionInstance, Realm::Event>
  */
 TensorInstanceBacking perform_instance_allocation(
     DynamicOpenDataflowGraph const &g,
-    std::unordered_map<DynamicValueAttrs, DynamicTensorAccessor> const
-        &preallocated,
+    std::map<DynamicValueAttrs, DynamicTensorAccessor> const &preallocated,
     RealmContext &ctx);
 
 /**

@@ -31,10 +31,10 @@ std::optional<CompleteBipartiteCompositeDecomposition>
     edges_to_process.push(e);
   }
 
-  std::unordered_set<Node> already_in_a_head = {};
-  std::unordered_set<Node> already_in_a_tail = {};
+  std::set<Node> already_in_a_head = {};
+  std::set<Node> already_in_a_tail = {};
 
-  std::unordered_set<DirectedEdge> already_processed = {};
+  std::set<DirectedEdge> already_processed = {};
 
   CompleteBipartiteCompositeDecomposition result =
       CompleteBipartiteCompositeDecomposition{{}};
@@ -46,18 +46,17 @@ std::optional<CompleteBipartiteCompositeDecomposition>
       continue;
     }
 
-    std::unordered_set<Node> head = get_predecessors(g, e.dst);
-    std::unordered_set<Node> tail = get_successors(g, e.src);
+    std::set<Node> head = get_predecessors(g, e.dst);
+    std::set<Node> tail = get_successors(g, e.src);
 
     if (!are_disjoint(head, tail)) {
       return std::nullopt;
     }
 
-    std::unordered_set<DirectedEdge> from_head_to_tail =
-        g.query_edges(DirectedEdgeQuery{
-            query_set<Node>::match_values_in(set_of(head)),
-            query_set<Node>::match_values_in(set_of(tail)),
-        });
+    std::set<DirectedEdge> from_head_to_tail = g.query_edges(DirectedEdgeQuery{
+        query_set<Node>::match_values_in(set_of(head)),
+        query_set<Node>::match_values_in(set_of(tail)),
+    });
 
     DiGraphView subgraph = get_subgraph(g, set_union(head, tail));
     if (!is_complete_bipartite_digraph(subgraph, head)) {

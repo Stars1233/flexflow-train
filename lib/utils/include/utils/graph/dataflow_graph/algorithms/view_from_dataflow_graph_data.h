@@ -12,10 +12,10 @@ struct ViewFromDataflowGraphData final : virtual public IDataflowGraphView {
 public:
   explicit ViewFromDataflowGraphData(DataflowGraphData const &);
 
-  std::unordered_set<Node> query_nodes(NodeQuery const &query) const override;
-  std::unordered_set<DataflowEdge>
+  std::set<Node> query_nodes(NodeQuery const &query) const override;
+  std::set<DataflowEdge>
       query_edges(DataflowEdgeQuery const &query) const override;
-  std::unordered_set<DataflowOutput>
+  std::set<DataflowOutput>
       query_outputs(DataflowOutputQuery const &query) const override;
   ViewFromDataflowGraphData *clone() const override;
 

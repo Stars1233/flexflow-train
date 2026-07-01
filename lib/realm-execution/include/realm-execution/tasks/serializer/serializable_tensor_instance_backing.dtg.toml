@@ -9,18 +9,18 @@ features = [
 ]
 
 includes = [
-  "<unordered_map>",
+  "<map>",
   "realm-execution/tasks/serializer/serializable_realm_event.dtg.h",
   "realm-execution/tasks/serializer/serializable_realm_instance.dtg.h",
   "task-spec/dynamic_graph/serializable_dynamic_value_attrs.dtg.h",
 ]
 
 src_includes = [
-  "utils/hash/unordered_map.h",
+  "utils/hash/map.h",
   "utils/fmt/pair.h",
-  "utils/fmt/unordered_map.h",
+  "utils/fmt/map.h",
 ]
 
 [[fields]]
 name = "backing"
-type = "std::unordered_map<::FlexFlow::SerializableDynamicValueAttrs, std::pair<::FlexFlow::SerializableRealmInstance, ::FlexFlow::SerializableRealmEvent>>"
+type = "std::map<::FlexFlow::SerializableDynamicValueAttrs, std::pair<::FlexFlow::SerializableRealmInstance, ::FlexFlow::SerializableRealmEvent>>"

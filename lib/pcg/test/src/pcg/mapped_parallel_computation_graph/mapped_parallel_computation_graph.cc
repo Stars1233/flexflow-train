@@ -78,60 +78,70 @@ TEST_SUITE(FF_TEST_SUITE) {
 
       MappedOperatorTaskGroup partition_mapping = MappedOperatorTaskGroup{
           bidict<MachineSpaceCoordinate, OperatorAtomicTaskShardBinding>{
-              {machine_coord(0_n),
-               OperatorAtomicTaskShardBinding{
-                   {
-                       {TensorSlotName::OUTPUT, ptensor_coord(0_n)},
-                   },
-               }},
-              {machine_coord(1_n),
-               OperatorAtomicTaskShardBinding{
-                   {
-                       {TensorSlotName::OUTPUT, ptensor_coord(1_n)},
-                   },
-               }},
+              {
+                  machine_coord(0_n),
+                  OperatorAtomicTaskShardBinding{
+                      {
+                          {TensorSlotName::INPUT, ptensor_coord(0_n)},
+                          {TensorSlotName::OUTPUT, ptensor_coord(0_n)},
+                      },
+                  },
+              },
+              {
+                  machine_coord(1_n),
+                  OperatorAtomicTaskShardBinding{
+                      {
+                          {TensorSlotName::INPUT, ptensor_coord(0_n)},
+                          {TensorSlotName::OUTPUT, ptensor_coord(1_n)},
+                      },
+                  },
+              },
           },
       };
 
-      std::unordered_map<parallel_layer_guid_t, MappedOperatorTaskGroup>
-          mapped_tasks = {
-              {
-                  l_input1,
-                  input_mapping,
-              },
-              {
-                  l_input2,
-                  input_mapping,
-              },
-              {
-                  l_partition1,
-                  partition_mapping,
-              },
-              {
-                  l_partition2,
-                  partition_mapping,
-              },
-              {l_add,
-               MappedOperatorTaskGroup{
-                   bidict<MachineSpaceCoordinate,
-                          OperatorAtomicTaskShardBinding>{
-                       {machine_coord(0_n),
-                        OperatorAtomicTaskShardBinding{
-                            {
-                                {TensorSlotName::LHS_INPUT, ptensor_coord(0_n)},
-                                {TensorSlotName::RHS_INPUT, ptensor_coord(0_n)},
-                            },
-                        }},
-                       {machine_coord(1_n),
-                        OperatorAtomicTaskShardBinding{
-                            {
-                                {TensorSlotName::LHS_INPUT, ptensor_coord(1_n)},
-                                {TensorSlotName::RHS_INPUT, ptensor_coord(1_n)},
-                            },
-                        }},
+      std::map<parallel_layer_guid_t, MappedOperatorTaskGroup> mapped_tasks = {
+          {
+              l_input1,
+              input_mapping,
+          },
+          {
+              l_input2,
+              input_mapping,
+          },
+          {
+              l_partition1,
+              partition_mapping,
+          },
+          {
+              l_partition2,
+              partition_mapping,
+          },
+          {l_add,
+           MappedOperatorTaskGroup{
+               bidict<MachineSpaceCoordinate, OperatorAtomicTaskShardBinding>{
+                   {
+                       machine_coord(0_n),
+                       OperatorAtomicTaskShardBinding{
+                           {
+                               {TensorSlotName::LHS_INPUT, ptensor_coord(0_n)},
+                               {TensorSlotName::RHS_INPUT, ptensor_coord(0_n)},
+                               {TensorSlotName::OUTPUT, ptensor_coord(0_n)},
+                           },
+                       },
                    },
-               }},
-          };
+                   {
+                       machine_coord(1_n),
+                       OperatorAtomicTaskShardBinding{
+                           {
+                               {TensorSlotName::LHS_INPUT, ptensor_coord(1_n)},
+                               {TensorSlotName::RHS_INPUT, ptensor_coord(1_n)},
+                               {TensorSlotName::OUTPUT, ptensor_coord(1_n)},
+                           },
+                       },
+                   },
+               },
+           }},
+      };
 
       return mapped_pcg_from_pcg_and_mapped_op_task_groups(pcg, mapped_tasks);
     };

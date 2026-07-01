@@ -3,25 +3,26 @@ name = "UpDownPartition"
 type = "struct"
 features = [
   "eq",
+  "ord",
   "hash",
   "fmt",
 ]
 
 includes = [
-  "<unordered_set>",
+  "<set>",
   "utils/graph/node/node.dtg.h",
 ]
 
 src_includes = [
-  "utils/fmt/unordered_set.h",
-  "utils/hash/unordered_set.h",
+  "utils/fmt/set.h",
+  "utils/hash/set.h",
 ]
 
 [[fields]]
 name = "up"
-type = "std::unordered_set<::FlexFlow::Node>"
+type = "std::set<::FlexFlow::Node>"
 
 [[fields]]
 name = "down"
-type = "std::unordered_set<::FlexFlow::Node>"
+type = "std::set<::FlexFlow::Node>"
 

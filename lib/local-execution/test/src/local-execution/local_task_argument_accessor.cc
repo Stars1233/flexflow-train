@@ -39,8 +39,8 @@ TEST_SUITE(FF_TEST_SUITE) {
       VARIADIC_TENSORS,
     };
 
-    std::unordered_map<TaskTensorParameter, DynamicTensorAccessor>
-        tensor_slots_backing = {
+    std::map<TaskTensorParameter, DynamicTensorAccessor> tensor_slots_backing =
+        {
             {
                 make_task_tensor_parameter_fwd(TensorSlotName::LHS_INPUT),
                 DynamicTensorAccessor{input},

@@ -157,7 +157,7 @@ bool is_right_associative(ComputationGraphBinarySPDecomposition const &tree) {
       tree, generic_impl_for_computation_graph_sp_tree());
 }
 
-std::unordered_multiset<layer_guid_t>
+std::multiset<layer_guid_t>
     get_layers(ComputationGraphBinarySPDecomposition const &tree) {
   return get_leaves(tree, generic_impl_for_computation_graph_sp_tree());
 }

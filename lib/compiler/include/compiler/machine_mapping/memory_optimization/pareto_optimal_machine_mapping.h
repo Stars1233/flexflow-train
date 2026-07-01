@@ -5,9 +5,8 @@
 
 namespace FlexFlow {
 
-bool is_pareto_optimal_in(
-    ParetoOptimalMachineMapping const &,
-    std::unordered_set<ParetoOptimalMachineMapping> const &);
+bool is_pareto_optimal_in(ParetoOptimalMachineMapping const &,
+                          std::set<ParetoOptimalMachineMapping> const &);
 
 } // namespace FlexFlow
 

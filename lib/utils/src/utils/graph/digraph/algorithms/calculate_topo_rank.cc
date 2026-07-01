@@ -3,9 +3,9 @@
 
 namespace FlexFlow {
 
-std::unordered_map<Node, int> calculate_topo_rank(DiGraphView const &g) {
+std::map<Node, int> calculate_topo_rank(DiGraphView const &g) {
   std::vector<Node> topo_ordering = get_topological_ordering(g);
-  std::unordered_map<Node, int> topo_rank;
+  std::map<Node, int> topo_rank;
   for (int i = 0; i < topo_ordering.size(); i++) {
     topo_rank[topo_ordering[i]] = i;
   }

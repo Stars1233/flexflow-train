@@ -9,15 +9,14 @@ namespace FlexFlow {
 
 template <typename SlotName>
 struct IKwargDataflowGraph : virtual public IKwargDataflowGraphView<SlotName> {
-  virtual KwargNodeAddedResult<SlotName> add_node(
-      std::unordered_map<SlotName, KwargDataflowOutput<SlotName>> const &inputs,
-      std::unordered_set<SlotName> const &outputs) = 0;
+  virtual KwargNodeAddedResult<SlotName>
+      add_node(std::map<SlotName, KwargDataflowOutput<SlotName>> const &inputs,
+               std::set<SlotName> const &outputs) = 0;
 
   virtual void add_node_unsafe(
       Node const &node,
-      std::unordered_map<SlotName, KwargDataflowOutput<SlotName>> const &inputs,
-      std::unordered_map<SlotName, KwargDataflowOutput<SlotName>> const
-          &outputs) = 0;
+      std::map<SlotName, KwargDataflowOutput<SlotName>> const &inputs,
+      std::map<SlotName, KwargDataflowOutput<SlotName>> const &outputs) = 0;
 
   virtual void
       inplace_materialize_from(KwargDataflowGraphView<SlotName> const &) = 0;

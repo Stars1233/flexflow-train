@@ -6,7 +6,7 @@
 #include "utils/hash/unordered_set.h"
 #include "utils/positive_int/positive_int.h"
 #include <libassert/assert.hpp>
-#include <unordered_set>
+#include <set>
 
 namespace FlexFlow {
 

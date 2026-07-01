@@ -9,15 +9,14 @@
 #include "utils/graph/digraph/algorithms/get_successors.h"
 #include "utils/graph/digraph/algorithms/get_topological_ordering.h"
 #include "utils/graph/node/algorithms.h"
-#include "utils/hash/unordered_set.h"
+#include "utils/hash/set.h"
 #include <optional>
 #include <queue>
 
 namespace FlexFlow {
 
-std::unordered_map<Node, std::unordered_set<Node>>
-    get_dominators_map(DiGraphView const &g) {
-  std::unordered_set<Node> initial_nodes = get_initial_nodes(g);
+std::map<Node, std::set<Node>> get_dominators_map(DiGraphView const &g) {
+  std::set<Node> initial_nodes = get_initial_nodes(g);
 
   std::queue<Node> queue;
 
@@ -25,18 +24,18 @@ std::unordered_map<Node, std::unordered_set<Node>>
     queue.push(src);
   }
 
-  std::unordered_map<Node, std::unordered_set<Node>> result =
+  std::map<Node, std::set<Node>> result =
       generate_map(get_nodes(g), [&](Node const &) { return get_nodes(g); });
   while (!queue.empty()) {
     Node n = queue.front();
     queue.pop();
 
-    std::unordered_set<Node> old_result_entry = result.at(n);
+    std::set<Node> old_result_entry = result.at(n);
 
     result.at(n) =
         set_intersection(transform(get_predecessors(g, n), [&](Node const &n) {
           return result.at(n);
-        })).value_or(std::unordered_set<Node>{});
+        })).value_or(std::set<Node>{});
     result.at(n).insert(n);
 
     if (result.at(n) != old_result_entry) {

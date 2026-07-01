@@ -9,7 +9,6 @@ template bool is_subseteq_of(std::unordered_set<T1> const &,
                              std::unordered_set<T1> const &);
 
 using T2 = ordered_value_type<0>;
-template bool is_subseteq_of(std::unordered_set<T2> const &,
-                             std::unordered_set<T2> const &);
+template bool is_subseteq_of(std::set<T2> const &, std::set<T2> const &);
 
 } // namespace FlexFlow

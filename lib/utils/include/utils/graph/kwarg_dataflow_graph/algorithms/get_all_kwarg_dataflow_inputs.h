@@ -7,7 +7,7 @@
 namespace FlexFlow {
 
 template <typename SlotName>
-std::unordered_set<KwargDataflowInput<SlotName>>
+std::set<KwargDataflowInput<SlotName>>
     get_all_kwarg_dataflow_inputs(KwargDataflowGraphView<SlotName> const &v) {
   return transform(
       v.query_edges(kwarg_dataflow_edge_query_all<SlotName>()),

@@ -30,7 +30,7 @@ struct RealmAllocator : public IAllocator {
 private:
   Realm::Processor processor;
   Realm::Memory memory;
-  std::unordered_map<void *, Realm::RegionInstance> ptr_instances;
+  std::map<void *, Realm::RegionInstance> ptr_instances;
 };
 CHECK_RC_COPY_VIRTUAL_COMPLIANT(RealmAllocator);
 

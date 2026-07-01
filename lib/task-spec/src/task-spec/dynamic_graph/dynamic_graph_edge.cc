@@ -12,7 +12,7 @@ DynamicGraphEdge
 
   return DynamicGraphEdge{
       /*src=*/src,
-      /*dst_node=*/dst.invocation,
+      /*dst_node=*/dst.invocation_id,
       /*dst_slot=*/dst.slot_name,
   };
 }

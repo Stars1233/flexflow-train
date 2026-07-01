@@ -8,6 +8,8 @@ namespace FlexFlow {
 DynamicTensorSlot decide_tensor_slot_role(DynamicTensorSlot const &,
                                           DynamicTensorRole);
 
+DynamicTensorSlot slot_without_task_shard(DynamicTensorSlot const &);
+
 } // namespace FlexFlow
 
 #endif

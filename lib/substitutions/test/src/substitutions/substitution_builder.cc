@@ -25,7 +25,7 @@ TEST_SUITE(FF_TEST_SUITE) {
             OperatorAttributeValue{std::optional<Activation>{std::nullopt}}),
     }};
 
-    std::unordered_map<OperatorAttributeKey, OutputOperatorAttributeExpr>
+    std::map<OperatorAttributeKey, OutputOperatorAttributeExpr>
         fused_mm_relu_attr_assignments = {
             set_attr_to_constant(OperatorAttributeKey::ACTIVATION,
                                  OperatorAttributeValue{Activation::RELU}),

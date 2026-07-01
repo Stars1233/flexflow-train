@@ -26,7 +26,7 @@ DiGraphView random_dag(nonnegative_int num_nodes, float edges_fraction) {
   DiGraph g = DiGraph::create<AdjacencyDiGraph>();
   std::vector<Node> n = add_nodes(g, num_nodes.unwrap_nonnegative());
 
-  std::unordered_set<DirectedEdge> edges;
+  std::set<DirectedEdge> edges;
   while (edges.size() < num_edges) {
     Node n1 = select_random(n);
     Node n2 = select_random(n);

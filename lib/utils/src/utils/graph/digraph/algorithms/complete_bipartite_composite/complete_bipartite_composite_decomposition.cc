@@ -3,14 +3,14 @@
 #include "utils/containers/filter.h"
 #include "utils/containers/maybe_get_only.h"
 #include "utils/containers/transform.h"
-#include "utils/hash/unordered_set.h"
+#include "utils/hash/set.h"
 #include <cassert>
 
 namespace FlexFlow {
 
 std::optional<BipartiteComponent> get_component_containing_node_in_head(
     CompleteBipartiteCompositeDecomposition const &cbc, Node const &n) {
-  std::unordered_set<BipartiteComponent> found =
+  std::set<BipartiteComponent> found =
       filter(cbc.subgraphs, [&](BipartiteComponent const &bc) {
         return contains(bc.head_nodes, n);
       });
@@ -20,7 +20,7 @@ std::optional<BipartiteComponent> get_component_containing_node_in_head(
 
 std::optional<BipartiteComponent> get_component_containing_node_in_tail(
     CompleteBipartiteCompositeDecomposition const &cbc, Node const &n) {
-  std::unordered_set<BipartiteComponent> found =
+  std::set<BipartiteComponent> found =
       filter(cbc.subgraphs, [&](BipartiteComponent const &bc) {
         return contains(bc.tail_nodes, n);
       });
@@ -28,13 +28,13 @@ std::optional<BipartiteComponent> get_component_containing_node_in_tail(
   return maybe_get_only(found);
 }
 
-std::unordered_set<std::unordered_set<Node>>
+std::set<std::set<Node>>
     get_head_subcomponents(CompleteBipartiteCompositeDecomposition const &cbc) {
   return transform(cbc.subgraphs,
                    [](BipartiteComponent const &bc) { return bc.head_nodes; });
 }
 
-std::unordered_set<std::unordered_set<Node>>
+std::set<std::set<Node>>
     get_tail_subcomponents(CompleteBipartiteCompositeDecomposition const &cbc) {
   return transform(cbc.subgraphs,
                    [](BipartiteComponent const &bc) { return bc.tail_nodes; });

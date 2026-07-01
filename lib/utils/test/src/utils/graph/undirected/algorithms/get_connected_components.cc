@@ -1,5 +1,5 @@
 #include "utils/graph/undirected/algorithms/get_connected_components.h"
-#include "utils/fmt/unordered_set.h"
+#include "utils/fmt/set.h"
 #include "utils/graph/algorithms.h"
 #include "utils/graph/instances/hashmap_undirected_graph.h"
 #include "utils/graph/undirected/algorithms/make_undirected_edge.h"
@@ -15,13 +15,12 @@ TEST_SUITE(FF_TEST_SUITE) {
     SUBCASE("disjoint nodes") {
       std::vector<Node> n = add_nodes(g, 3);
 
-      std::unordered_set<std::unordered_set<Node>> correct = {
+      std::set<std::set<Node>> correct = {
           {n.at(0)},
           {n.at(1)},
           {n.at(2)},
       };
-      std::unordered_set<std::unordered_set<Node>> result =
-          get_connected_components(g);
+      std::set<std::set<Node>> result = get_connected_components(g);
 
       CHECK(correct == result);
     }
@@ -36,11 +35,10 @@ TEST_SUITE(FF_TEST_SUITE) {
                     make_undirected_edge(n.at(3), n.at(0)),
                 });
 
-      std::unordered_set<std::unordered_set<Node>> correct = {
+      std::set<std::set<Node>> correct = {
           {n.at(0), n.at(1), n.at(2), n.at(3)},
       };
-      std::unordered_set<std::unordered_set<Node>> result =
-          get_connected_components(g);
+      std::set<std::set<Node>> result = get_connected_components(g);
 
       CHECK(correct == result);
     }
@@ -53,12 +51,11 @@ TEST_SUITE(FF_TEST_SUITE) {
                     make_undirected_edge(n.at(2), n.at(1)),
                 });
 
-      std::unordered_set<std::unordered_set<Node>> correct = {
+      std::set<std::set<Node>> correct = {
           {n.at(0), n.at(1), n.at(2)},
           {n.at(3)},
       };
-      std::unordered_set<std::unordered_set<Node>> result =
-          get_connected_components(g);
+      std::set<std::set<Node>> result = get_connected_components(g);
 
       CHECK(correct == result);
     }
@@ -73,21 +70,19 @@ TEST_SUITE(FF_TEST_SUITE) {
                     make_undirected_edge(n.at(3), n.at(4)),
                 });
 
-      std::unordered_set<std::unordered_set<Node>> correct = {
+      std::set<std::set<Node>> correct = {
           {n.at(0), n.at(1), n.at(2)},
           {n.at(3), n.at(4)},
           {n.at(5)},
       };
-      std::unordered_set<std::unordered_set<Node>> result =
-          get_connected_components(g);
+      std::set<std::set<Node>> result = get_connected_components(g);
 
       CHECK(correct == result);
     }
 
     SUBCASE("empty graph") {
-      std::unordered_set<std::unordered_set<Node>> correct = {};
-      std::unordered_set<std::unordered_set<Node>> result =
-          get_connected_components(g);
+      std::set<std::set<Node>> correct = {};
+      std::set<std::set<Node>> result = get_connected_components(g);
 
       CHECK(correct == result);
     }

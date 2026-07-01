@@ -10,7 +10,7 @@ docstring = '''
 
 
 includes = [
-  "<unordered_map>",
+  "<map>",
   "realm-execution/device_specific_ptr.h",
   "task-spec/dynamic_graph/dynamic_node_invocation.dtg.h",
   "task-spec/per_device_op_state.dtg.h",
@@ -18,4 +18,4 @@ includes = [
 
 [[fields]]
 name = "backing"
-type = "std::unordered_map<::FlexFlow::DynamicNodeInvocation, ::FlexFlow::DeviceSpecificPtr<::FlexFlow::PerDeviceOpState>>"
+type = "std::map<::FlexFlow::DynamicNodeInvocation, ::FlexFlow::DeviceSpecificPtr<::FlexFlow::PerDeviceOpState>>"

@@ -3,7 +3,7 @@
 
 namespace FlexFlow {
 MetricsAttrs::MetricsAttrs(LossFunction _loss_type,
-                           std::unordered_set<Metric> const &metrics)
+                           std::set<Metric> const &metrics)
     : loss_type(_loss_type), measure_accuracy(false),
       measure_categorical_crossentropy(false),
       measure_sparse_categorical_crossentropy(false),

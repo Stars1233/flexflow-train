@@ -1,8 +1,8 @@
 #include "utils/graph/series_parallel/get_series_parallel_decomposition.h"
 #include "utils/containers/get_only.h"
 #include "utils/containers/map_values.h"
+#include "utils/containers/multiset_of.h"
 #include "utils/containers/transform.h"
-#include "utils/containers/unordered_multiset_of.h"
 #include "utils/graph/digraph/algorithms/inverse_line_graph/get_inverse_line_graph.h"
 #include "utils/graph/digraph/algorithms/transitive_reduction.h"
 #include "utils/graph/instances/adjacency_multidigraph.h"
@@ -37,10 +37,9 @@ std::optional<SeriesParallelDecomposition>
   MultiDiGraph ttsp = MultiDiGraph::materialize_copy_of<AdjacencyMultiDiGraph>(
       inverse_line_graph_result.graph);
 
-  std::unordered_map<MultiDiEdge, SeriesParallelDecomposition>
-      ttsp_edge_to_sp_tree = map_values(
-          inverse_line_graph_result.inverse_edge_to_line_node_bidict
-              .as_unordered_map(),
+  std::map<MultiDiEdge, SeriesParallelDecomposition> ttsp_edge_to_sp_tree =
+      map_values(
+          inverse_line_graph_result.inverse_edge_to_line_node_bidict.as_map(),
           [](Node const &n) { return SeriesParallelDecomposition{n}; });
 
   auto perform_extended_parallel_reduction =
@@ -49,7 +48,7 @@ std::optional<SeriesParallelDecomposition>
             apply_extended_parallel_reduction(ttsp, parallel_reduction);
 
         SeriesParallelDecomposition new_tree = parallel_composition(transform(
-            unordered_multiset_of(parallel_reduction.edges),
+            multiset_of(parallel_reduction.edges),
             [&](MultiDiEdge const &e) { return ttsp_edge_to_sp_tree.at(e); }));
 
         for (MultiDiEdge const &e : parallel_reduction.edges) {
@@ -81,7 +80,7 @@ std::optional<SeriesParallelDecomposition>
   while (true) {
     bool reduction_has_happened = false;
 
-    std::unordered_set<ExtendedParallelReduction> parallel_reductions =
+    std::set<ExtendedParallelReduction> parallel_reductions =
         find_all_extended_parallel_reductions(ttsp);
 
     if (!parallel_reductions.empty()) {
@@ -91,7 +90,7 @@ std::optional<SeriesParallelDecomposition>
       reduction_has_happened = true;
     }
 
-    std::unordered_set<ExtendedSeriesReduction> series_reductions =
+    std::set<ExtendedSeriesReduction> series_reductions =
         find_all_extended_series_reductions(ttsp);
     if (!series_reductions.empty()) {
       for (ExtendedSeriesReduction series_reduction : series_reductions) {
@@ -132,10 +131,9 @@ std::optional<SeriesParallelDecomposition>
 
   MultiDiGraph ttsp = MultiDiGraph::materialize_copy_of<AdjacencyMultiDiGraph>(
       inverse_line_graph_result.graph);
-  std::unordered_map<MultiDiEdge, BinarySPDecompositionTree>
-      ttsp_edge_to_sp_tree = map_values(
-          inverse_line_graph_result.inverse_edge_to_line_node_bidict
-              .as_unordered_map(),
+  std::map<MultiDiEdge, BinarySPDecompositionTree> ttsp_edge_to_sp_tree =
+      map_values(
+          inverse_line_graph_result.inverse_edge_to_line_node_bidict.as_map(),
           [](Node const &n) { return BinarySPDecompositionTree{n}; });
 
   while (true) {

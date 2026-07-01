@@ -1,16 +1,15 @@
 #include "substitutions/output_graph/materialize_operator_from_attrs_map.h"
 #include "utils/containers/contains_key.h"
-#include "utils/fmt/unordered_map.h"
+#include "utils/fmt/map.h"
 #include <libassert/assert.hpp>
 
 namespace FlexFlow {
 
 struct Accessor {
-  Accessor(
-      std::unordered_map<OperatorAttributeKey, OperatorAttributeValue> const &m)
+  Accessor(std::map<OperatorAttributeKey, OperatorAttributeValue> const &m)
       : m(m) {}
 
-  std::unordered_map<OperatorAttributeKey, OperatorAttributeValue> const &m;
+  std::map<OperatorAttributeKey, OperatorAttributeValue> const &m;
 
   template <typename T>
   T get(OperatorAttributeKey k) const {
@@ -29,8 +28,7 @@ struct Accessor {
 };
 
 PCGOperatorAttrs materialize_operator_from_attrs_map(
-    std::unordered_map<OperatorAttributeKey, OperatorAttributeValue> const
-        &attrs) {
+    std::map<OperatorAttributeKey, OperatorAttributeValue> const &attrs) {
   OperatorType op_type =
       attrs.at(OperatorAttributeKey::OP_TYPE).get<OperatorType>();
 

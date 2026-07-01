@@ -21,15 +21,15 @@ TEST_SUITE(FF_TEST_SUITE) {
 
       SUBCASE("get_dominators(DiGraph, Node)") {
         Node node = n.at(2);
-        std::unordered_set<Node> correct = {n.at(0), n.at(2)};
-        std::unordered_set<Node> result = get_dominators(g, node);
+        std::set<Node> correct = {n.at(0), n.at(2)};
+        std::set<Node> result = get_dominators(g, node);
         CHECK(correct == result);
       }
 
-      SUBCASE("get_dominators(DiGraph, std::unordered_set<Node>)") {
-        std::unordered_set<Node> nodes = {n.at(1), n.at(3)};
-        std::unordered_set<Node> result = get_dominators(g, nodes);
-        std::unordered_set<Node> correct = {n.at(0)};
+      SUBCASE("get_dominators(DiGraph, std::set<Node>)") {
+        std::set<Node> nodes = {n.at(1), n.at(3)};
+        std::set<Node> result = get_dominators(g, nodes);
+        std::set<Node> correct = {n.at(0)};
         CHECK(correct == result);
       }
     }
@@ -54,14 +54,14 @@ TEST_SUITE(FF_TEST_SUITE) {
                 });
 
       SUBCASE("node 1") {
-        std::unordered_set<Node> result = get_dominators(g, n.at(1));
-        std::unordered_set<Node> correct = {n.at(0), n.at(1)};
+        std::set<Node> result = get_dominators(g, n.at(1));
+        std::set<Node> correct = {n.at(0), n.at(1)};
         CHECK(result == correct);
       }
 
       SUBCASE("node 3") {
-        std::unordered_set<Node> result = get_dominators(g, n.at(3));
-        std::unordered_set<Node> correct = {n.at(0), n.at(1), n.at(3)};
+        std::set<Node> result = get_dominators(g, n.at(3));
+        std::set<Node> correct = {n.at(0), n.at(1), n.at(3)};
         CHECK(result == correct);
       }
     }

@@ -11,7 +11,7 @@ using SlotName = ordered_value_type<2>;
 template LabelledKwargDataflowGraphView<NodeLabel, OutputLabel, SlotName>
     kwarg_dataflow_graph_view_with_labelling(
         KwargDataflowGraphView<SlotName> const &,
-        std::unordered_map<Node, NodeLabel> const &,
-        std::unordered_map<KwargDataflowOutput<SlotName>, OutputLabel> const &);
+        std::map<Node, NodeLabel> const &,
+        std::map<KwargDataflowOutput<SlotName>, OutputLabel> const &);
 
 } // namespace FlexFlow

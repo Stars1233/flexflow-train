@@ -49,9 +49,9 @@ TEST_SUITE(FF_TEST_SUITE) {
           make_parallel_split(make_leaf(n3), make_leaf(n4)),
       };
 
-      std::unordered_set<DataflowEdge> result =
+      std::set<DataflowEdge> result =
           get_transitive_reduced_edges_across_split(tr_g, split);
-      std::unordered_set<DataflowEdge> correct = {
+      std::set<DataflowEdge> correct = {
           DataflowEdge{
               o1,
               DataflowInput{n3, 1_n},
@@ -86,9 +86,9 @@ TEST_SUITE(FF_TEST_SUITE) {
           make_leaf(n2),
       };
 
-      std::unordered_set<DataflowEdge> result =
+      std::set<DataflowEdge> result =
           get_transitive_reduced_edges_across_split(tr_g, split);
-      std::unordered_set<DataflowEdge> correct = {
+      std::set<DataflowEdge> correct = {
           DataflowEdge{
               n1_o1,
               DataflowInput{n2, 0_n},
@@ -131,9 +131,9 @@ TEST_SUITE(FF_TEST_SUITE) {
           make_series_split(make_leaf(n3), make_leaf(n4)),
       };
 
-      std::unordered_set<DataflowEdge> result =
+      std::set<DataflowEdge> result =
           get_transitive_reduced_edges_across_split(tr_g, split);
-      std::unordered_set<DataflowEdge> correct = {
+      std::set<DataflowEdge> correct = {
           DataflowEdge{
               o2,
               DataflowInput{n3, 1_n},

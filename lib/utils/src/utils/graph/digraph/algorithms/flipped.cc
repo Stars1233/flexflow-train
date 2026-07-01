@@ -5,16 +5,15 @@ namespace FlexFlow {
 
 FlippedView::FlippedView(DiGraphView const &g) : g(g) {}
 
-std::unordered_set<DirectedEdge>
+std::set<DirectedEdge>
     FlippedView::query_edges(DirectedEdgeQuery const &query) const {
-  std::unordered_set<DirectedEdge> result =
+  std::set<DirectedEdge> result =
       this->g.query_edges(DirectedEdgeQuery{query.dsts, query.srcs});
   return transform(
       result, [](DirectedEdge const &e) { return flipped_directed_edge(e); });
 }
 
-std::unordered_set<Node>
-    FlippedView::query_nodes(NodeQuery const &query) const {
+std::set<Node> FlippedView::query_nodes(NodeQuery const &query) const {
   return this->g.query_nodes(query);
 }
 

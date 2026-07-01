@@ -12,7 +12,7 @@ namespace FlexFlow {
  * @note `n` is not considered to be its own ancestor, and is thus not
  * included in the returned set.
  **/
-std::unordered_set<Node> get_ancestors(DiGraphView const &g, Node const &n);
+std::set<Node> get_ancestors(DiGraphView const &g, Node const &n);
 
 } // namespace FlexFlow
 

@@ -4,29 +4,29 @@
 #include "utils/containers/transform.h"
 #include "utils/hash/pair.h"
 #include <libassert/assert.hpp>
-#include <unordered_set>
+#include <set>
 
 namespace FlexFlow {
 
 template <typename L, typename C, typename R>
-std::unordered_set<std::pair<L, R>> unstructured_exhaustive_relational_join(
-    std::unordered_set<std::pair<L, C>> const &lhs,
-    std::unordered_set<std::pair<C, R>> const &rhs) {
-  std::unordered_set<std::pair<L, R>> result;
+std::set<std::pair<L, R>> unstructured_exhaustive_relational_join(
+    std::set<std::pair<L, C>> const &lhs,
+    std::set<std::pair<C, R>> const &rhs) {
+  std::set<std::pair<L, R>> result;
 
-  std::unordered_set<L> lhs_ls =
+  std::set<L> lhs_ls =
       transform(lhs, [](std::pair<L, C> const &lc) { return lc.first; });
-  std::unordered_set<C> lhs_cs =
+  std::set<C> lhs_cs =
       transform(lhs, [](std::pair<L, C> const &lc) { return lc.second; });
-  std::unordered_set<C> rhs_cs =
+  std::set<C> rhs_cs =
       transform(rhs, [](std::pair<C, R> const &cr) { return cr.first; });
-  std::unordered_set<R> rhs_rs =
+  std::set<R> rhs_rs =
       transform(rhs, [](std::pair<C, R> const &cr) { return cr.second; });
 
   ASSERT(lhs_cs == rhs_cs);
 
-  std::unordered_set<L> result_ls;
-  std::unordered_set<R> result_rs;
+  std::set<L> result_ls;
+  std::set<R> result_rs;
 
   for (auto const &[l, c1] : lhs) {
     for (auto const &[c2, r] : rhs) {

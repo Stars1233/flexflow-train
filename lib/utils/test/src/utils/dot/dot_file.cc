@@ -67,8 +67,8 @@ TEST_SUITE(FF_TEST_SUITE) {
 
       std::string expectedOutput = R"EXPECTED_OUTPUT(digraph taskgraph {
 subgraph cluster_0 {
-node1;
 node0;
+node1;
 subgraph cluster_1 {
 node1;
 }

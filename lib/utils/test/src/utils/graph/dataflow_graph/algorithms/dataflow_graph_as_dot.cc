@@ -65,9 +65,9 @@ TEST_SUITE(FF_TEST_SUITE) {
 <TD PORT="i2" COLSPAN="1">n4_2</TD></TR>
 <TR><TD COLSPAN="3">n4</TD></TR>
 <TR><TD PORT="o0" COLSPAN="3">n4_0</TD></TR></TABLE>>,shape=plaintext];
+  node0:o0 -> node3:i0;
   node1:o0 -> node3:i1;
   node2:o0 -> node3:i2;
-  node0:o0 -> node3:i0;
 })EXPECTED_OUTPUT";
 
     CHECK(result == correct);

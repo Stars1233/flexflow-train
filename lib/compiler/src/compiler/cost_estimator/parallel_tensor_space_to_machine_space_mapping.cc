@@ -3,9 +3,9 @@
 #include "op-attrs/parallel_tensor_dim_degrees.h"
 #include "op-attrs/parallel_tensor_space_coordinate.h"
 #include "op-attrs/task_space_coordinate.h"
+#include "utils/bidict/algorithms/bidict_transform_keys.h"
+#include "utils/bidict/algorithms/bidict_transform_values.h"
 #include "utils/bidict/algorithms/exhaustive_relational_join.h"
-#include "utils/bidict/algorithms/transform_keys.h"
-#include "utils/bidict/algorithms/transform_values.h"
 #include <libassert/assert.hpp>
 
 namespace FlexFlow {
@@ -19,10 +19,10 @@ ParallelTensorSpaceToMachineSpaceMapping ptensor_machine_map_from_composition(
              op_task_to_parallel_tensor_space_mapping));
 
   bidict<ParallelTensorSpaceCoordinate, TaskSpaceCoordinate>
-      pt_to_op_coord_map = transform_keys(
-          transform_values(op_task_to_parallel_tensor_space_mapping.raw_mapping
-                               .coord_mapping.reversed(),
-                           task_space_coordinate_from_dim_coord),
+      pt_to_op_coord_map = bidict_transform_keys(
+          bidict_transform_values(op_task_to_parallel_tensor_space_mapping
+                                      .raw_mapping.coord_mapping.reversed(),
+                                  task_space_coordinate_from_dim_coord),
           parallel_tensor_space_coord_from_dim_coord);
 
   bidict<TaskSpaceCoordinate, MachineSpaceCoordinate> op_to_ms_coord_map =

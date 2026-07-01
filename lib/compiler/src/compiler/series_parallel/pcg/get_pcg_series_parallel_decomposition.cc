@@ -36,7 +36,7 @@ std::optional<SeriesParallelDecomposition>
     assert(layer_is_weight_or_input(starting_point) ||
            layer_is_parallel_op(starting_point));
 
-    std::unordered_set<parallel_layer_guid_t> successors =
+    std::set<parallel_layer_guid_t> successors =
         get_successors(pcg, starting_point);
 
     if (successors.size() != 1) {
@@ -55,13 +55,13 @@ std::optional<SeriesParallelDecomposition>
   };
 
   DiGraphView preprocessed_digraph = [&] {
-    std::unordered_set<parallel_layer_guid_t> weight_and_input_layers =
-        filter(get_parallel_layers(pcg), layer_is_weight_or_input);
+    std::set<parallel_layer_guid_t> weight_and_input_layers =
+        filter(pcg_get_parallel_layers(pcg), layer_is_weight_or_input);
 
-    std::unordered_set<parallel_layer_guid_t> par_chain_endpoints =
+    std::set<parallel_layer_guid_t> par_chain_endpoints =
         transform(weight_and_input_layers, follow_to_last_parallel_op);
 
-    std::unordered_set<parallel_layer_guid_t> par_chain_endpoint_successors =
+    std::set<parallel_layer_guid_t> par_chain_endpoint_successors =
         get_subgraph_successors(pcg, par_chain_endpoints);
 
     DiGraph digraph = materialize_digraph_view<AdjacencyDiGraph>(pcg.raw_graph);

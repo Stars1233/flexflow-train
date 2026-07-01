@@ -17,7 +17,7 @@
 
 namespace FlexFlow {
 
-std::unordered_map<TensorSlotName, IncomingTensorRole>
+std::map<TensorSlotName, IncomingTensorRole>
     get_linear_incoming_tensor_roles(LinearAttrs const &);
 
 tl::expected<TensorShape, std::string>
@@ -27,7 +27,7 @@ tl::expected<TensorShape, std::string> get_bias_shape(LinearAttrs const &attrs,
 tl::expected<TensorShape, std::string>
     get_output_shape(LinearAttrs const &attrs, TensorShape const &input);
 
-tl::expected<std::unordered_map<TensorSlotName, TensorShape>, std::string>
+tl::expected<std::map<TensorSlotName, TensorShape>, std::string>
     get_weight_shapes(LinearAttrs const &attrs, TensorShape const &input_shape);
 
 ParallelTensorDimDegrees
@@ -49,12 +49,11 @@ tl::expected<ParallelTensorShape, std::string>
     get_output_shape(LinearAttrs const &attrs,
                      ParallelTensorShape const &input);
 
-tl::expected<std::unordered_map<TensorSlotName, ParallelTensorShape>,
-             std::string>
+tl::expected<std::map<TensorSlotName, ParallelTensorShape>, std::string>
     get_weight_shapes(LinearAttrs const &attrs,
                       ParallelTensorShape const &input_shape);
 
-tl::expected<std::unordered_map<TensorSlotName, InitializerAttrs>, std::string>
+tl::expected<std::map<TensorSlotName, InitializerAttrs>, std::string>
     get_initializers(LinearAttrs const &,
                      TensorShape const &input_shape,
                      std::optional<InitializerAttrs> const

@@ -469,8 +469,8 @@ TEST_SUITE(FF_TEST_SUITE) {
       CHECK(hash_fn(nn_int_1a) != hash_fn(nn_int_2));
     }
 
-    SUBCASE("unordered_set works with positive_int") {
-      std::unordered_set<::FlexFlow::positive_int> positive_int_set;
+    SUBCASE("set works with positive_int") {
+      std::set<::FlexFlow::positive_int> positive_int_set;
       positive_int_set.insert(nn_int_1a);
       positive_int_set.insert(nn_int_1b);
       positive_int_set.insert(nn_int_2);

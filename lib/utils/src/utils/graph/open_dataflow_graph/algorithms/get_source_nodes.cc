@@ -4,7 +4,7 @@
 
 namespace FlexFlow {
 
-std::unordered_set<Node> get_source_nodes(OpenDataflowGraphView const &g) {
+std::set<Node> get_source_nodes(OpenDataflowGraphView const &g) {
   auto is_source_node = [&](Node const &n) {
     std::vector<OpenDataflowEdge> incoming_edges = get_incoming_edges(g, n);
     return incoming_edges.empty();

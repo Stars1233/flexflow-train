@@ -37,13 +37,13 @@ TensorDimsCoord get_broadcast_src_coord(TensorDims const &input_dims,
                                         TensorDims const &output_dims,
                                         TensorDimsCoord const &dst_coord);
 
-std::unordered_set<TensorDimsCoord>
+std::set<TensorDimsCoord>
     get_tensor_dims_coord_set(TensorDims const &tensor_dims);
 
-std::unordered_set<ff_dim_t> get_ff_dim_t_set(TensorDims const &);
+std::set<ff_dim_t> get_ff_dim_t_set(TensorDims const &);
 
 std::optional<TensorDims>
-    get_broadcast_target_dims(std::unordered_set<TensorDims> const &);
+    get_broadcast_target_dims(std::set<TensorDims> const &);
 
 TensorDims
     tensor_dims_drop_dims(TensorDims const &dims,

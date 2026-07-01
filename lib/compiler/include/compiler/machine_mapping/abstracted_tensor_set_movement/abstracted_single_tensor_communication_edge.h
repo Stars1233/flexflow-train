@@ -14,7 +14,7 @@ std::optional<CommunicationEdge>
     concretize_abstracted_single_tensor_communication_edge(
         AbstractedSingleTensorCommunicationEdge const &edge,
         MachineSpaceStencil const &src_machine_stencil,
-        std::unordered_map<BinaryTreePath, MachineSpaceStencil> const
+        std::map<BinaryTreePath, MachineSpaceStencil> const
             &dst_machine_stencils);
 
 } // namespace FlexFlow

@@ -1,5 +1,5 @@
 #include "utils/graph/series_parallel/get_ancestors.h"
-#include "utils/fmt/unordered_set.h"
+#include "utils/fmt/set.h"
 #include <doctest/doctest.h>
 #include <vector>
 
@@ -12,24 +12,24 @@ TEST_SUITE(FF_TEST_SUITE) {
 
     SUBCASE("Single Node") {
       SeriesParallelDecomposition sp = SeriesParallelDecomposition{n.at(0)};
-      std::unordered_set<Node> correct = {};
-      std::unordered_set<Node> result = get_ancestors(sp, n.at(0));
+      std::set<Node> correct = {};
+      std::set<Node> result = get_ancestors(sp, n.at(0));
       CHECK(correct == result);
     }
 
     SUBCASE("Simple Series") {
       SeriesParallelDecomposition sp =
           SeriesParallelDecomposition{SeriesSplit{{n.at(0), n.at(1), n.at(2)}}};
-      std::unordered_set<Node> correct = {n.at(0), n.at(1)};
-      std::unordered_set<Node> result = get_ancestors(sp, n.at(2));
+      std::set<Node> correct = {n.at(0), n.at(1)};
+      std::set<Node> result = get_ancestors(sp, n.at(2));
       CHECK(correct == result);
     }
 
     SUBCASE("Simple Parallel") {
       SeriesParallelDecomposition sp = SeriesParallelDecomposition{
           ParallelSplit{{n.at(0), n.at(1), n.at(2)}}};
-      std::unordered_set<Node> correct = {};
-      std::unordered_set<Node> result = get_ancestors(sp, n.at(1));
+      std::set<Node> correct = {};
+      std::set<Node> result = get_ancestors(sp, n.at(1));
       CHECK(correct == result);
     }
 
@@ -37,16 +37,16 @@ TEST_SUITE(FF_TEST_SUITE) {
       SeriesParallelDecomposition sp = SeriesParallelDecomposition{SeriesSplit{
           {n.at(0),
            ParallelSplit{{SeriesSplit{{n.at(1), n.at(2)}}, n.at(3)}}}}};
-      std::unordered_set<Node> correct = {n.at(0), n.at(1)};
-      std::unordered_set<Node> result = get_ancestors(sp, n.at(2));
+      std::set<Node> correct = {n.at(0), n.at(1)};
+      std::set<Node> result = get_ancestors(sp, n.at(2));
       CHECK(correct == result);
     }
 
     SUBCASE("Rhombus") {
       SeriesParallelDecomposition sp = SeriesParallelDecomposition{
           SeriesSplit{{n.at(0), ParallelSplit{{n.at(1), n.at(2)}}, n.at(3)}}};
-      std::unordered_set<Node> correct = {n.at(0), n.at(1), n.at(2)};
-      std::unordered_set<Node> result = get_ancestors(sp, n.at(3));
+      std::set<Node> correct = {n.at(0), n.at(1), n.at(2)};
+      std::set<Node> result = get_ancestors(sp, n.at(3));
       CHECK(correct == result);
     }
 
@@ -58,8 +58,8 @@ TEST_SUITE(FF_TEST_SUITE) {
                     {n.at(1), ParallelSplit{{n.at(2), n.at(3)}}, n.at(4)}},
                 SeriesSplit{{n.at(5), n.at(6)}}}},
            n.at(7)}}};
-      std::unordered_set<Node> correct = {n.at(0), n.at(1), n.at(2), n.at(3)};
-      std::unordered_set<Node> result = get_ancestors(sp, n.at(4));
+      std::set<Node> correct = {n.at(0), n.at(1), n.at(2), n.at(3)};
+      std::set<Node> result = get_ancestors(sp, n.at(4));
       CHECK(correct == result);
 
       correct = {n.at(0), n.at(1)};

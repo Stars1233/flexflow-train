@@ -14,22 +14,22 @@ public:
       LabelledDataflowGraphView<NodeLabel, ValueLabel> const &g)
       : g(g) {}
 
-  std::unordered_set<Node> query_nodes(NodeQuery const &q) const override {
+  std::set<Node> query_nodes(NodeQuery const &q) const override {
     return this->g.query_nodes(q);
   }
 
-  std::unordered_set<OpenDataflowEdge>
+  std::set<OpenDataflowEdge>
       query_edges(OpenDataflowEdgeQuery const &q) const override {
     return transform(this->g.query_edges(q.standard_edge_query),
                      [](DataflowEdge const &e) { return OpenDataflowEdge{e}; });
   }
 
-  std::unordered_set<DataflowOutput>
+  std::set<DataflowOutput>
       query_outputs(DataflowOutputQuery const &q) const override {
     return this->g.query_outputs(q);
   }
 
-  std::unordered_set<DataflowGraphInput> get_inputs() const override {
+  std::set<DataflowGraphInput> get_inputs() const override {
     return {};
   }
 

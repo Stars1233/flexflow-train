@@ -5,7 +5,6 @@
 #include <map>
 #include <optional>
 #include <set>
-#include <unordered_map>
 
 namespace FlexFlow {
 
@@ -38,7 +37,7 @@ private:
       mapping[t] = std::nullopt;
     }
   }
-  mutable std::unordered_map<std::optional<T>, std::optional<T>> mapping;
+  mutable std::map<std::optional<T>, std::optional<T>> mapping;
 };
 
 // Custom comparator for optional

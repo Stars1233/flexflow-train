@@ -90,6 +90,6 @@ template RecordFormatter mk_kv_record(std::string const &,
 using K = ordered_value_type<0>;
 using V = value_type<0>;
 
-template RecordFormatter mk_record_for_map(std::unordered_map<K, V> const &);
+template RecordFormatter mk_record_for_map(std::map<K, V> const &);
 
 } // namespace FlexFlow

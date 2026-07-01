@@ -22,7 +22,7 @@ std::optional<OpenKwargDataflowGraphIsomorphism<GraphInputName>>
                                            ValueLabel,
                                            GraphInputName,
                                            SlotName> const &dst) {
-  std::unordered_set<OpenKwargDataflowGraphIsomorphism<GraphInputName>>
+  std::set<OpenKwargDataflowGraphIsomorphism<GraphInputName>>
       unlabelled_isomorphisms =
           find_isomorphisms_between_open_kwarg_dataflow_graphs(
               static_cast<OpenKwargDataflowGraphView<GraphInputName, SlotName>>(

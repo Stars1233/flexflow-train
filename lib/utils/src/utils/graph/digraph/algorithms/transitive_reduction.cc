@@ -1,6 +1,6 @@
 #include "utils/graph/digraph/algorithms/transitive_reduction.h"
 #include "utils/bidict/algorithms/bidict_from_enumerating.h"
-#include "utils/bidict/algorithms/transform_keys.h"
+#include "utils/bidict/algorithms/bidict_transform_keys.h"
 #include "utils/containers/is_subseteq_of.h"
 #include "utils/containers/set_intersection.h"
 #include "utils/containers/vector_of.h"
@@ -14,16 +14,15 @@
 namespace FlexFlow {
 
 DirectedEdgeMaskView::DirectedEdgeMaskView(
-    DiGraphView const &g, std::unordered_set<DirectedEdge> const &edge_mask)
+    DiGraphView const &g, std::set<DirectedEdge> const &edge_mask)
     : g(g), edge_mask(edge_mask) {}
 
-std::unordered_set<DirectedEdge>
+std::set<DirectedEdge>
     DirectedEdgeMaskView::query_edges(DirectedEdgeQuery const &q) const {
   return set_intersection(g.query_edges(q), this->edge_mask);
 }
 
-std::unordered_set<Node>
-    DirectedEdgeMaskView::query_nodes(NodeQuery const &q) const {
+std::set<Node> DirectedEdgeMaskView::query_nodes(NodeQuery const &q) const {
   return g.query_nodes(q);
 }
 
@@ -40,9 +39,9 @@ DiGraph transitive_reduction(DiGraphView const &g) {
   // transitive_closure inlined to avoid any drifts in node numbering
   // between transitive_closure and transitive_reduction
 
-  bidict<int, Node> nodes =
-      transform_keys(bidict_from_enumerating(get_nodes(g)),
-                     [](nonnegative_int x) { return x.unwrap_nonnegative(); });
+  bidict<int, Node> nodes = bidict_transform_keys(
+      bidict_from_enumerating(get_nodes(g)),
+      [](nonnegative_int x) { return x.unwrap_nonnegative(); });
   int num_nodes = nodes.size();
 
   std::vector<bool> edge_matrix(num_nodes * num_nodes, false);
@@ -73,7 +72,7 @@ DiGraph transitive_reduction(DiGraphView const &g) {
   DiGraph result = materialize_digraph_view<AdjacencyDiGraph>(g);
   // compute transitive reduction
   // see https://stackoverflow.com/a/6702198
-  std::unordered_set<DirectedEdge> edge_mask = get_edges(g);
+  std::set<DirectedEdge> edge_mask = get_edges(g);
   for (int j = 0; j < num_nodes; j++) {
     for (int i = 0; i < num_nodes; i++) {
       if (has_edge(i, j)) {

@@ -8,10 +8,8 @@
 namespace FlexFlow {
 
 template <typename NodeLabel, typename OutputLabel, typename SlotName>
-std::unordered_map<Node, NodeLabel>
-    get_labelled_kwarg_dataflow_graph_node_label_map(
-        LabelledKwargDataflowGraphView<NodeLabel, OutputLabel, SlotName> const
-            &g) {
+std::map<Node, NodeLabel> get_labelled_kwarg_dataflow_graph_node_label_map(
+    LabelledKwargDataflowGraphView<NodeLabel, OutputLabel, SlotName> const &g) {
   return generate_map(get_nodes(g),
                       [&](Node const &n) -> NodeLabel { return g.at(n); });
 }

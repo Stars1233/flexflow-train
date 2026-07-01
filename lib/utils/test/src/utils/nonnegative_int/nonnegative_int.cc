@@ -365,7 +365,7 @@ TEST_SUITE(FF_TEST_SUITE) {
       CHECK(hash_fn(nn_int_1a) != hash_fn(nn_int_2));
     }
     SUBCASE("Unordered set works with nonnegative_int") {
-      std::unordered_set<::FlexFlow::nonnegative_int> nonnegative_int_set;
+      std::set<::FlexFlow::nonnegative_int> nonnegative_int_set;
       nonnegative_int_set.insert(nn_int_1a);
       nonnegative_int_set.insert(nn_int_1b);
       nonnegative_int_set.insert(nn_int_2);

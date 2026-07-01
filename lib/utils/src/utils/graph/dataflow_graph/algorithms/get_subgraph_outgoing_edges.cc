@@ -5,11 +5,10 @@
 
 namespace FlexFlow {
 
-std::unordered_set<DataflowEdge>
-    get_subgraph_outgoing_edges(DataflowGraphView const &g,
-                                std::unordered_set<Node> const &ns) {
+std::set<DataflowEdge> get_subgraph_outgoing_edges(DataflowGraphView const &g,
+                                                   std::set<Node> const &ns) {
 
-  std::unordered_set<Node> all_nodes = get_nodes(g);
+  std::set<Node> all_nodes = get_nodes(g);
   query_set<Node> dst_query =
       query_set<Node>::match_values_in(set_of(set_minus(all_nodes, ns)));
 

@@ -29,9 +29,8 @@ OneToMany<K, V> group_by(std::set<V> const &vs, F &&f) {
 }
 
 template <typename V, typename F, typename K = std::invoke_result_t<F, V>>
-std::unordered_map<K, std::vector<V>> group_by(std::vector<V> const &vs,
-                                               F &&f) {
-  std::unordered_map<K, std::vector<V>> result;
+std::map<K, std::vector<V>> group_by(std::vector<V> const &vs, F &&f) {
+  std::map<K, std::vector<V>> result;
   for (V const &v : vs) {
     result[f(v)].push_back(v);
   }

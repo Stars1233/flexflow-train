@@ -5,7 +5,7 @@
 
 namespace FlexFlow {
 
-std::unordered_map<Node, int> calculate_topo_rank(DiGraphView const &);
+std::map<Node, int> calculate_topo_rank(DiGraphView const &);
 
 } // namespace FlexFlow
 

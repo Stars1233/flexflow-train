@@ -14,8 +14,8 @@ includes = [
   "op-attrs/ff_ordered/ff_ordered.h",
   "op-attrs/shard_parallel_dim.dtg.h",
   "op-attrs/replica_parallel_dim_set.dtg.h",
-  "<unordered_map>",
-  "utils/fmt/unordered_map.h",
+  "<map>",
+  "utils/fmt/map.h",
   "utils/fmt/pair.h",
 ]
 

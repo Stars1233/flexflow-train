@@ -32,16 +32,16 @@ public:
         node_label, inputs, output_labels);
   }
 
-  std::unordered_set<Node> query_nodes(NodeQuery const &q) const override {
+  std::set<Node> query_nodes(NodeQuery const &q) const override {
     return this->get_view().query_nodes(q);
   }
 
-  std::unordered_set<DataflowEdge>
+  std::set<DataflowEdge>
       query_edges(DataflowEdgeQuery const &q) const override {
     return this->get_view().query_edges(q);
   }
 
-  std::unordered_set<DataflowOutput>
+  std::set<DataflowOutput>
       query_outputs(DataflowOutputQuery const &q) const override {
     return this->get_view().query_outputs(q);
   }

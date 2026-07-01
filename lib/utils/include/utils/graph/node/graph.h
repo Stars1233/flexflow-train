@@ -18,7 +18,7 @@ public:
   void add_node_unsafe(Node const &);
   void remove_node_unsafe(Node const &);
 
-  std::unordered_set<Node> query_nodes(NodeQuery const &) const;
+  std::set<Node> query_nodes(NodeQuery const &) const;
 
   template <typename T>
   static typename std::enable_if<std::is_base_of<IGraph, T>::value, Graph>::type

@@ -3,7 +3,7 @@
 
 #include "utils/containers/keys.h"
 #include <libassert/assert.hpp>
-#include <unordered_map>
+#include <map>
 
 namespace FlexFlow {
 
@@ -11,15 +11,14 @@ template <typename K,
           typename V,
           typename F,
           typename K2 = std::invoke_result_t<F, K, V>>
-std::unordered_map<K2, V> map_keys2(std::unordered_map<K, V> const &m,
-                                    F const &f) {
+std::map<K2, V> map_keys2(std::map<K, V> const &m, F const &f) {
 
-  std::unordered_map<K2, V> result;
+  std::map<K2, V> result;
   for (auto const &kv : m) {
     result.insert({f(kv.first, kv.second), kv.second});
   }
 
-  ASSERT(keys(m).size() == keys(result).size(),
+  ASSERT(m.size() == result.size(),
          "keys passed to map_keys must be transformed into distinct keys");
 
   return result;

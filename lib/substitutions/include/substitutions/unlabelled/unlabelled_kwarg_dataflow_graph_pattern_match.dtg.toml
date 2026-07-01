@@ -14,13 +14,13 @@ includes = [
   "utils/graph/open_kwarg_dataflow_graph/open_kwarg_dataflow_value.dtg.h",
   "substitutions/unlabelled/pattern_input.dtg.h",
   "substitutions/unlabelled/pattern_node.dtg.h",
-  "<unordered_map>",
+  "<map>",
   "op-attrs/tensor_slot_name.dtg.h",
 ]
 
 src_includes = [
-  "utils/fmt/unordered_map.h",
-  "utils/hash/unordered_map.h",
+  "utils/fmt/map.h",
+  "utils/hash/map.h",
 ]
 
 [[fields]]
@@ -29,4 +29,4 @@ type = "::FlexFlow::bidict<::FlexFlow::PatternNode, ::FlexFlow::Node>"
 
 [[fields]]
 name = "input_assignment"
-type = "std::unordered_map<::FlexFlow::PatternInput, ::FlexFlow::OpenKwargDataflowValue<int, ::FlexFlow::TensorSlotName>>"
+type = "std::map<::FlexFlow::PatternInput, ::FlexFlow::OpenKwargDataflowValue<int, ::FlexFlow::TensorSlotName>>"

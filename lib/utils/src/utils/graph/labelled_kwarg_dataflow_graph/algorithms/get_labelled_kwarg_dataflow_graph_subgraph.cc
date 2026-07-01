@@ -12,6 +12,6 @@ template LabelledKwargDataflowGraphView<NodeLabel, OutputLabel, SlotName>
     get_labelled_kwarg_dataflow_graph_subgraph(
         LabelledKwargDataflowGraphView<NodeLabel, OutputLabel, SlotName> const
             &,
-        std::unordered_set<Node> const &);
+        std::set<Node> const &);
 
 } // namespace FlexFlow

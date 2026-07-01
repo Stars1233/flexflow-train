@@ -8,7 +8,7 @@
 namespace FlexFlow {
 
 template <typename GraphInputName, typename SlotName>
-std::unordered_set<KwargDataflowGraphInput<GraphInputName>>
+std::set<KwargDataflowGraphInput<GraphInputName>>
     get_unused_open_kwarg_dataflow_graph_inputs(
         OpenKwargDataflowGraphView<GraphInputName, SlotName> const &g) {
   return filter(

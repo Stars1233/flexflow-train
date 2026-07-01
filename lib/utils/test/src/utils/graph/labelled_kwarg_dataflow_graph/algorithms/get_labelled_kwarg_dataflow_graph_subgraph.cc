@@ -30,7 +30,7 @@ TEST_SUITE(FF_TEST_SUITE) {
         /*node_label=*/n1_label,
         /*inputs=*/{},
         /*output_labels=*/
-        std::unordered_map<int, float>{
+        std::map<int, float>{
             {2, n1_t1_label},
         });
     Node n1 = n1_added.node;
@@ -39,11 +39,11 @@ TEST_SUITE(FF_TEST_SUITE) {
     KwargNodeAddedResult<int> n2_added = g.add_node(
         /*node_label=*/n2_label,
         /*inputs=*/
-        std::unordered_map<int, KwargDataflowOutput<int>>{
+        std::map<int, KwargDataflowOutput<int>>{
             {3, n1_t1},
         },
         /*output_labels=*/
-        std::unordered_map<int, float>{
+        std::map<int, float>{
             {0, n2_t1_label},
             {1, n2_t2_label},
         });
@@ -54,13 +54,13 @@ TEST_SUITE(FF_TEST_SUITE) {
     KwargNodeAddedResult<int> n3_added = g.add_node(
         /*node_label=*/n3_label,
         /*inputs=*/
-        std::unordered_map<int, KwargDataflowOutput<int>>{
+        std::map<int, KwargDataflowOutput<int>>{
             {3, n1_t1},
             {1, n1_t1},
             {2, n2_t2},
         },
         /*output_labels=*/
-        std::unordered_map<int, float>{
+        std::map<int, float>{
             {4, n3_t1_label},
         });
     Node n3 = n3_added.node;
@@ -88,7 +88,7 @@ TEST_SUITE(FF_TEST_SUITE) {
     SUBCASE("node set includes all graph nodes") {
       LabelledKwargDataflowGraphView<std::string, float, int> result =
           get_labelled_kwarg_dataflow_graph_subgraph(
-              input, std::unordered_set<Node>{n1, n2, n3});
+              input, std::set<Node>{n1, n2, n3});
       LabelledKwargDataflowGraphData<std::string, float, int> result_data =
           get_labelled_kwarg_dataflow_graph_data(result);
 
@@ -120,8 +120,8 @@ TEST_SUITE(FF_TEST_SUITE) {
 
     SUBCASE("node set includes only some graph nodes") {
       LabelledKwargDataflowGraphView<std::string, float, int> result =
-          get_labelled_kwarg_dataflow_graph_subgraph(
-              input, std::unordered_set<Node>{n2, n3});
+          get_labelled_kwarg_dataflow_graph_subgraph(input,
+                                                     std::set<Node>{n2, n3});
       LabelledKwargDataflowGraphData<std::string, float, int> result_data =
           get_labelled_kwarg_dataflow_graph_data(result);
 
@@ -148,17 +148,16 @@ TEST_SUITE(FF_TEST_SUITE) {
 
     SUBCASE("node set includes no graph nodes") {
       LabelledKwargDataflowGraphView<std::string, float, int> result =
-          get_labelled_kwarg_dataflow_graph_subgraph(
-              input, std::unordered_set<Node>{});
+          get_labelled_kwarg_dataflow_graph_subgraph(input, std::set<Node>{});
       LabelledKwargDataflowGraphData<std::string, float, int> result_data =
           get_labelled_kwarg_dataflow_graph_data(result);
 
       LabelledKwargDataflowGraphData<std::string, float, int> correct_data =
           LabelledKwargDataflowGraphData<std::string, float, int>{
-              /*node_data=*/std::unordered_map<Node, std::string>{},
-              /*edges=*/std::unordered_set<KwargDataflowEdge<int>>{},
+              /*node_data=*/std::map<Node, std::string>{},
+              /*edges=*/std::set<KwargDataflowEdge<int>>{},
               /*output_data=*/
-              std::unordered_map<KwargDataflowOutput<int>, float>{},
+              std::map<KwargDataflowOutput<int>, float>{},
           };
 
       CHECK(result_data == correct_data);
@@ -167,14 +166,14 @@ TEST_SUITE(FF_TEST_SUITE) {
     SUBCASE("node set includes nodes not in graph") {
       LabelledKwargDataflowGraphView<std::string, float, int>
           with_invalid_node = get_labelled_kwarg_dataflow_graph_subgraph(
-              input, std::unordered_set<Node>{n2, n3, Node{100}});
+              input, std::set<Node>{n2, n3, Node{100}});
       LabelledKwargDataflowGraphData<std::string, float, int>
           with_invalid_node_data =
               get_labelled_kwarg_dataflow_graph_data(with_invalid_node);
 
       LabelledKwargDataflowGraphView<std::string, float, int>
           without_invalid_node = get_labelled_kwarg_dataflow_graph_subgraph(
-              input, std::unordered_set<Node>{n2, n3});
+              input, std::set<Node>{n2, n3});
       LabelledKwargDataflowGraphData<std::string, float, int>
           without_invalid_node_data =
               get_labelled_kwarg_dataflow_graph_data(without_invalid_node);

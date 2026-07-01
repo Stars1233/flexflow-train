@@ -5,10 +5,10 @@
 
 namespace FlexFlow {
 
-std::unordered_set<OpenDataflowEdge>
+std::set<OpenDataflowEdge>
     get_subgraph_incoming_edges(OpenDataflowGraphView const &g,
-                                std::unordered_set<Node> const &ns) {
-  std::unordered_set<Node> nodes_not_in_ns = set_minus(get_nodes(g), ns);
+                                std::set<Node> const &ns) {
+  std::set<Node> nodes_not_in_ns = set_minus(get_nodes(g), ns);
 
   OpenDataflowEdgeQuery query = OpenDataflowEdgeQuery{
       DataflowInputEdgeQuery{

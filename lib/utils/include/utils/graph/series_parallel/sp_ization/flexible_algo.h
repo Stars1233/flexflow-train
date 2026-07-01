@@ -7,8 +7,8 @@
 #include "utils/graph/series_parallel/series_parallel_decomposition.dtg.h"
 #include "utils/graph/series_parallel/sp_ization/node_role.dtg.h"
 #include "utils/graph/series_parallel/sp_ization/up_down_partition.dtg.h"
-#include <unordered_map>
-#include <unordered_set>
+#include <map>
+#include <set>
 
 namespace FlexFlow {
 
@@ -17,7 +17,7 @@ namespace FlexFlow {
  */
 SeriesParallelDecomposition
     flexible_sp_ization(DiGraphView const &g,
-                        std::unordered_map<Node, float> const &cost_map);
+                        std::map<Node, float> const &cost_map);
 
 } // namespace FlexFlow
 

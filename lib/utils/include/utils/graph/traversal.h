@@ -17,8 +17,7 @@ struct unchecked_dfs_iterator {
   using reference = Node const &;
 
   unchecked_dfs_iterator(DiGraphView const &g, std::vector<Node> const &);
-  unchecked_dfs_iterator(DiGraphView const &g,
-                         std::unordered_set<Node> const &);
+  unchecked_dfs_iterator(DiGraphView const &g, std::set<Node> const &);
 
   reference operator*() const;
   pointer operator->();
@@ -50,9 +49,9 @@ struct checked_dfs_iterator {
 
   checked_dfs_iterator(DiGraphView const &g,
                        std::vector<Node> const &,
-                       std::unordered_set<Node> const &);
+                       std::set<Node> const &);
   checked_dfs_iterator(DiGraphView const &g,
-                       std::unordered_set<Node> const &starting_points);
+                       std::set<Node> const &starting_points);
 
   reference operator*() const;
   pointer operator->();
@@ -64,7 +63,7 @@ struct checked_dfs_iterator {
 
 private:
   unchecked_dfs_iterator iter;
-  std::unordered_set<Node> seen;
+  std::set<Node> seen;
 };
 
 struct bfs_iterator {
@@ -76,9 +75,8 @@ struct bfs_iterator {
 
   bfs_iterator(DiGraphView const &,
                std::queue<Node> const &,
-               std::optional<std::unordered_set<Node>> const &);
-  bfs_iterator(DiGraphView const &,
-               std::unordered_set<Node> const &starting_points);
+               std::optional<std::set<Node>> const &);
+  bfs_iterator(DiGraphView const &, std::set<Node> const &starting_points);
 
   reference operator*() const;
   pointer operator->();
@@ -91,13 +89,13 @@ struct bfs_iterator {
 private:
   DiGraphView graph;
   std::queue<Node> q;
-  std::optional<std::unordered_set<Node>> seen;
+  std::optional<std::set<Node>> seen;
 };
 
 struct CheckedDFSView {
   CheckedDFSView() = delete;
   explicit CheckedDFSView(DiGraphView const &,
-                          std::unordered_set<Node> const &starting_points);
+                          std::set<Node> const &starting_points);
 
   checked_dfs_iterator begin() const;
   checked_dfs_iterator end() const;
@@ -106,13 +104,13 @@ struct CheckedDFSView {
 
 private:
   DiGraphView graph;
-  std::unordered_set<Node> starting_points;
+  std::set<Node> starting_points;
 };
 
 struct UncheckedDFSView {
   UncheckedDFSView() = delete;
   explicit UncheckedDFSView(DiGraphView const &,
-                            std::unordered_set<Node> const &starting_points);
+                            std::set<Node> const &starting_points);
 
   unchecked_dfs_iterator begin() const;
   unchecked_dfs_iterator end() const;
@@ -121,13 +119,12 @@ struct UncheckedDFSView {
 
 private:
   DiGraphView graph;
-  std::unordered_set<Node> starting_points;
+  std::set<Node> starting_points;
 };
 
 struct BFSView {
   BFSView() = delete;
-  explicit BFSView(DiGraphView const &,
-                   std::unordered_set<Node> const &starting_points);
+  explicit BFSView(DiGraphView const &, std::set<Node> const &starting_points);
 
   bfs_iterator begin() const;
   bfs_iterator end() const;
@@ -136,7 +133,7 @@ struct BFSView {
 
 private:
   DiGraphView graph;
-  std::unordered_set<Node> starting_points;
+  std::set<Node> starting_points;
 };
 
 /* struct BoundaryDFSView { */
@@ -151,7 +148,7 @@ private:
 /*     using reference = Node const &; */
 
 /*     boundary_dfs_iterator(IDiGraphView const &g, std::vector<Node> const &,
- * std::unordered_set<Node> const &); */
+ * std::set<Node> const &); */
 
 /*     reference operator*() const; */
 /*     pointer operator->(); */
@@ -172,13 +169,11 @@ private:
 /* }; */
 
 UncheckedDFSView unchecked_dfs(DiGraphView const &,
-                               std::unordered_set<Node> const &starting_points);
-/* BoundaryDFSView boundary_dfs(IDiGraphView const &, std::unordered_set<Node>
+                               std::set<Node> const &starting_points);
+/* BoundaryDFSView boundary_dfs(IDiGraphView const &, std::set<Node>
  * const &starting_points); */
-CheckedDFSView dfs(DiGraphView const &,
-                   std::unordered_set<Node> const &starting_points);
-BFSView bfs(DiGraphView const &,
-            std::unordered_set<Node> const &starting_points);
+CheckedDFSView dfs(DiGraphView const &, std::set<Node> const &starting_points);
+BFSView bfs(DiGraphView const &, std::set<Node> const &starting_points);
 
 } // namespace FlexFlow
 

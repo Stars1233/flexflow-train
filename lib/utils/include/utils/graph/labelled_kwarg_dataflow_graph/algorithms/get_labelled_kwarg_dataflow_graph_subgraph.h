@@ -17,16 +17,15 @@ LabelledKwargDataflowGraphView<NodeLabel, OutputLabel, SlotName>
     get_labelled_kwarg_dataflow_graph_subgraph(
         LabelledKwargDataflowGraphView<NodeLabel, OutputLabel, SlotName> const
             &g,
-        std::unordered_set<Node> const &subgraph_nodes) {
+        std::set<Node> const &subgraph_nodes) {
   KwargDataflowGraphView<SlotName> unlabelled_subgraph =
       get_kwarg_dataflow_graph_subgraph(g, subgraph_nodes);
 
-  std::unordered_map<Node, NodeLabel> g_node_labelling =
+  std::map<Node, NodeLabel> g_node_labelling =
       get_labelled_kwarg_dataflow_graph_node_label_map(g);
 
-  std::unordered_map<KwargDataflowOutput<SlotName>, OutputLabel>
-      g_output_labelling =
-          get_labelled_kwarg_dataflow_graph_output_label_map(g);
+  std::map<KwargDataflowOutput<SlotName>, OutputLabel> g_output_labelling =
+      get_labelled_kwarg_dataflow_graph_output_label_map(g);
 
   return kwarg_dataflow_graph_view_with_labelling(
       unlabelled_subgraph,

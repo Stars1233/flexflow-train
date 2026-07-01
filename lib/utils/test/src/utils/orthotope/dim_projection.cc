@@ -67,14 +67,14 @@ TEST_SUITE(FF_TEST_SUITE) {
           project_dims(projection,
                        /*onto=*/0,
                        /*from=*/
-                       std::unordered_set{
+                       std::set{
                            shard1_idx,
                            discard_copy_idx,
                        });
           project_dims(projection,
                        /*onto=*/1,
                        /*from=*/
-                       std::unordered_set{
+                       std::set{
                            shard0_idx,
                            sum_idx,
                        });
@@ -103,13 +103,13 @@ TEST_SUITE(FF_TEST_SUITE) {
           project_dims(projection,
                        /*onto=*/0,
                        /*from=*/
-                       std::unordered_set{
+                       std::set{
                            shard1_idx,
                        });
           project_dims(projection,
                        /*onto=*/1,
                        /*from=*/
-                       std::unordered_set{
+                       std::set{
                            shard0_idx,
                            sum_idx,
                        });
@@ -138,14 +138,14 @@ TEST_SUITE(FF_TEST_SUITE) {
           project_dims(projection,
                        /*onto=*/0,
                        /*from=*/
-                       std::unordered_set{
+                       std::set{
                            shard1_idx,
                            discard_copy_idx,
                        });
           project_dims(projection,
                        /*onto=*/1,
                        /*from=*/
-                       std::unordered_set{
+                       std::set{
                            sum_idx,
                        });
 

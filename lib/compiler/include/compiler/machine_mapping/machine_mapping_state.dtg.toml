@@ -3,6 +3,7 @@ name = "MachineMappingState"
 type = "struct"
 features = [
   "eq",
+  "ord",
   "hash",
   "fmt",
 ]

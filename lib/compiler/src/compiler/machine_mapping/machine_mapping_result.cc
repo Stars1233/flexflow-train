@@ -21,7 +21,7 @@ FeasibleMachineMappingResult
 }
 
 [[nodiscard]] MachineMappingResult get_mapping_with_minimal_runtime(
-    std::unordered_set<MachineMappingResult> const &candidates) {
+    std::set<MachineMappingResult> const &candidates) {
   MachineMappingResult result = infeasible_machine_mapping_result();
 
   for (MachineMappingResult const &candidate : candidates) {

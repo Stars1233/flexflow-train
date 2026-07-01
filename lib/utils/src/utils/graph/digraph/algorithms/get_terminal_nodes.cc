@@ -4,7 +4,7 @@
 
 namespace FlexFlow {
 
-std::unordered_set<Node> get_terminal_nodes(DiGraphView const &g) {
+std::set<Node> get_terminal_nodes(DiGraphView const &g) {
   return get_initial_nodes(flipped(g));
 }
 

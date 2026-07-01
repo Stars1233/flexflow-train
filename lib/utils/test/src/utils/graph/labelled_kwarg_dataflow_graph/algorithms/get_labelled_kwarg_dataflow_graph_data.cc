@@ -23,10 +23,10 @@ TEST_SUITE(FF_TEST_SUITE) {
 
       LabelledKwargDataflowGraphData<std::string, float, int> correct =
           LabelledKwargDataflowGraphData<std::string, float, int>{
-              /*node_data=*/std::unordered_map<Node, std::string>{},
-              /*edges=*/std::unordered_set<KwargDataflowEdge<int>>{},
+              /*node_data=*/std::map<Node, std::string>{},
+              /*edges=*/std::set<KwargDataflowEdge<int>>{},
               /*output_data=*/
-              std::unordered_map<KwargDataflowOutput<int>, float>{},
+              std::map<KwargDataflowOutput<int>, float>{},
           };
 
       ASSERT(result == correct);
@@ -46,7 +46,7 @@ TEST_SUITE(FF_TEST_SUITE) {
           /*node_label=*/n1_label,
           /*inputs=*/{},
           /*output_labels=*/
-          std::unordered_map<int, float>{
+          std::map<int, float>{
               {2, n1_t1_label},
           });
       Node n1 = n1_added.node;
@@ -55,11 +55,11 @@ TEST_SUITE(FF_TEST_SUITE) {
       KwargNodeAddedResult<int> n2_added = g.add_node(
           /*node_label=*/n2_label,
           /*inputs=*/
-          std::unordered_map<int, KwargDataflowOutput<int>>{
+          std::map<int, KwargDataflowOutput<int>>{
               {3, n1_t1},
           },
           /*output_labels=*/
-          std::unordered_map<int, float>{
+          std::map<int, float>{
               {0, n2_t1_label},
               {1, n2_t2_label},
           });
@@ -70,13 +70,13 @@ TEST_SUITE(FF_TEST_SUITE) {
       KwargNodeAddedResult<int> n3_added = g.add_node(
           /*node_label=*/n3_label,
           /*inputs=*/
-          std::unordered_map<int, KwargDataflowOutput<int>>{
+          std::map<int, KwargDataflowOutput<int>>{
               {3, n1_t1},
               {1, n1_t1},
               {2, n2_t2},
           },
           /*output_labels=*/
-          std::unordered_map<int, float>{
+          std::map<int, float>{
               {4, n3_t1_label},
           });
       Node n3 = n3_added.node;
@@ -106,20 +106,20 @@ TEST_SUITE(FF_TEST_SUITE) {
 
       LabelledKwargDataflowGraphData<std::string, float, int> correct =
           LabelledKwargDataflowGraphData<std::string, float, int>{
-              /*node_data=*/std::unordered_map<Node, std::string>{
+              /*node_data=*/std::map<Node, std::string>{
                   {n1, n1_label},
                   {n2, n2_label},
                   {n3, n3_label},
               },
               /*edges=*/
-              std::unordered_set<KwargDataflowEdge<int>>{
+              std::set<KwargDataflowEdge<int>>{
                   mk_edge(n1, 2, n2, 3),
                   mk_edge(n1, 2, n3, 3),
                   mk_edge(n1, 2, n3, 1),
                   mk_edge(n2, 1, n3, 2),
               },
               /*output_data=*/
-              std::unordered_map<KwargDataflowOutput<int>, float>{
+              std::map<KwargDataflowOutput<int>, float>{
                   {n1_t1, n1_t1_label},
                   {n2_t1, n2_t1_label},
                   {n2_t2, n2_t2_label},

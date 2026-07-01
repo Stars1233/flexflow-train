@@ -4,10 +4,10 @@
 
 namespace FlexFlow {
 
-std::unordered_set<DirectedEdge> get_edges_from_subgraph_to_subgraph(
-    DiGraphView const &g,
-    std::unordered_set<Node> const &src_subgraph,
-    std::unordered_set<Node> const &dst_subgraph) {
+std::set<DirectedEdge>
+    get_edges_from_subgraph_to_subgraph(DiGraphView const &g,
+                                        std::set<Node> const &src_subgraph,
+                                        std::set<Node> const &dst_subgraph) {
   if (!are_disjoint(src_subgraph, dst_subgraph)) {
     throw mk_runtime_error(
         fmt::format("get_edges_from_subgraph_to_subgraph(DiGraphView, ...) "

@@ -14,9 +14,8 @@ public:
   void remove_node_unsafe(Node const &) override;
   void add_edge(Edge const &) override;
   void remove_edge(Edge const &) override;
-  std::unordered_set<Edge>
-      query_edges(UndirectedEdgeQuery const &) const override;
-  std::unordered_set<Node> query_nodes(NodeQuery const &) const override;
+  std::set<Edge> query_edges(UndirectedEdgeQuery const &) const override;
+  std::set<Node> query_nodes(NodeQuery const &) const override;
 
   friend bool operator==(HashmapUndirectedGraph const &,
                          HashmapUndirectedGraph const &);
@@ -28,7 +27,7 @@ public:
   }
 
 private:
-  using ContentsType = std::unordered_map<Node, std::unordered_set<Node>>;
+  using ContentsType = std::map<Node, std::set<Node>>;
 
   HashmapUndirectedGraph(std::size_t next_node_idx, ContentsType adjacency)
       : next_node_idx(next_node_idx), adjacency(adjacency) {}

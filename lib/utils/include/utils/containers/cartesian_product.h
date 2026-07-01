@@ -3,15 +3,15 @@
 
 #include "utils/hash/vector.h"
 #include <functional>
-#include <unordered_set>
+#include <set>
 #include <vector>
 
 namespace FlexFlow {
 
 template <typename C, typename E = typename C::value_type>
-std::unordered_multiset<std::vector<E>>
+std::multiset<std::vector<E>>
     cartesian_product(std::vector<C> const &containers) {
-  std::unordered_multiset<std::vector<E>> result;
+  std::multiset<std::vector<E>> result;
 
   std::function<void(std::vector<E> &, size_t)> recurse =
       [&](std::vector<E> &current, size_t depth) {

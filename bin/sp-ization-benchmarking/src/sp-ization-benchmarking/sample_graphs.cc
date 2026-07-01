@@ -108,7 +108,7 @@ DiGraph make_full_taso_nasnet(size_t num_reduction_cells, size_t N) {
         (i % (N + 1) == N) ? make_reduction_taso_nasnet_cell()
                            : make_normal_taso_nasnet_cell();
     Node cell_output = get_only(get_terminal_nodes(s));
-    std::unordered_map<Node, Node> node_map = parallel_extend(g, s);
+    std::map<Node, Node> node_map = parallel_extend(g, s);
     later_input = node_map.at(later_input);
     earlier_input = node_map.at(earlier_input);
     cell_output = node_map.at(cell_output);
@@ -331,8 +331,8 @@ DiGraph make_2_terminal_random_dag(size_t num_nodes, float p, size_t step) {
       }
     }
   }
-  std::unordered_set<Node> sinks = get_terminal_nodes(g);
-  std::unordered_set<Node> sources = get_initial_nodes(g);
+  std::set<Node> sinks = get_terminal_nodes(g);
+  std::set<Node> sources = get_initial_nodes(g);
   Node sink = g.add_node();
   Node source = g.add_node();
   for (Node s : sources) {

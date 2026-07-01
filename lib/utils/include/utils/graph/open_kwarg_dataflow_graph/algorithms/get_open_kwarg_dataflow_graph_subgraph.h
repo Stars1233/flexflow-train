@@ -2,6 +2,7 @@
 #define _FLEXFLOW_LIB_UTILS_INCLUDE_UTILS_GRAPH_OPEN_KWARG_DATAFLOW_GRAPH_ALGORITHMS_GET_OPEN_KWARG_DATAFLOW_GRAPH_SUBGRAPH_H
 
 #include "utils/bidict/generate_bidict.h"
+#include "utils/containers/set_of.h"
 #include "utils/containers/set_union.h"
 #include "utils/containers/values.h"
 #include "utils/graph/kwarg_dataflow_graph/kwarg_dataflow_output_query.h"
@@ -18,7 +19,7 @@ template <typename GraphInputName, typename SlotName>
 OpenKwargDataflowSubgraphResult<GraphInputName, SlotName>
     get_open_kwarg_dataflow_graph_subgraph(
         OpenKwargDataflowGraphView<GraphInputName, SlotName> const &g,
-        std::unordered_set<Node> const &subgraph_nodes,
+        std::set<Node> const &subgraph_nodes,
         std::function<GraphInputName()> const &input_source) {
   bidict<OpenKwargDataflowValue<GraphInputName, SlotName>,
          KwargDataflowGraphInput<GraphInputName>>
@@ -39,7 +40,7 @@ bidict<OpenKwargDataflowValue<GraphInputName, SlotName>,
        KwargDataflowGraphInput<GraphInputName>>
     get_full_kwarg_dataflow_graph_values_to_subgraph_inputs(
         OpenKwargDataflowGraphView<GraphInputName, SlotName> const &g,
-        std::unordered_set<Node> const &subgraph_nodes,
+        std::set<Node> const &subgraph_nodes,
         std::function<GraphInputName()> const &input_source) {
   return generate_bidict(
       get_open_kwarg_dataflow_subgraph_inputs(g, subgraph_nodes),
@@ -63,13 +64,15 @@ template <typename GraphInputName, typename SlotName>
 OpenKwargDataflowGraphData<GraphInputName, SlotName>
     get_open_kwarg_dataflow_subgraph_data(
         OpenKwargDataflowGraphView<GraphInputName, SlotName> const &g,
-        std::unordered_set<Node> const &subgraph_nodes,
+        std::set<Node> const &subgraph_nodes,
         bidict<OpenKwargDataflowValue<GraphInputName, SlotName>,
                KwargDataflowGraphInput<GraphInputName>> const
             &full_graph_values_to_subgraph_inputs) {
-  std::unordered_set<OpenKwargDataflowEdge<GraphInputName, SlotName>>
+
+  std::set<OpenKwargDataflowEdge<GraphInputName, SlotName>>
       subgraph_input_edges = transform(
-          get_open_kwarg_dataflow_subgraph_incoming_edges(g, subgraph_nodes),
+          set_of(get_open_kwarg_dataflow_subgraph_incoming_edges(
+              g, set_of(subgraph_nodes))),
           [&](OpenKwargDataflowEdge<GraphInputName, SlotName> const &edge) {
             return edge.template visit<
                 OpenKwargDataflowEdge<GraphInputName, SlotName>>(overload{
@@ -112,23 +115,24 @@ OpenKwargDataflowGraphData<GraphInputName, SlotName>
           },
       };
 
-  std::unordered_set<OpenKwargDataflowEdge<GraphInputName, SlotName>>
-      subgraph_interior_edges = g.query_edges(subgraph_interior_edges_query);
+  std::set<OpenKwargDataflowEdge<GraphInputName, SlotName>>
+      subgraph_interior_edges =
+          set_of(g.query_edges(subgraph_interior_edges_query));
 
-  std::unordered_set<KwargDataflowGraphInput<GraphInputName>> subgraph_inputs =
-      unordered_set_of(values(full_graph_values_to_subgraph_inputs));
+  std::set<KwargDataflowGraphInput<GraphInputName>> subgraph_inputs =
+      set_of(values(full_graph_values_to_subgraph_inputs));
 
-  std::unordered_set<KwargDataflowOutput<SlotName>> subgraph_outputs =
+  std::set<KwargDataflowOutput<SlotName>> subgraph_outputs =
       filter(g.query_outputs(kwarg_dataflow_output_query_all<SlotName>()),
              [&](KwargDataflowOutput<SlotName> const &o) {
                return contains(subgraph_nodes, o.node);
              });
 
   return OpenKwargDataflowGraphData<GraphInputName, SlotName>{
-      subgraph_nodes,
-      set_union(subgraph_input_edges, subgraph_interior_edges),
-      subgraph_inputs,
-      subgraph_outputs,
+      /*nodes=*/set_of(subgraph_nodes),
+      /*edges=*/set_union(subgraph_input_edges, subgraph_interior_edges),
+      /*inputs=*/subgraph_inputs,
+      /*outputs=*/subgraph_outputs,
   };
 }
 

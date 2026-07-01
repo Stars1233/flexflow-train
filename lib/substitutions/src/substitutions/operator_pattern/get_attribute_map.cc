@@ -6,9 +6,9 @@
 
 namespace FlexFlow {
 
-std::unordered_map<OperatorAttributeKey, OperatorAttributeValue>
+std::map<OperatorAttributeKey, OperatorAttributeValue>
     get_attribute_map(PCGOperatorAttrs const &op_attrs) {
-  std::unordered_map<OperatorAttributeKey, OperatorAttributeValue> result;
+  std::map<OperatorAttributeKey, OperatorAttributeValue> result;
 
   for (OperatorAttributeKey const &attr_key : all_operator_attribute_keys()) {
     std::optional<OperatorAttributeValue> attr_value =

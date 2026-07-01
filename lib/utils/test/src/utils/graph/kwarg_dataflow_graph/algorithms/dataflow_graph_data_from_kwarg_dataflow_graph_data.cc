@@ -66,10 +66,11 @@ TEST_SUITE(FF_TEST_SUITE) {
             },
         };
 
-    std::function<std::vector<std::string>(
-        std::unordered_set<std::string> const &)>
-        slot_ordering = [](std::unordered_set<std::string> const &slots)
-        -> std::vector<std::string> { return reversed(sorted(slots)); };
+    std::function<std::vector<std::string>(std::set<std::string> const &)>
+        slot_ordering =
+            [](std::set<std::string> const &slots) -> std::vector<std::string> {
+      return reversed(sorted(slots));
+    };
 
     DataflowGraphData result =
         dataflow_graph_data_from_kwarg_dataflow_graph_data(input,

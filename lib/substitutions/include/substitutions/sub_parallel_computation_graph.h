@@ -13,9 +13,9 @@
 
 namespace FlexFlow {
 
-std::unordered_set<parallel_layer_guid_t>
-    get_parallel_layers(SubParallelComputationGraph const &);
-std::unordered_set<open_parallel_tensor_guid_t>
+std::set<parallel_layer_guid_t>
+    spcg_get_parallel_layers(SubParallelComputationGraph const &);
+std::set<open_parallel_tensor_guid_t>
     get_parallel_tensors(SubParallelComputationGraph const &);
 ParallelLayerAttrs get_parallel_layer_attrs(SubParallelComputationGraph const &,
                                             parallel_layer_guid_t const &);
@@ -33,23 +33,23 @@ parallel_layer_guid_t
     get_parallel_layer_by_name(SubParallelComputationGraph const &pcg,
                                std::string const &name);
 
-std::unordered_map<TensorSlotName, open_parallel_tensor_guid_t>
+std::map<TensorSlotName, open_parallel_tensor_guid_t>
     get_layer_inputs(SubParallelComputationGraph const &,
                      parallel_layer_guid_t const &);
-std::unordered_map<TensorSlotName, parallel_tensor_guid_t>
+std::map<TensorSlotName, parallel_tensor_guid_t>
     get_outgoing_tensors(SubParallelComputationGraph const &,
                          parallel_layer_guid_t const &);
 
-std::unordered_set<SubParallelComputationGraphEdge> get_subgraph_incoming_edges(
-    SubParallelComputationGraph const &,
-    std::unordered_set<parallel_layer_guid_t> const &);
-std::unordered_set<ParallelComputationGraphEdge> get_subgraph_outgoing_edges(
-    SubParallelComputationGraph const &,
-    std::unordered_set<parallel_layer_guid_t> const &);
+std::set<SubParallelComputationGraphEdge>
+    get_subgraph_incoming_edges(SubParallelComputationGraph const &,
+                                std::set<parallel_layer_guid_t> const &);
+std::set<ParallelComputationGraphEdge>
+    get_subgraph_outgoing_edges(SubParallelComputationGraph const &,
+                                std::set<parallel_layer_guid_t> const &);
 
-std::unordered_set<parallel_tensor_use_t>
-    get_parallel_tensor_uses(SubParallelComputationGraph const &,
-                             open_parallel_tensor_guid_t const &);
+std::set<parallel_tensor_use_t>
+    get_open_parallel_tensor_uses(SubParallelComputationGraph const &,
+                                  open_parallel_tensor_guid_t const &);
 
 SubParallelComputationGraphData
     get_sub_pcg_data(SubParallelComputationGraph const &);

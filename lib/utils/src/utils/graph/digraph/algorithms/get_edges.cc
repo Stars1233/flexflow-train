@@ -3,7 +3,7 @@
 
 namespace FlexFlow {
 
-std::unordered_set<DirectedEdge> get_edges(DiGraphView const &g) {
+std::set<DirectedEdge> get_edges(DiGraphView const &g) {
   return g.query_edges(directed_edge_query_all());
 }
 

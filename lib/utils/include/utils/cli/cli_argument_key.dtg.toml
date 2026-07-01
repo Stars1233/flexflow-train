@@ -3,6 +3,7 @@ name = "CLIArgumentKey"
 type = "variant"
 features = [
   "eq",
+  "ord",
   "hash",
   "fmt",
 ]

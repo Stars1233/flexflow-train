@@ -1,0 +1,26 @@
+namespace = "FlexFlow"
+name = "DynamicNodeInvocationShardingInfo"
+type = "struct"
+features = [
+  "eq",
+  "ord",
+  "hash",
+  "fmt",
+  "json",
+]
+
+includes = [
+  "task-spec/dynamic_graph/dynamic_tensor_slot.dtg.h",
+  "task-spec/dynamic_graph/dynamic_value_attrs_sharding_info.dtg.h",
+  "utils/nonempty_set/nonempty_set.h",
+  "task-spec/global_device_id_t.dtg.h",
+  "utils/binary_relation/binary_relation.h",
+]
+
+[[fields]]
+name = "device_ids"
+type = "::FlexFlow::nonempty_set<::FlexFlow::global_device_id_t>"
+
+[[fields]]
+name = "value_sharding"
+type = "::FlexFlow::BinaryRelation<::FlexFlow::DynamicTensorSlot, ::FlexFlow::DynamicValueAttrsShardingInfo>"

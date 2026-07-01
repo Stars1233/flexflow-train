@@ -3,20 +3,21 @@ name = "CLISpec"
 type = "struct"
 features = [
   "eq",
+  "ord",
   "hash",
   "fmt",
 ]
 
 includes = [
-  "<unordered_map>",
+  "<map>",
   "utils/cli/cli_flag_spec.dtg.h",
   "utils/cli/cli_positional_argument_spec.dtg.h",
   "<vector>",
 ]
 
 src_includes = [
-  "utils/fmt/unordered_set.h",
-  "utils/hash/unordered_set.h",
+  "utils/fmt/set.h",
+  "utils/hash/set.h",
   "utils/fmt/vector.h",
   "utils/hash/vector.h",
 ]

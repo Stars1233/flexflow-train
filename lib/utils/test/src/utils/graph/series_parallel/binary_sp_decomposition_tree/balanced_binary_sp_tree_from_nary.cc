@@ -1,5 +1,5 @@
 #include "utils/graph/series_parallel/binary_sp_decomposition_tree/balanced_binary_sp_tree_from_nary.h"
-#include "test/utils/doctest/fmt/unordered_multiset.h"
+#include "test/utils/doctest/fmt/multiset.h"
 #include "test/utils/rapidcheck.h"
 #include "utils/containers/contains.h"
 #include "utils/graph/series_parallel/binary_sp_decomposition_tree/binary_sp_decomposition_tree.h"
@@ -65,8 +65,8 @@ TEST_SUITE(FF_TEST_SUITE) {
       nonnegative_int expected_height = 2_n;
       CHECK(result_height == expected_height);
 
-      std::unordered_multiset<Node> result_nodes = get_leaves(result);
-      std::unordered_multiset<Node> expected_nodes = {n1, n2, n3, n4};
+      std::multiset<Node> result_nodes = get_leaves(result);
+      std::multiset<Node> expected_nodes = {n1, n2, n3, n4};
       CHECK(result_nodes == expected_nodes);
     }
 
@@ -82,7 +82,7 @@ TEST_SUITE(FF_TEST_SUITE) {
           make_series_split(make_series_split(make_leaf(n1), make_leaf(n2)),
                             make_series_split(make_leaf(n3), make_leaf(n4)));
 
-      std::unordered_set<BinarySPDecompositionTree> corrects = {
+      std::set<BinarySPDecompositionTree> corrects = {
           make_parallel_split(balanced_series, make_leaf(n5)),
           make_parallel_split(make_leaf(n5), balanced_series)};
 

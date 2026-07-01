@@ -4,26 +4,22 @@
 #include "utils/containers/multiset_union.h"
 #include "utils/full_binary_tree/full_binary_tree_visitor.dtg.h"
 #include "utils/full_binary_tree/visit.h"
-#include <unordered_set>
+#include <set>
 
 namespace FlexFlow {
 
 template <typename Tree, typename Parent, typename Leaf>
-std::unordered_multiset<Leaf>
+std::multiset<Leaf>
     get_leaves(Tree const &tree,
                FullBinaryTreeImplementation<Tree, Parent, Leaf> const &impl) {
 
-  auto visitor =
-      FullBinaryTreeVisitor<std::unordered_multiset<Leaf>, Tree, Parent, Leaf>{
-          [&](Parent const &parent) -> std::unordered_multiset<Leaf> {
-            return multiset_union(
-                get_leaves(impl.get_left_child(parent), impl),
-                get_leaves(impl.get_right_child(parent), impl));
-          },
-          [](Leaf const &leaf) -> std::unordered_multiset<Leaf> {
-            return {leaf};
-          },
-      };
+  auto visitor = FullBinaryTreeVisitor<std::multiset<Leaf>, Tree, Parent, Leaf>{
+      [&](Parent const &parent) -> std::multiset<Leaf> {
+        return multiset_union(get_leaves(impl.get_left_child(parent), impl),
+                              get_leaves(impl.get_right_child(parent), impl));
+      },
+      [](Leaf const &leaf) -> std::multiset<Leaf> { return {leaf}; },
+  };
 
   return visit(tree, impl, visitor);
 }

@@ -12,4 +12,10 @@ DynamicTensorSlot decide_tensor_slot_role(DynamicTensorSlot const &slot,
   return result;
 }
 
+DynamicTensorSlot slot_without_task_shard(DynamicTensorSlot const &s) {
+  DynamicTensorSlot result = s;
+  result.task_shard = std::nullopt;
+  return result;
+}
+
 } // namespace FlexFlow

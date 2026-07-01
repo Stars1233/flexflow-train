@@ -1,6 +1,7 @@
 #include "utils/graph/series_parallel/normalize_sp_decomposition.h"
 #include "utils/containers/filter.h"
 #include "utils/containers/get_only.h"
+#include "utils/containers/multiset_of.h"
 #include "utils/containers/transform.h"
 #include "utils/exception.h"
 #include "utils/graph/series_parallel/non_normal_sp_decomposition.h"
@@ -41,7 +42,7 @@ static SeriesParallelDecomposition
 
 static SeriesParallelDecomposition
     normalize_sp_decomposition(NonNormalParallelSplit const &parallel) {
-  std::unordered_multiset<SeriesParallelDecomposition> normalized_children =
+  std::multiset<SeriesParallelDecomposition> normalized_children =
       transform(filter_empty(parallel.get_children()),
                 [](std::variant<NonNormalSeriesSplit, Node> const &child) {
                   return normalize_sp_decomposition(
@@ -54,7 +55,7 @@ static SeriesParallelDecomposition
   if (normalized_children.size() == 1) {
     return get_only(normalized_children);
   }
-  return parallel_composition(normalized_children);
+  return parallel_composition(multiset_of(normalized_children));
 }
 
 SeriesParallelDecomposition

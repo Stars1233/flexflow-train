@@ -3,7 +3,7 @@
 
 #include "utils/graph/digraph/digraph_view.h"
 #include "utils/graph/series_parallel/series_parallel_decomposition.dtg.h"
-#include <unordered_map>
+#include <map>
 
 namespace FlexFlow {
 

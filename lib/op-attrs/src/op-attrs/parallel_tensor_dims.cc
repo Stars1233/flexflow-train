@@ -24,8 +24,7 @@ FFOrdered<positive_int> ff_ordered_shard_degrees(ParallelTensorDims const &d) {
                    [](ShardParallelDim const &d) { return d.degree; });
 }
 
-std::unordered_set<ReplicaParallelDim>
-    replica_dims(ParallelTensorDims const &d) {
+std::set<ReplicaParallelDim> replica_dims(ParallelTensorDims const &d) {
   return get_replica_dims(d.replica_dims);
 }
 

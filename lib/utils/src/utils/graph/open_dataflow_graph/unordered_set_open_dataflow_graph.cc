@@ -8,11 +8,11 @@ UnorderedSetOpenDataflowGraph::UnorderedSetOpenDataflowGraph() {}
 UnorderedSetOpenDataflowGraph::UnorderedSetOpenDataflowGraph(
     NodeSource const &node_source,
     DataflowGraphInputSource const &input_source,
-    std::unordered_set<Node> const &nodes,
-    std::unordered_set<DataflowEdge> const &standard_edges,
-    std::unordered_set<DataflowInputEdge> const &input_edges,
-    std::unordered_set<DataflowOutput> const &outputs,
-    std::unordered_set<DataflowGraphInput> const &graph_inputs)
+    std::set<Node> const &nodes,
+    std::set<DataflowEdge> const &standard_edges,
+    std::set<DataflowInputEdge> const &input_edges,
+    std::set<DataflowOutput> const &outputs,
+    std::set<DataflowGraphInput> const &graph_inputs)
     : node_source(node_source), input_source(input_source), nodes(nodes),
       standard_edges(standard_edges), input_edges(input_edges),
       outputs(outputs), graph_inputs(graph_inputs) {}
@@ -22,21 +22,21 @@ NodeAddedResult UnorderedSetOpenDataflowGraph::add_node(
   NOT_IMPLEMENTED();
 }
 
-std::unordered_set<Node>
+std::set<Node>
     UnorderedSetOpenDataflowGraph::query_nodes(NodeQuery const &q) const {
   return apply_query(q.nodes, this->nodes);
 }
 
-std::unordered_set<OpenDataflowEdge> UnorderedSetOpenDataflowGraph::query_edges(
+std::set<OpenDataflowEdge> UnorderedSetOpenDataflowGraph::query_edges(
     OpenDataflowEdgeQuery const &q) const {
-  std::unordered_set<DataflowEdge> standard_edges =
+  std::set<DataflowEdge> standard_edges =
       filter(this->standard_edges, [&](DataflowEdge const &e) {
         return includes(q.standard_edge_query.src_nodes, e.src.node) &&
                includes(q.standard_edge_query.dst_nodes, e.dst.node) &&
                includes(q.standard_edge_query.src_idxs, e.src.idx) &&
                includes(q.standard_edge_query.dst_idxs, e.dst.idx);
       });
-  std::unordered_set<DataflowInputEdge> input_edges =
+  std::set<DataflowInputEdge> input_edges =
       filter(this->input_edges, [&](DataflowInputEdge const &e) {
         return includes(q.input_edge_query.srcs, e.src) &&
                includes(q.input_edge_query.dst_nodes, e.dst.node) &&
@@ -50,15 +50,14 @@ std::unordered_set<OpenDataflowEdge> UnorderedSetOpenDataflowGraph::query_edges(
       }));
 }
 
-std::unordered_set<DataflowOutput> UnorderedSetOpenDataflowGraph::query_outputs(
+std::set<DataflowOutput> UnorderedSetOpenDataflowGraph::query_outputs(
     DataflowOutputQuery const &q) const {
   return filter(this->outputs, [&](DataflowOutput const &o) {
     return includes(q.nodes, o.node) && includes(q.output_idxs, o.idx);
   });
 }
 
-std::unordered_set<DataflowGraphInput>
-    UnorderedSetOpenDataflowGraph::get_inputs() const {
+std::set<DataflowGraphInput> UnorderedSetOpenDataflowGraph::get_inputs() const {
   return this->graph_inputs;
 }
 

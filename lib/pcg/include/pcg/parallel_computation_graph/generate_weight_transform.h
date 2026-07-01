@@ -7,7 +7,7 @@
 
 namespace FlexFlow {
 
-std::unordered_set<ParallelOpAttrs>
+std::set<ParallelOpAttrs>
     generate_weight_transform(TensorShape const &current,
                               ParallelTensorShape const &goal);
 

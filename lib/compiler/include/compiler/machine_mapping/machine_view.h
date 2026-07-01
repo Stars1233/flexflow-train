@@ -13,7 +13,7 @@
 #include "utils/bidict/bidict.h"
 #include <cstddef>
 #include <optional>
-#include <unordered_set>
+#include <set>
 
 namespace FlexFlow {
 
@@ -43,7 +43,7 @@ OperatorSpaceToMachineSpaceMapping get_coordinate_mapping_for_machine_view(
     OperatorTaskSpace const &operator_task_space,
     MachineView const &machine_view);
 
-std::unordered_set<MachineSpaceCoordinate>
+std::set<MachineSpaceCoordinate>
     get_machine_space_coordinates(OperatorTaskSpace const &task,
                                   MachineView const &mv);
 
@@ -62,7 +62,7 @@ OperatorAtomicTaskShardBinding
 
 MappedOperatorTaskGroup mapped_operator_task_group_from_machine_view(
     ComputationGraphOpAttrs const &,
-    std::unordered_map<TensorSlotName, ParallelTensorDimDegrees> const &,
+    std::map<TensorSlotName, ParallelTensorDimDegrees> const &,
     MachineView const &);
 
 bidict<ParallelTensorSpaceCoordinate, MachineSpaceCoordinate>

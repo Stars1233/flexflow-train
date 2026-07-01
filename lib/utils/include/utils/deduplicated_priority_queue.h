@@ -4,15 +4,13 @@
 #include "utils/containers/contains.h"
 #include <queue>
 #include <set>
-#include <unordered_set>
 #include <vector>
 
 namespace FlexFlow {
 
 template <typename Elem,
           typename Container = std::vector<Elem>,
-          typename Compare = std::less<typename Container::value_type>,
-          typename Hash = std::hash<Elem>>
+          typename Compare = std::less<typename Container::value_type>>
 class DeduplicatedPriorityQueue {
 public:
   Elem const &top() const {
@@ -28,14 +26,14 @@ public:
   }
 
   void push(Elem const &e) {
-    if (!contains(hashmap, e)) {
+    if (!contains(seen, e)) {
       impl.push(e);
-      hashmap.insert(e);
+      seen.insert(e);
     }
   }
 
   void pop() {
-    hashmap.erase(impl.top());
+    seen.erase(impl.top());
     impl.pop();
   }
 
@@ -51,7 +49,7 @@ public:
 
 private:
   std::priority_queue<Elem, Container, Compare> impl;
-  std::unordered_set<Elem, Hash> hashmap;
+  std::set<Elem, Compare> seen;
 };
 
 } // namespace FlexFlow

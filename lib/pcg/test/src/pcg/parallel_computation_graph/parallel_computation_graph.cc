@@ -94,9 +94,9 @@ TEST_SUITE(FF_TEST_SUITE) {
       ParallelLayerAddedResult input_added =
           pcg_add_input_layer(pcg, input_shape);
 
-      std::unordered_map<TensorSlotName, parallel_tensor_guid_t> result =
+      std::map<TensorSlotName, parallel_tensor_guid_t> result =
           get_incoming_inputs(pcg, input_added.parallel_layer);
-      std::unordered_map<TensorSlotName, parallel_tensor_guid_t> correct = {};
+      std::map<TensorSlotName, parallel_tensor_guid_t> correct = {};
 
       CHECK(result == correct);
     }
@@ -161,9 +161,9 @@ TEST_SUITE(FF_TEST_SUITE) {
               },
           });
 
-      std::unordered_map<TensorSlotName, parallel_tensor_guid_t> result =
+      std::map<TensorSlotName, parallel_tensor_guid_t> result =
           get_incoming_inputs(pcg, linear_added.parallel_layer);
-      std::unordered_map<TensorSlotName, parallel_tensor_guid_t> correct = {
+      std::map<TensorSlotName, parallel_tensor_guid_t> correct = {
           {
               TensorSlotName::INPUT,
               t_input,
@@ -294,9 +294,9 @@ TEST_SUITE(FF_TEST_SUITE) {
       ParallelLayerAddedResult input_added =
           pcg_add_input_layer(pcg, input_shape);
 
-      std::unordered_map<TensorSlotName, parallel_tensor_guid_t> result =
+      std::map<TensorSlotName, parallel_tensor_guid_t> result =
           get_incoming_weights(pcg, input_added.parallel_layer);
-      std::unordered_map<TensorSlotName, parallel_tensor_guid_t> correct = {};
+      std::map<TensorSlotName, parallel_tensor_guid_t> correct = {};
 
       CHECK(result == correct);
     }
@@ -319,9 +319,9 @@ TEST_SUITE(FF_TEST_SUITE) {
           },
           /*weights=*/{});
 
-      std::unordered_map<TensorSlotName, parallel_tensor_guid_t> result =
+      std::map<TensorSlotName, parallel_tensor_guid_t> result =
           get_incoming_weights(pcg, relu_added.parallel_layer);
-      std::unordered_map<TensorSlotName, parallel_tensor_guid_t> correct = {};
+      std::map<TensorSlotName, parallel_tensor_guid_t> correct = {};
 
       CHECK(result == correct);
     }
@@ -413,9 +413,9 @@ TEST_SUITE(FF_TEST_SUITE) {
               },
           });
 
-      std::unordered_map<TensorSlotName, parallel_tensor_guid_t> result =
+      std::map<TensorSlotName, parallel_tensor_guid_t> result =
           get_incoming_weights(pcg, linear_added.parallel_layer);
-      std::unordered_map<TensorSlotName, parallel_tensor_guid_t> correct = {
+      std::map<TensorSlotName, parallel_tensor_guid_t> correct = {
           {TensorSlotName::WEIGHT, t_replicated_projection_weight},
       };
 
@@ -453,7 +453,7 @@ TEST_SUITE(FF_TEST_SUITE) {
                          /*inputs=*/{},
                          /*weights=*/{},
                          /*output_labels=*/
-                         std::unordered_map<TensorSlotName, CreateGrad>{
+                         std::map<TensorSlotName, CreateGrad>{
                              {
                                  TensorSlotName::OUTPUT,
                                  CreateGrad::NO,
@@ -562,9 +562,10 @@ TEST_SUITE(FF_TEST_SUITE) {
       DimDomain<operator_task_space_dim_idx_t> layer_2_task_space =
           layer_1_task_space;
 
-      auto make_coord = [](nonnegative_int x) {
+      auto make_coord =
+          [](nonnegative_int x) -> DimCoord<operator_task_space_dim_idx_t> {
         return DimCoord{
-            std::unordered_map<operator_task_space_dim_idx_t, nonnegative_int>{
+            std::map<operator_task_space_dim_idx_t, nonnegative_int>{
                 {operator_task_space_dim_idx_t{0_n}, x},
             },
         };
@@ -663,7 +664,7 @@ TEST_SUITE(FF_TEST_SUITE) {
 
       auto make_coord = [](nonnegative_int x) {
         return DimCoord{
-            std::unordered_map<operator_task_space_dim_idx_t, nonnegative_int>{
+            std::map<operator_task_space_dim_idx_t, nonnegative_int>{
                 {operator_task_space_dim_idx_t{0_n}, x},
             },
         };

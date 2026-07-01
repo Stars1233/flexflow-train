@@ -2,7 +2,7 @@
 #include "utils/containers/generate_map.h"
 #include "utils/graph/digraph/algorithms/get_successors.h"
 #include "utils/graph/node/algorithms.h"
-#include <unordered_map>
+#include <map>
 
 namespace FlexFlow {
 
@@ -10,7 +10,7 @@ enum class ExplorationStatus { NOT_EXPLORED, BEING_EXPLORED, FULLY_EXPLORED };
 
 bool is_acyclic(DiGraphView const &g) {
 
-  std::unordered_map<Node, ExplorationStatus> status =
+  std::map<Node, ExplorationStatus> status =
       generate_map(get_nodes(g), [](Node const &n) {
         return ExplorationStatus::NOT_EXPLORED;
       });

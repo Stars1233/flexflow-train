@@ -3,8 +3,8 @@
 #include "utils/containers/contains_key.h"
 #include "utils/containers/get_only.h"
 #include "utils/containers/require_same.h"
+#include "utils/containers/set_of.h"
 #include "utils/containers/slice.h"
-#include "utils/containers/unordered_set_of.h"
 #include "utils/containers/values.h"
 #include "utils/graph/digraph/algorithms/get_predecessors.h"
 #include "utils/graph/digraph/algorithms/get_topological_ordering.h"
@@ -16,8 +16,8 @@
 #include "utils/graph/multidigraph/multidigraph_view.h"
 #include "utils/graph/node/algorithms.h"
 #include "utils/graph/series_parallel/extended_series_reduction.dtg.h"
-#include "utils/hash/unordered_set.h"
-#include <unordered_set>
+#include "utils/hash/set.h"
+#include <set>
 
 namespace FlexFlow {
 
@@ -51,14 +51,14 @@ std::optional<SeriesReduction>
   return std::nullopt;
 }
 
-std::unordered_set<ExtendedSeriesReduction>
+std::set<ExtendedSeriesReduction>
     find_all_extended_series_reductions(MultiDiGraphView const &g) {
 
   auto incoming_edges_map = get_incoming_edges(g, get_nodes(g));
   auto outgoing_edges_map = get_outgoing_edges(g, get_nodes(g));
 
-  std::unordered_map<Node, std::vector<MultiDiEdge>> strands;
-  std::unordered_map<Node, Node> node_to_head_of_strand;
+  std::map<Node, std::vector<MultiDiEdge>> strands;
+  std::map<Node, Node> node_to_head_of_strand;
 
   for (Node const &n : get_topological_ordering(g)) {
     if ((incoming_edges_map.at(n).size() == 1) &&
@@ -81,7 +81,7 @@ std::unordered_set<ExtendedSeriesReduction>
     }
   }
 
-  return transform(unordered_set_of(values(strands)), [&](auto const &edges) {
+  return transform(set_of(values(strands)), [&](auto const &edges) {
     return ExtendedSeriesReduction{edges};
   });
 }

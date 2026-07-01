@@ -7,7 +7,7 @@ using namespace ::FlexFlow;
 TEST_SUITE(FF_TEST_SUITE) {
   TEST_CASE("require_two_keys") {
     SUBCASE("input is too small") {
-      std::unordered_map<int, std::string> m = {
+      std::map<int, std::string> m = {
           {2, "a"},
       };
 
@@ -15,7 +15,7 @@ TEST_SUITE(FF_TEST_SUITE) {
     }
 
     SUBCASE("input is too large") {
-      std::unordered_map<int, std::string> m = {
+      std::map<int, std::string> m = {
           {2, "a"},
           {3, "b"},
           {4, "c"},
@@ -25,7 +25,7 @@ TEST_SUITE(FF_TEST_SUITE) {
     }
 
     SUBCASE("input is correct size, but keys don't match") {
-      std::unordered_map<int, std::string> m = {
+      std::map<int, std::string> m = {
           {2, "a"},
           {4, "c"},
       };
@@ -34,7 +34,7 @@ TEST_SUITE(FF_TEST_SUITE) {
     }
 
     SUBCASE("input is correct size and both keys are the same") {
-      std::unordered_map<int, std::string> m = {
+      std::map<int, std::string> m = {
           {2, "a"},
           {3, "b"},
       };
@@ -43,7 +43,7 @@ TEST_SUITE(FF_TEST_SUITE) {
     }
 
     SUBCASE("input is correct size and keys match") {
-      std::unordered_map<int, std::string> m = {
+      std::map<int, std::string> m = {
           {2, "a"},
           {4, "c"},
       };

@@ -8,7 +8,7 @@
 namespace FlexFlow {
 
 template <typename SlotName>
-std::unordered_map<SlotName, KwargDataflowOutput<SlotName>>
+std::map<SlotName, KwargDataflowOutput<SlotName>>
     get_incoming_kwarg_dataflow_outputs_for_node(
         KwargDataflowGraphView<SlotName> const &g, Node const &n) {
   return map_values(get_incoming_kwarg_dataflow_edges_for_node(g, n),

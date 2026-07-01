@@ -4,7 +4,7 @@
 #include "utils/cli/cli_argument_key.dtg.h"
 #include "utils/cli/cli_flag_spec.dtg.h"
 #include "utils/cli/cli_spec.dtg.h"
-#include <unordered_set>
+#include <set>
 
 namespace FlexFlow {
 

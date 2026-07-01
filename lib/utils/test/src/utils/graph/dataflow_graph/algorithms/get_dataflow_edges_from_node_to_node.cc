@@ -19,9 +19,9 @@ TEST_SUITE(FF_TEST_SUITE) {
       NodeAddedResult n2_added = g.add_node({n1_o0, n1_o0, n1_o1}, 0_n);
       Node n2 = n2_added.node;
 
-      std::unordered_set<DataflowEdge> result =
+      std::set<DataflowEdge> result =
           get_dataflow_edges_from_node_to_node(g, n1, n2);
-      std::unordered_set<DataflowEdge> correct = {
+      std::set<DataflowEdge> correct = {
           DataflowEdge{
               n1_o0,
               DataflowInput{n2, 0_n},
@@ -52,9 +52,9 @@ TEST_SUITE(FF_TEST_SUITE) {
       Node n3 = n3_added.node;
       DataflowOutput o3 = get_only(n3_added.outputs);
 
-      std::unordered_set<DataflowEdge> result =
+      std::set<DataflowEdge> result =
           get_dataflow_edges_from_node_to_node(g, n1, n3);
-      std::unordered_set<DataflowEdge> correct = {};
+      std::set<DataflowEdge> correct = {};
 
       CHECK(result == correct);
     }
@@ -68,9 +68,9 @@ TEST_SUITE(FF_TEST_SUITE) {
       NodeAddedResult n2_added = g.add_node({o1}, 0_n);
       Node n2 = n2_added.node;
 
-      std::unordered_set<DataflowEdge> result =
+      std::set<DataflowEdge> result =
           get_dataflow_edges_from_node_to_node(g, n2, n1);
-      std::unordered_set<DataflowEdge> correct = {};
+      std::set<DataflowEdge> correct = {};
 
       CHECK(result == correct);
     }
@@ -82,9 +82,9 @@ TEST_SUITE(FF_TEST_SUITE) {
       NodeAddedResult n2_added = g.add_node({}, 1_n);
       Node n2 = n2_added.node;
 
-      std::unordered_set<DataflowEdge> result =
+      std::set<DataflowEdge> result =
           get_dataflow_edges_from_node_to_node(g, n1, n2);
-      std::unordered_set<DataflowEdge> correct = {};
+      std::set<DataflowEdge> correct = {};
 
       CHECK(result == correct);
     }
@@ -94,9 +94,9 @@ TEST_SUITE(FF_TEST_SUITE) {
       NodeAddedResult n1_added = g.add_node({}, 1_n);
       Node n1 = n1_added.node;
 
-      std::unordered_set<DataflowEdge> result =
+      std::set<DataflowEdge> result =
           get_dataflow_edges_from_node_to_node(g, n1, n1);
-      std::unordered_set<DataflowEdge> correct = {};
+      std::set<DataflowEdge> correct = {};
 
       CHECK(result == correct);
     }

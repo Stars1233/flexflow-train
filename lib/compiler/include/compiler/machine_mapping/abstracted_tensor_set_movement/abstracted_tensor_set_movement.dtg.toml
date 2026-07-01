@@ -3,21 +3,22 @@ name = "AbstractedTensorSetMovement"
 type = "struct"
 features = [
   "eq",
+  "ord",
   "hash",
   "fmt",
   "json",
 ]
 
 includes = [
-  "<unordered_set>",
+  "<set>",
   "compiler/machine_mapping/abstracted_tensor_set_movement/abstracted_single_tensor_movement.dtg.h",
 ]
 
 src_includes = [
-  "utils/fmt/unordered_set.h",
-  "utils/hash/unordered_set.h",
+  "utils/fmt/set.h",
+  "utils/hash/set.h",
 ]
 
 [[fields]]
 name = "single_tensor_movements"
-type = "std::unordered_set<::FlexFlow::AbstractedSingleTensorMovement>"
+type = "std::set<::FlexFlow::AbstractedSingleTensorMovement>"

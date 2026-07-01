@@ -41,10 +41,10 @@ parallel_tensor_guid_t
 parallel_tensor_guid_t add_single_output_layer(
     ParallelComputationGraph &pcg,
     ParallelLayerAttrs const &layer_attrs,
-    std::unordered_map<TensorSlotName, parallel_tensor_guid_t> const &inputs,
-    std::unordered_map<TensorSlotName, parallel_tensor_guid_t> const &weights,
-    std::optional<std::unordered_map<TensorSlotName, CreateGrad>> const
-        &outputs = std::nullopt) {
+    std::map<TensorSlotName, parallel_tensor_guid_t> const &inputs,
+    std::map<TensorSlotName, parallel_tensor_guid_t> const &weights,
+    std::optional<std::map<TensorSlotName, CreateGrad>> const &outputs =
+        std::nullopt) {
 
   return get_single_output(
       add_parallel_layer(pcg, layer_attrs, inputs, weights, outputs));
@@ -141,7 +141,7 @@ parallel_tensor_guid_t add_linear_layer(
 
   ASSERT(t_bias.has_value() == linear_attrs.use_bias);
 
-  std::unordered_map<TensorSlotName, parallel_tensor_guid_t> weights = {
+  std::map<TensorSlotName, parallel_tensor_guid_t> weights = {
       {TensorSlotName::WEIGHT, t_weight},
   };
 
@@ -184,7 +184,7 @@ parallel_tensor_guid_t add_conv2d_layer(
 
   ASSERT(bias.has_value() == conv2d_attrs.use_bias);
 
-  std::unordered_map<TensorSlotName, parallel_tensor_guid_t> weights = {
+  std::map<TensorSlotName, parallel_tensor_guid_t> weights = {
       {TensorSlotName::FILTER, t_filter},
   };
 
@@ -282,7 +282,7 @@ TEST_SUITE(FF_TEST_SUITE) {
           bidict<PatternNode, parallel_layer_guid_t>{
               {PatternNode{Node{0}}, match_layer},
           },
-          std::unordered_map<PatternInput, open_parallel_tensor_guid_t>{
+          std::map<PatternInput, open_parallel_tensor_guid_t>{
               {
                   PatternInput{KwargDataflowGraphInput{0}},
                   match_layer_input_activations,
@@ -390,7 +390,7 @@ TEST_SUITE(FF_TEST_SUITE) {
           bidict<PatternNode, parallel_layer_guid_t>{
               {PatternNode{Node{0}}, match_layer},
           },
-          std::unordered_map<PatternInput, open_parallel_tensor_guid_t>{
+          std::map<PatternInput, open_parallel_tensor_guid_t>{
               {
                   PatternInput{KwargDataflowGraphInput{0}},
                   match_layer_input_activations,
@@ -502,7 +502,7 @@ TEST_SUITE(FF_TEST_SUITE) {
           bidict<PatternNode, parallel_layer_guid_t>{
               {PatternNode{Node{0}}, match_layer},
           },
-          std::unordered_map<PatternInput, open_parallel_tensor_guid_t>{
+          std::map<PatternInput, open_parallel_tensor_guid_t>{
               {
                   PatternInput{KwargDataflowGraphInput{0}},
                   match_layer_input_activations,
@@ -612,7 +612,7 @@ TEST_SUITE(FF_TEST_SUITE) {
           bidict<PatternNode, parallel_layer_guid_t>{
               {PatternNode{Node{0}}, match_layer},
           },
-          std::unordered_map<PatternInput, open_parallel_tensor_guid_t>{
+          std::map<PatternInput, open_parallel_tensor_guid_t>{
               {
                   PatternInput{KwargDataflowGraphInput{0}},
                   match_layer_input_activations,
@@ -737,7 +737,7 @@ TEST_SUITE(FF_TEST_SUITE) {
           bidict<PatternNode, parallel_layer_guid_t>{
               {PatternNode{Node{0}}, match_layer},
           },
-          std::unordered_map<PatternInput, open_parallel_tensor_guid_t>{
+          std::map<PatternInput, open_parallel_tensor_guid_t>{
               {
                   PatternInput{KwargDataflowGraphInput{0}},
                   match_layer_input_activations,
@@ -853,7 +853,7 @@ TEST_SUITE(FF_TEST_SUITE) {
           bidict<PatternNode, parallel_layer_guid_t>{
               {PatternNode{Node{0}}, match_layer},
           },
-          std::unordered_map<PatternInput, open_parallel_tensor_guid_t>{
+          std::map<PatternInput, open_parallel_tensor_guid_t>{
               {
                   PatternInput{KwargDataflowGraphInput{0}},
                   match_layer_query,
@@ -974,7 +974,7 @@ TEST_SUITE(FF_TEST_SUITE) {
           bidict<PatternNode, parallel_layer_guid_t>{
               {PatternNode{Node{0}}, match_layer},
           },
-          std::unordered_map<PatternInput, open_parallel_tensor_guid_t>{
+          std::map<PatternInput, open_parallel_tensor_guid_t>{
               {
                   PatternInput{KwargDataflowGraphInput{0}},
                   match_layer_query,
@@ -1069,7 +1069,7 @@ TEST_SUITE(FF_TEST_SUITE) {
           bidict<PatternNode, parallel_layer_guid_t>{
               {PatternNode{Node{0}}, match_layer},
           },
-          std::unordered_map<PatternInput, open_parallel_tensor_guid_t>{{
+          std::map<PatternInput, open_parallel_tensor_guid_t>{{
               PatternInput{KwargDataflowGraphInput{0}},
               match_layer_input,
           }},
@@ -1158,7 +1158,7 @@ TEST_SUITE(FF_TEST_SUITE) {
           bidict<PatternNode, parallel_layer_guid_t>{
               {PatternNode{Node{0}}, match_layer},
           },
-          std::unordered_map<PatternInput, open_parallel_tensor_guid_t>{
+          std::map<PatternInput, open_parallel_tensor_guid_t>{
               {
                   PatternInput{KwargDataflowGraphInput{0}},
                   add_match_layer_lhs,
@@ -1245,7 +1245,7 @@ TEST_SUITE(FF_TEST_SUITE) {
           bidict<PatternNode, parallel_layer_guid_t>{
               {PatternNode{Node{0}}, match_layer},
           },
-          std::unordered_map<PatternInput, open_parallel_tensor_guid_t>{{
+          std::map<PatternInput, open_parallel_tensor_guid_t>{{
               PatternInput{KwargDataflowGraphInput{0}},
               match_layer_input,
           }},
@@ -1324,7 +1324,7 @@ TEST_SUITE(FF_TEST_SUITE) {
               {PatternNode{Node{0}}, mm_match_layer},
               {PatternNode{Node{1}}, relu_match_layer},
           },
-          std::unordered_map<PatternInput, open_parallel_tensor_guid_t>{
+          std::map<PatternInput, open_parallel_tensor_guid_t>{
               {
                   PatternInput{KwargDataflowGraphInput{0}},
                   mm_match_layer_input_activations,

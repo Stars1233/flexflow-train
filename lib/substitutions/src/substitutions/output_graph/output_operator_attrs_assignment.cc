@@ -14,11 +14,10 @@ OutputOperatorAttrsAssignment output_operator_clone_node(PatternNode const &) {
 
 PCGOperatorAttrs materialize_output_operator_from_attrs_assignment(
     OutputOperatorAttrsAssignment const &attrs_assignment,
-    std::unordered_map<PatternNode, PCGOperatorAttrs> const &node_match) {
+    std::map<PatternNode, PCGOperatorAttrs> const &node_match) {
 
-  std::unordered_map<OperatorAttributeKey, OperatorAttributeValue>
-      template_attrs_map = [&]()
-      -> std::unordered_map<OperatorAttributeKey, OperatorAttributeValue> {
+  std::map<OperatorAttributeKey, OperatorAttributeValue> template_attrs_map =
+      [&]() -> std::map<OperatorAttributeKey, OperatorAttributeValue> {
     if (attrs_assignment.template_operator.has_value()) {
       PatternNode template_node = attrs_assignment.template_operator.value();
       PCGOperatorAttrs template_op_attrs = node_match.at(template_node);
@@ -28,16 +27,16 @@ PCGOperatorAttrs materialize_output_operator_from_attrs_assignment(
     }
   }();
 
-  std::unordered_map<OperatorAttributeKey, OperatorAttributeValue>
-      assignments_attrs_map = map_values(
-          attrs_assignment.assignments,
-          [&](OutputOperatorAttributeExpr const &expr) {
-            return evaluate_output_operator_attribute_expr(expr, node_match);
-          });
+  std::map<OperatorAttributeKey, OperatorAttributeValue> assignments_attrs_map =
+      map_values(attrs_assignment.assignments,
+                 [&](OutputOperatorAttributeExpr const &expr) {
+                   return evaluate_output_operator_attribute_expr(expr,
+                                                                  node_match);
+                 });
 
-  std::unordered_map<OperatorAttributeKey, OperatorAttributeValue>
-      joined_attrs_map = binary_merge_maps_with_right_dominating(
-          template_attrs_map, assignments_attrs_map);
+  std::map<OperatorAttributeKey, OperatorAttributeValue> joined_attrs_map =
+      binary_merge_maps_with_right_dominating(template_attrs_map,
+                                              assignments_attrs_map);
 
   return materialize_operator_from_attrs_map(joined_attrs_map);
 }

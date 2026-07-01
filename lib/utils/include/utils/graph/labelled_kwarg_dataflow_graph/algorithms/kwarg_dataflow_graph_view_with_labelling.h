@@ -14,22 +14,21 @@ public:
   KwargDataflowGraphLabellingWrapper() = delete;
   KwargDataflowGraphLabellingWrapper(
       KwargDataflowGraphView<SlotName> const &unlabelled,
-      std::unordered_map<Node, NodeLabel> const &node_labels,
-      std::unordered_map<KwargDataflowOutput<SlotName>, OutputLabel> const
-          &output_labels)
+      std::map<Node, NodeLabel> const &node_labels,
+      std::map<KwargDataflowOutput<SlotName>, OutputLabel> const &output_labels)
       : unlabelled(unlabelled), node_labels(node_labels),
         output_labels(output_labels) {}
 
-  std::unordered_set<Node> query_nodes(NodeQuery const &q) const override {
+  std::set<Node> query_nodes(NodeQuery const &q) const override {
     return this->unlabelled.query_nodes(q);
   }
 
-  std::unordered_set<KwargDataflowEdge<SlotName>>
+  std::set<KwargDataflowEdge<SlotName>>
       query_edges(KwargDataflowEdgeQuery<SlotName> const &q) const override {
     return this->unlabelled.query_edges(q);
   }
 
-  std::unordered_set<KwargDataflowOutput<SlotName>> query_outputs(
+  std::set<KwargDataflowOutput<SlotName>> query_outputs(
       KwargDataflowOutputQuery<SlotName> const &q) const override {
     return this->unlabelled.query_outputs(q);
   }
@@ -52,16 +51,16 @@ public:
 
 private:
   KwargDataflowGraphView<SlotName> unlabelled;
-  std::unordered_map<Node, NodeLabel> node_labels;
-  std::unordered_map<KwargDataflowOutput<SlotName>, OutputLabel> output_labels;
+  std::map<Node, NodeLabel> node_labels;
+  std::map<KwargDataflowOutput<SlotName>, OutputLabel> output_labels;
 };
 
 template <typename NodeLabel, typename OutputLabel, typename SlotName>
 LabelledKwargDataflowGraphView<NodeLabel, OutputLabel, SlotName>
     kwarg_dataflow_graph_view_with_labelling(
         KwargDataflowGraphView<SlotName> const &g,
-        std::unordered_map<Node, NodeLabel> const &node_labels,
-        std::unordered_map<KwargDataflowOutput<SlotName>, OutputLabel> const
+        std::map<Node, NodeLabel> const &node_labels,
+        std::map<KwargDataflowOutput<SlotName>, OutputLabel> const
             &value_labels) {
   return LabelledKwargDataflowGraphView<NodeLabel, OutputLabel, SlotName>::
       template create<

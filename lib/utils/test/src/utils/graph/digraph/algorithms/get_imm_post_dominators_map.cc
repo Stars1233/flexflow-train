@@ -1,5 +1,4 @@
 #include "utils/graph/digraph/algorithms/get_imm_post_dominators_map.h"
-#include "utils/containers/generate_map.h"
 #include "utils/graph/algorithms.h"
 #include "utils/graph/instances/adjacency_digraph.h"
 #include <doctest/doctest.h>
@@ -13,10 +12,10 @@ TEST_SUITE(FF_TEST_SUITE) {
     SUBCASE("single-node graph") {
       std::vector<Node> n = add_nodes(g, 1);
 
-      std::unordered_map<Node, std::optional<Node>> result =
+      std::map<Node, std::optional<Node>> result =
           get_imm_post_dominators_map(g);
 
-      std::unordered_map<Node, std::optional<Node>> correct = {
+      std::map<Node, std::optional<Node>> correct = {
           {n.at(0), std::nullopt},
       };
 
@@ -28,10 +27,10 @@ TEST_SUITE(FF_TEST_SUITE) {
 
       g.add_edge(DirectedEdge{n.at(0), n.at(1)});
 
-      std::unordered_map<Node, std::optional<Node>> result =
+      std::map<Node, std::optional<Node>> result =
           get_imm_post_dominators_map(g);
 
-      std::unordered_map<Node, std::optional<Node>> correct = {
+      std::map<Node, std::optional<Node>> correct = {
           {n.at(0), {n.at(1)}},
           {n.at(1), std::nullopt},
       };
@@ -58,9 +57,9 @@ TEST_SUITE(FF_TEST_SUITE) {
                     DirectedEdge{n.at(8), n.at(9)},
                 });
 
-      std::unordered_map<Node, std::optional<Node>> result =
+      std::map<Node, std::optional<Node>> result =
           get_imm_post_dominators_map(g);
-      std::unordered_map<Node, std::optional<Node>> correct = {
+      std::map<Node, std::optional<Node>> correct = {
           {n.at(0), n.at(9)},
           {n.at(1), n.at(7)},
           {n.at(2), n.at(8)},
@@ -93,7 +92,7 @@ TEST_SUITE(FF_TEST_SUITE) {
                     DirectedEdge{n.at(4), n.at(1)},
                 });
 
-      std::unordered_map<Node, std::optional<Node>> correct = {
+      std::map<Node, std::optional<Node>> correct = {
           {n.at(0), n.at(1)},
           {n.at(1), n.at(5)},
           {n.at(2), n.at(4)},
@@ -102,7 +101,7 @@ TEST_SUITE(FF_TEST_SUITE) {
           {n.at(5), std::nullopt},
       };
 
-      std::unordered_map<Node, std::optional<Node>> result =
+      std::map<Node, std::optional<Node>> result =
           get_imm_post_dominators_map(g);
 
       CHECK(result == correct);

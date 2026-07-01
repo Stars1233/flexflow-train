@@ -12,9 +12,9 @@ template <typename SlotName>
 KwargDataflowGraphData<SlotName>
     get_kwarg_dataflow_graph_data(KwargDataflowGraphView<SlotName> const &g) {
   return KwargDataflowGraphData<SlotName>{
-      /*nodes=*/get_nodes(g),
-      /*edges=*/get_all_kwarg_dataflow_edges(g),
-      /*outputs=*/get_all_kwarg_dataflow_outputs(g),
+      /*nodes=*/set_of(get_nodes(g)),
+      /*edges=*/set_of(get_all_kwarg_dataflow_edges(g)),
+      /*outputs=*/set_of(get_all_kwarg_dataflow_outputs(g)),
   };
 }
 

@@ -26,8 +26,8 @@ TEST_SUITE(FF_TEST_SUITE) {
 
     SUBCASE("query_nodes") {
       SUBCASE("query_all") {
-        std::unordered_set<Node> result = g.query_nodes(node_query_all());
-        std::unordered_set<Node> correct = std::unordered_set<Node>{
+        std::set<Node> result = g.query_nodes(node_query_all());
+        std::set<Node> correct = std::set<Node>{
             n.at(0),
             n.at(1),
             n.at(2),
@@ -43,8 +43,8 @@ TEST_SUITE(FF_TEST_SUITE) {
             query_set<Node>::match_values_in(std::set{n.at(0), n.at(2)}),
         };
 
-        std::unordered_set<Node> result = g.query_nodes(query);
-        std::unordered_set<Node> correct = std::unordered_set<Node>{
+        std::set<Node> result = g.query_nodes(query);
+        std::set<Node> correct = std::set<Node>{
             n.at(0),
             n.at(2),
         };
@@ -55,10 +55,10 @@ TEST_SUITE(FF_TEST_SUITE) {
 
     SUBCASE("query_edges") {
       SUBCASE("query_all") {
-        std::unordered_set<UndirectedEdge> result =
+        std::set<UndirectedEdge> result =
             g.query_edges(undirected_edge_query_all());
 
-        std::unordered_set<UndirectedEdge> correct = {
+        std::set<UndirectedEdge> correct = {
             e.at(0),
             e.at(1),
             e.at(2),
@@ -74,11 +74,10 @@ TEST_SUITE(FF_TEST_SUITE) {
             query_set<Node>::match_values_in(std::set{n.at(0), n.at(1)}),
         };
 
-        std::unordered_set<UndirectedEdge> result = g.query_edges(query);
-        std::unordered_set<UndirectedEdge> correct =
-            std::unordered_set<UndirectedEdge>{
-                e.at(0),
-            };
+        std::set<UndirectedEdge> result = g.query_edges(query);
+        std::set<UndirectedEdge> correct = std::set<UndirectedEdge>{
+            e.at(0),
+        };
 
         CHECK(result == correct);
       }
@@ -88,35 +87,33 @@ TEST_SUITE(FF_TEST_SUITE) {
       g.remove_node_unsafe(n.at(0));
 
       CHECK(g.query_nodes(node_query_all()) ==
-            std::unordered_set<Node>{n.at(1), n.at(2), n.at(3), n.at(4)});
+            std::set<Node>{n.at(1), n.at(2), n.at(3), n.at(4)});
 
       // removing a node also removes its adjacent edges
       CHECK(g.query_edges(undirected_edge_query_all()) ==
-            std::unordered_set<UndirectedEdge>{e.at(2), e.at(3), e.at(4)});
+            std::set<UndirectedEdge>{e.at(2), e.at(3), e.at(4)});
 
       g.remove_node_unsafe(n.at(1));
 
       CHECK(g.query_nodes(node_query_all()) ==
-            std::unordered_set<Node>{n.at(2), n.at(3), n.at(4)});
+            std::set<Node>{n.at(2), n.at(3), n.at(4)});
 
       CHECK(g.query_edges(undirected_edge_query_all()) ==
-            std::unordered_set<UndirectedEdge>{e.at(3)});
+            std::set<UndirectedEdge>{e.at(3)});
     }
 
     SUBCASE("remove_edge") {
       g.remove_edge(e.at(0));
 
       CHECK(g.query_edges(undirected_edge_query_all()) ==
-            std::unordered_set<UndirectedEdge>{
-                e.at(1), e.at(2), e.at(3), e.at(4)});
+            std::set<UndirectedEdge>{e.at(1), e.at(2), e.at(3), e.at(4)});
       CHECK(g.query_nodes(node_query_all()) ==
-            std::unordered_set<Node>{
-                n.at(0), n.at(1), n.at(2), n.at(3), n.at(4)});
+            std::set<Node>{n.at(0), n.at(1), n.at(2), n.at(3), n.at(4)});
 
       g.remove_edge(e.at(1));
       g.remove_edge(e.at(3));
       CHECK(g.query_edges(undirected_edge_query_all()) ==
-            std::unordered_set<UndirectedEdge>{e.at(2), e.at(4)});
+            std::set<UndirectedEdge>{e.at(2), e.at(4)});
     }
   }
 }

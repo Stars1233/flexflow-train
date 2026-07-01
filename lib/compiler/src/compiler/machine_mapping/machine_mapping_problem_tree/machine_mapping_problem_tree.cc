@@ -75,12 +75,12 @@ SPDecompositionTreeNodeType
   });
 }
 
-std::unordered_multiset<UnmappedRuntimeOnlyOpCostEstimateKey>
+std::multiset<UnmappedRuntimeOnlyOpCostEstimateKey>
     get_leaves(MachineMappingProblemTree const &tree) {
   return get_leaves(tree, generic_binary_sp_impl_for_mm_problem_tree());
 }
 
-std::unordered_set<BinaryTreePath>
+std::set<BinaryTreePath>
     get_all_leaf_paths(MachineMappingProblemTree const &tree) {
   return get_all_leaf_paths(tree, generic_binary_sp_impl_for_mm_problem_tree());
 }
@@ -92,7 +92,7 @@ std::optional<MachineMappingProblemTree>
       tree, generic_binary_sp_impl_for_mm_problem_tree(), path);
 }
 
-std::unordered_map<BinaryTreePath, UnmappedRuntimeOnlyOpCostEstimateKey>
+std::map<BinaryTreePath, UnmappedRuntimeOnlyOpCostEstimateKey>
     mm_problem_tree_get_path_to_leaf_map(
         MachineMappingProblemTree const &tree) {
   return get_path_to_leaf_map(tree,
@@ -119,7 +119,7 @@ std::string as_dot(MachineMappingProblemTree const &tree) {
     };
 
     auto path_set_as_dot =
-        [&](std::unordered_set<BinaryTreePath> const &path_set) -> std::string {
+        [&](std::set<BinaryTreePath> const &path_set) -> std::string {
       return "(" + join_strings(path_set, ", ", path_as_dot) + ")";
     };
 

@@ -6,7 +6,7 @@ namespace FlexFlow {
 
 OperatorAttributeValue evaluate_output_operator_attribute_expr(
     OutputOperatorAttributeExpr const &expr,
-    std::unordered_map<PatternNode, PCGOperatorAttrs> const &node_match) {
+    std::map<PatternNode, PCGOperatorAttrs> const &node_match) {
   return expr.visit<OperatorAttributeValue>(overload{
       [&](OutputOperatorAttrAccess const &a) {
         return evaluate_attribute_expr(a.attr_expr, node_match.at(a.node))

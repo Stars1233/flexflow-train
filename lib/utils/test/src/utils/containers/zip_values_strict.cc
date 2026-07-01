@@ -1,5 +1,5 @@
 #include "utils/containers/zip_values_strict.h"
-#include "test/utils/doctest/fmt/unordered_map.h"
+#include "test/utils/doctest/fmt/map.h"
 #include <doctest/doctest.h>
 #include <string>
 
@@ -8,18 +8,18 @@ using namespace ::FlexFlow;
 TEST_SUITE(FF_TEST_SUITE) {
   TEST_CASE("zip_values_strict") {
     SUBCASE("key sets are the same") {
-      std::unordered_map<int, std::string> m1 = {
+      std::map<int, std::string> m1 = {
           {2, "two"},
           {3, "three"},
       };
-      std::unordered_map<int, std::string> m2 = {
+      std::map<int, std::string> m2 = {
           {2, "TWO"},
           {3, "THREE"},
       };
 
-      std::unordered_map<int, std::pair<std::string, std::string>> result =
+      std::map<int, std::pair<std::string, std::string>> result =
           zip_values_strict(m1, m2);
-      std::unordered_map<int, std::pair<std::string, std::string>> correct = {
+      std::map<int, std::pair<std::string, std::string>> correct = {
           {2, {"two", "TWO"}},
           {3, {"three", "THREE"}},
       };
@@ -28,11 +28,11 @@ TEST_SUITE(FF_TEST_SUITE) {
     }
 
     SUBCASE("key sets are different but same size") {
-      std::unordered_map<int, std::string> m1 = {
+      std::map<int, std::string> m1 = {
           {2, "two"},
           {3, "three"},
       };
-      std::unordered_map<int, std::string> m2 = {
+      std::map<int, std::string> m2 = {
           {2, "TWO"},
           {4, "FOUR"},
       };
@@ -41,11 +41,11 @@ TEST_SUITE(FF_TEST_SUITE) {
     }
 
     SUBCASE("key sets are subset") {
-      std::unordered_map<int, std::string> m1 = {
+      std::map<int, std::string> m1 = {
           {2, "two"},
           {3, "three"},
       };
-      std::unordered_map<int, std::string> m2 = {
+      std::map<int, std::string> m2 = {
           {2, "TWO"},
       };
 

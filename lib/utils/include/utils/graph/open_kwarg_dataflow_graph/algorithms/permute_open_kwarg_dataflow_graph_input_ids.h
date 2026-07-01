@@ -16,7 +16,7 @@ OpenKwargDataflowGraphView<GraphInputName, SlotName>
         bidict<KwargDataflowGraphInput<GraphInputName>,
                KwargDataflowGraphInput<GraphInputName>> const
             &new_input_to_old_input) {
-  std::unordered_set<KwargDataflowGraphInput<GraphInputName>> g_inputs =
+  std::set<KwargDataflowGraphInput<GraphInputName>> g_inputs =
       get_all_kwarg_dataflow_graph_inputs(g);
   ASSERT(g_inputs == new_input_to_old_input.right_values());
 

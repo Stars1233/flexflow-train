@@ -3,7 +3,6 @@
 #include "utils/archetypes/value_type.h"
 #include <functional>
 #include <set>
-#include <unordered_set>
 #include <vector>
 
 namespace FlexFlow {
@@ -13,8 +12,8 @@ using K1 = ordered_value_type<1>;
 using F1 = std::function<K1(T1)>;
 
 template T1 argmax(std::vector<T1> const &, F1 &&);
-template T1 argmax(std::unordered_set<T1> const &, F1 &&);
-template T1 argmax(std::unordered_multiset<T1> const &, F1 &&);
+template T1 argmax(std::set<T1> const &, F1 &&);
+template T1 argmax(std::multiset<T1> const &, F1 &&);
 
 using T2 = ordered_value_type<0>;
 using K2 = ordered_value_type<1>;

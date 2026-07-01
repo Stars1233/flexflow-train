@@ -56,8 +56,8 @@ TaskArgumentAccessor make_task_argument_accessor_for_invocation(
   auto get_accessor = [](DynamicValueAttrs const &value) {
     return assert_unwrap(value.accessor);
   };
-  std::unordered_map<TaskTensorParameter, DynamicTensorAccessor>
-      tensor_slots_backing = binary_merge_disjoint_maps(
+  std::map<TaskTensorParameter, DynamicTensorAccessor> tensor_slots_backing =
+      binary_merge_disjoint_maps(
           map_keys_and_values(invocation.inputs, make_param, get_accessor),
           map_keys_and_values(invocation.outputs, make_param, get_accessor));
 

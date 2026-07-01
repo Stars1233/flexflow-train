@@ -11,12 +11,12 @@ bool is_complete_bipartite_digraph(DiGraphView const &g) {
 }
 
 bool is_complete_bipartite_digraph(DiGraphView const &g,
-                                   std::unordered_set<Node> const &srcs) {
-  std::unordered_set<Node> sinks = set_minus(get_nodes(g), srcs);
+                                   std::set<Node> const &srcs) {
+  std::set<Node> sinks = set_minus(get_nodes(g), srcs);
 
-  std::unordered_set<DirectedEdge> edges = get_edges(g);
+  std::set<DirectedEdge> edges = get_edges(g);
 
-  std::unordered_set<DirectedEdge> expected_edges;
+  std::set<DirectedEdge> expected_edges;
   for (Node const &src : srcs) {
     for (Node const &sink : sinks) {
       expected_edges.insert(DirectedEdge{src, sink});

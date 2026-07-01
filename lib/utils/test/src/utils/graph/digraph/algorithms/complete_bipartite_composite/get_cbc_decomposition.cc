@@ -19,7 +19,7 @@ TEST_SUITE(FF_TEST_SUITE) {
     // source of bugs in the past
     auto check_cbc_decomposition_is_edge_order_invariant =
         [](DiGraphView const &g) {
-          std::unordered_set<DirectedEdge> edges = get_edges(g);
+          std::set<DirectedEdge> edges = get_edges(g);
 
           std::vector<DirectedEdge> edge_order1 = vector_of(edges);
           std::vector<DirectedEdge> edge_order2 = reversed(edge_order1);

@@ -1,10 +1,10 @@
 #include "utils/containers/permute_with_key.h"
-#include "test/utils/doctest/fmt/unordered_set.h"
+#include "test/utils/doctest/fmt/set.h"
 #include "test/utils/doctest/fmt/vector.h"
 #include "test/utils/rapidcheck/doctest.h"
 #include "utils/containers/get_all_permutations.h"
 #include "utils/containers/range.h"
-#include "utils/containers/unordered_set_of.h"
+#include "utils/containers/set_of.h"
 #include "utils/hash/vector.h"
 #include <doctest/doctest.h>
 
@@ -21,12 +21,12 @@ TEST_SUITE(FF_TEST_SUITE) {
       };
       int max_permutations = 4 * 3 * 2 * 1;
 
-      std::unordered_set<std::vector<std::string>> generated_permutations =
-          unordered_set_of(transform(range(max_permutations), [&](int key) {
+      std::set<std::vector<std::string>> generated_permutations =
+          set_of(transform(range(max_permutations), [&](int key) {
             return permute_with_key(key, input);
           }));
-      std::unordered_set<std::vector<std::string>> all_permutations =
-          unordered_set_of(get_all_permutations(input));
+      std::set<std::vector<std::string>> all_permutations =
+          set_of(get_all_permutations(input));
 
       CHECK(generated_permutations == all_permutations);
     }

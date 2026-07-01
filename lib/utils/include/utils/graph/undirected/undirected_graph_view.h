@@ -16,8 +16,8 @@ public:
   UndirectedGraphView(UndirectedGraphView const &) = default;
   UndirectedGraphView &operator=(UndirectedGraphView const &) = default;
 
-  std::unordered_set<Node> query_nodes(NodeQuery const &) const;
-  std::unordered_set<Edge> query_edges(EdgeQuery const &query) const;
+  std::set<Node> query_nodes(NodeQuery const &) const;
+  std::set<Edge> query_edges(EdgeQuery const &query) const;
 
   template <typename T, typename... Args>
   static

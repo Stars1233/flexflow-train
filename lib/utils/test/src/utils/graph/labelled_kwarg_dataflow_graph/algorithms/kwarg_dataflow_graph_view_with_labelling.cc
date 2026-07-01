@@ -67,7 +67,7 @@ TEST_SUITE(FF_TEST_SUITE) {
     float n4_label = 7.8;
     float n5_label = 2.2;
 
-    std::unordered_map<Node, float> node_labelling = {
+    std::map<Node, float> node_labelling = {
         {n1, 3.5},
         {n2, 1.2},
         {n3, 1.2},
@@ -80,13 +80,12 @@ TEST_SUITE(FF_TEST_SUITE) {
     std::string n3_1_label = "c";
     std::string n5_0_label = "d";
 
-    std::unordered_map<KwargDataflowOutput<int>, std::string> value_labelling =
-        {
-            {n1_0, n1_0_label},
-            {n2_3, n2_3_label},
-            {n3_1, n3_1_label},
-            {n5_0, n5_0_label},
-        };
+    std::map<KwargDataflowOutput<int>, std::string> value_labelling = {
+        {n1_0, n1_0_label},
+        {n2_3, n2_3_label},
+        {n3_1, n3_1_label},
+        {n5_0, n5_0_label},
+    };
 
     LabelledKwargDataflowGraphView<float, std::string, int> result =
         kwarg_dataflow_graph_view_with_labelling(

@@ -6,7 +6,7 @@
 #include "utils/containers/all_are_true.h"
 #include "utils/containers/contains_key.h"
 #include "utils/containers/map_values.h"
-#include "utils/containers/unordered_set_of.h"
+#include "utils/containers/set_of.h"
 #include "utils/optional.h"
 
 namespace FlexFlow {
@@ -50,8 +50,7 @@ DynamicValueAttrs
 
 DynamicOpenDataflowGraph perform_tensor_allocation(
     DynamicOpenDataflowGraph const &g,
-    std::unordered_map<DynamicValueAttrs, DynamicTensorAccessor> const
-        &preallocated,
+    std::map<DynamicValueAttrs, DynamicTensorAccessor> const &preallocated,
     Allocator &allocator) {
   ASSERT(no_tensors_are_allocated(g));
   ASSERT(tensors_are_ready_for_allocation(g));
@@ -59,8 +58,7 @@ DynamicOpenDataflowGraph perform_tensor_allocation(
     ASSERT(v.accessor == std::nullopt);
   }
 
-  std::unordered_set<DynamicValueAttrs> all_values =
-      unordered_set_of(get_dynamic_values(g));
+  std::set<DynamicValueAttrs> all_values = set_of(get_dynamic_values(g));
 
   bidict<DynamicValueAttrs, DynamicValueAttrs> unallocated_to_allocated =
       generate_bidict(

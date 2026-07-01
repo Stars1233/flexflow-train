@@ -34,13 +34,13 @@ TEST_SUITE(FF_TEST_SUITE) {
     DiGraphView result = flipped(g);
 
     SUBCASE("nodes") {
-      std::unordered_set<Node> correct_nodes = unordered_set_of(n);
-      std::unordered_set<Node> result_nodes = get_nodes(result);
+      std::set<Node> correct_nodes = set_of(n);
+      std::set<Node> result_nodes = get_nodes(result);
       CHECK(result_nodes == correct_nodes);
     }
 
     SUBCASE("edges") {
-      std::unordered_set<DirectedEdge> correct_edges = {
+      std::set<DirectedEdge> correct_edges = {
           DirectedEdge{n.at(1), n.at(0)},
           DirectedEdge{n.at(2), n.at(1)},
           DirectedEdge{n.at(3), n.at(1)},
@@ -49,7 +49,7 @@ TEST_SUITE(FF_TEST_SUITE) {
           DirectedEdge{n.at(1), n.at(3)},
           DirectedEdge{n.at(4), n.at(3)},
       };
-      std::unordered_set<DirectedEdge> result_edges = get_edges(result);
+      std::set<DirectedEdge> result_edges = get_edges(result);
       CHECK(result_edges == correct_edges);
     }
   }

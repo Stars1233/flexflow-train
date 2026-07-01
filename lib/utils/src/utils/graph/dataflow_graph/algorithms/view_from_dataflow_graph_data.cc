@@ -10,21 +10,21 @@ ViewFromDataflowGraphData::ViewFromDataflowGraphData(
     DataflowGraphData const &data)
     : data(data) {}
 
-std::unordered_set<Node>
+std::set<Node>
     ViewFromDataflowGraphData::query_nodes(NodeQuery const &query) const {
-  return apply_node_query(query, this->data.nodes);
+  return apply_node_query(query, set_of(this->data.nodes));
 }
 
-std::unordered_set<DataflowEdge> ViewFromDataflowGraphData::query_edges(
+std::set<DataflowEdge> ViewFromDataflowGraphData::query_edges(
     DataflowEdgeQuery const &query) const {
-  return filter(this->data.edges, [&](DataflowEdge const &e) {
+  return filter(set_of(this->data.edges), [&](DataflowEdge const &e) {
     return dataflow_edge_query_includes_dataflow_edge(query, e);
   });
 }
 
-std::unordered_set<DataflowOutput> ViewFromDataflowGraphData::query_outputs(
+std::set<DataflowOutput> ViewFromDataflowGraphData::query_outputs(
     DataflowOutputQuery const &query) const {
-  return filter(this->data.outputs, [&](DataflowOutput const &o) {
+  return filter(set_of(this->data.outputs), [&](DataflowOutput const &o) {
     return dataflow_output_query_includes_dataflow_output(query, o);
   });
 }

@@ -18,9 +18,8 @@ std::optional<Node> get_imm_post_dominator(DiGraphView const &g,
   return get_imm_post_dominators_map(g).at(n);
 }
 
-std::optional<Node>
-    get_imm_post_dominator(DiGraphView const &g,
-                           std::unordered_set<Node> const &nodes) {
+std::optional<Node> get_imm_post_dominator(DiGraphView const &g,
+                                           std::set<Node> const &nodes) {
 
   if (nodes.empty()) {
     throw mk_runtime_error("Cannot get imm_post_dominator of no nodes");
@@ -31,7 +30,7 @@ std::optional<Node>
   }
 
   Node contracted_node = get_one_of(nodes);
-  std::unordered_map<Node, Node> contraction =
+  std::map<Node, Node> contraction =
       generate_map(nodes, [&](Node const &) { return contracted_node; });
   return get_imm_post_dominator(apply_contraction(g, contraction),
                                 contracted_node);

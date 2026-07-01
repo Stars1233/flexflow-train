@@ -1,8 +1,8 @@
 #include "utils/containers/range.h"
-#include "test/utils/doctest/fmt/unordered_set.h"
+#include "test/utils/doctest/fmt/set.h"
 #include "test/utils/doctest/fmt/vector.h"
 #include <doctest/doctest.h>
-#include <unordered_set>
+#include <set>
 #include <vector>
 
 using namespace FlexFlow;

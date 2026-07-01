@@ -9,7 +9,7 @@
 namespace FlexFlow {
 
 template <typename GraphInputName, typename SlotName>
-std::unordered_map<SlotName, OpenKwargDataflowValue<GraphInputName, SlotName>>
+std::map<SlotName, OpenKwargDataflowValue<GraphInputName, SlotName>>
     get_incoming_open_kwarg_dataflow_values_for_node(
         OpenKwargDataflowGraphView<GraphInputName, SlotName> const &g,
         Node const &n) {

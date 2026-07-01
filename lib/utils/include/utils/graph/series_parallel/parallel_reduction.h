@@ -5,7 +5,7 @@
 #include "utils/graph/series_parallel/extended_parallel_reduction.dtg.h"
 #include "utils/graph/series_parallel/parallel_reduction.dtg.h"
 #include <optional>
-#include <unordered_set>
+#include <set>
 
 namespace FlexFlow {
 
@@ -18,7 +18,7 @@ std::optional<ParallelReduction>
 /**
  * @brief Finds all ExtendedParallelReduction for a given MultiDiGraph
  */
-std::unordered_set<ExtendedParallelReduction>
+std::set<ExtendedParallelReduction>
     find_all_extended_parallel_reductions(MultiDiGraphView const &);
 
 MultiDiEdge apply_parallel_reduction(MultiDiGraph &, ParallelReduction const &);

@@ -98,8 +98,8 @@ template <typename T>
 struct hash<::FlexFlow::commutative_pair<T>> {
   size_t operator()(::FlexFlow::commutative_pair<T> const &p) {
     size_t result = 0;
-    ::FlexFlow::unordered_hash_combine(result, p.first);
-    ::FlexFlow::unordered_hash_combine(result, p.second);
+    ::FlexFlow::hash_combine(result, p.first);
+    ::FlexFlow::hash_combine(result, p.second);
     return result;
   }
 };

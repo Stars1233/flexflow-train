@@ -6,9 +6,9 @@
 
 namespace FlexFlow {
 
-std::unordered_set<Node> get_initial_nodes(DiGraphView const &g) {
-  std::unordered_set<Node> all_nodes = get_nodes(g);
-  std::unordered_set<Node> with_incoming_edge =
+std::set<Node> get_initial_nodes(DiGraphView const &g) {
+  std::set<Node> all_nodes = get_nodes(g);
+  std::set<Node> with_incoming_edge =
       transform(get_edges(g), [](DirectedEdge const &e) { return e.dst; });
 
   return set_minus(all_nodes, with_incoming_edge);

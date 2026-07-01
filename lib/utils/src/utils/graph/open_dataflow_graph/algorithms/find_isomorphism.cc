@@ -7,7 +7,7 @@ namespace FlexFlow {
 std::optional<OpenDataflowGraphIsomorphism>
     find_isomorphism(OpenDataflowGraphView const &src,
                      OpenDataflowGraphView const &dst) {
-  std::unordered_set<OpenDataflowGraphIsomorphism> all_isomorphisms =
+  std::set<OpenDataflowGraphIsomorphism> all_isomorphisms =
       find_isomorphisms(src, dst);
 
   if (all_isomorphisms.empty()) {

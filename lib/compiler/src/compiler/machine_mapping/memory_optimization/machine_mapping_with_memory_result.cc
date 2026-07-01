@@ -6,13 +6,13 @@
 #include "utils/containers/set_union.h"
 #include "utils/containers/transform.h"
 #include "utils/full_binary_tree/binary_tree_path.h"
+#include "utils/hash/set.h"
 #include "utils/hash/tuple.h"
-#include "utils/hash/unordered_set.h"
 
 namespace FlexFlow {
 
 MachineMappingWithMemoryResult::MachineMappingWithMemoryResult(
-    std::unordered_set<ParetoOptimalMachineMapping> const &pareto_frontier)
+    std::set<ParetoOptimalMachineMapping> const &pareto_frontier)
     : m_pareto_frontier(pareto_frontier) {
   ASSERT(all_of(pareto_frontier, [&](ParetoOptimalMachineMapping const &m) {
     return is_pareto_optimal_in(m, pareto_frontier);
@@ -29,7 +29,27 @@ bool MachineMappingWithMemoryResult::operator!=(
   return this->tie() != other.tie();
 }
 
-std::unordered_set<ParetoOptimalMachineMapping> const &
+bool MachineMappingWithMemoryResult::operator<(
+    MachineMappingWithMemoryResult const &other) const {
+  return this->tie() < other.tie();
+}
+
+bool MachineMappingWithMemoryResult::operator>(
+    MachineMappingWithMemoryResult const &other) const {
+  return this->tie() > other.tie();
+}
+
+bool MachineMappingWithMemoryResult::operator<=(
+    MachineMappingWithMemoryResult const &other) const {
+  return this->tie() <= other.tie();
+}
+
+bool MachineMappingWithMemoryResult::operator>=(
+    MachineMappingWithMemoryResult const &other) const {
+  return this->tie() >= other.tie();
+}
+
+std::set<ParetoOptimalMachineMapping> const &
     MachineMappingWithMemoryResult::get_pareto_frontier() const {
   return this->m_pareto_frontier;
 }
@@ -44,7 +64,7 @@ std::ostream &operator<<(std::ostream &s,
   return (s << fmt::to_string(r));
 }
 
-std::tuple<std::unordered_set<ParetoOptimalMachineMapping> const &>
+std::tuple<std::set<ParetoOptimalMachineMapping> const &>
     MachineMappingWithMemoryResult::tie() const {
   return std::tie(this->m_pareto_frontier);
 }
@@ -56,7 +76,7 @@ MachineMappingWithMemoryResult empty_machine_mapping_with_memory_result() {
 }
 
 MachineMappingWithMemoryResult get_mapping_with_minimal_runtime(
-    std::unordered_set<MachineMappingWithMemoryResult> const &candidates) {
+    std::set<MachineMappingWithMemoryResult> const &candidates) {
   MachineMappingWithMemoryResult result =
       empty_machine_mapping_with_memory_result();
 
@@ -100,7 +120,7 @@ MachineMappingWithMemoryResult
         return ParetoOptimalMachineMapping{cost, mapping};
       };
 
-  std::unordered_set<ParetoOptimalMachineMapping> result;
+  std::set<ParetoOptimalMachineMapping> result;
 
   for (ParetoOptimalMachineMapping const &pre_mm :
        pre_result.get_pareto_frontier()) {
@@ -143,7 +163,7 @@ MachineMappingWithMemoryResult
         return ParetoOptimalMachineMapping{cost, mapping};
       };
 
-  std::unordered_set<ParetoOptimalMachineMapping> result;
+  std::set<ParetoOptimalMachineMapping> result;
   for (ParetoOptimalMachineMapping const &lhs_mm :
        lhs_result.get_pareto_frontier()) {
 
@@ -165,7 +185,7 @@ MachineMappingWithMemoryResult
 MachineMappingWithMemoryResult
     minimize_runtime(MachineMappingWithMemoryResult const &m1,
                      MachineMappingWithMemoryResult const &m2) {
-  std::unordered_set<ParetoOptimalMachineMapping> result =
+  std::set<ParetoOptimalMachineMapping> result =
       set_union(m1.get_pareto_frontier(), m2.get_pareto_frontier());
 
   return MachineMappingWithMemoryResult{

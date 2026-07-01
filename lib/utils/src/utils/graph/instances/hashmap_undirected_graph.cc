@@ -43,15 +43,15 @@ void HashmapUndirectedGraph::add_edge(UndirectedEdge const &e) {
 }
 
 void HashmapUndirectedGraph::remove_edge(UndirectedEdge const &e) {
-  std::unordered_set<Node> &max_map = this->adjacency.at(e.endpoints.max());
+  std::set<Node> &max_map = this->adjacency.at(e.endpoints.max());
   max_map.erase(e.endpoints.min());
-  std::unordered_set<Node> &min_map = this->adjacency.at(e.endpoints.min());
+  std::set<Node> &min_map = this->adjacency.at(e.endpoints.min());
   min_map.erase(e.endpoints.max());
 }
 
-std::unordered_set<UndirectedEdge> HashmapUndirectedGraph::query_edges(
+std::set<UndirectedEdge> HashmapUndirectedGraph::query_edges(
     UndirectedEdgeQuery const &query) const {
-  std::unordered_set<UndirectedEdge> result;
+  std::set<UndirectedEdge> result;
   for (auto const &src_kv : query_keys(query.nodes, this->adjacency)) {
     for (auto const &dst : apply_query(query.nodes, src_kv.second)) {
       result.insert(make_undirected_edge(src_kv.first, dst));
@@ -60,7 +60,7 @@ std::unordered_set<UndirectedEdge> HashmapUndirectedGraph::query_edges(
   return result;
 }
 
-std::unordered_set<Node>
+std::set<Node>
     HashmapUndirectedGraph::query_nodes(NodeQuery const &query) const {
   return apply_query(query.nodes, keys(this->adjacency));
 }

@@ -32,33 +32,31 @@ static std::optional<OpenDataflowGraphIsomorphism>
         bidict<DataflowGraphInput, DataflowGraphInput> const
             &unused_graph_inputs_mapping) {
   {
-    std::unordered_set<Node> already_mapped_src_nodes =
-        left_entries(sink_node_mapping);
-    std::unordered_set<Node> src_g_sink_nodes = get_terminal_nodes(src_g);
-    assert(already_mapped_src_nodes == src_g_sink_nodes);
+    std::set<Node> already_mapped_src_nodes = left_entries(sink_node_mapping);
+    std::set<Node> src_g_sink_nodes = set_of(get_terminal_nodes(src_g));
+    ASSERT(already_mapped_src_nodes == src_g_sink_nodes);
   }
 
   {
-    std::unordered_set<Node> already_mapped_dst_nodes =
-        right_entries(sink_node_mapping);
-    std::unordered_set<Node> dst_g_sink_nodes = get_terminal_nodes(dst_g);
-    assert(already_mapped_dst_nodes == dst_g_sink_nodes);
+    std::set<Node> already_mapped_dst_nodes = right_entries(sink_node_mapping);
+    std::set<Node> dst_g_sink_nodes = set_of(get_terminal_nodes(dst_g));
+    ASSERT(already_mapped_dst_nodes == dst_g_sink_nodes);
   }
 
   {
-    std::unordered_set<DataflowGraphInput> already_mapped_src_inputs =
+    std::set<DataflowGraphInput> already_mapped_src_inputs =
         right_entries(unused_graph_inputs_mapping);
-    std::unordered_set<DataflowGraphInput> src_g_unused_inputs =
-        get_unused_open_dataflow_graph_inputs(src_g);
-    assert(already_mapped_src_inputs == src_g_unused_inputs);
+    std::set<DataflowGraphInput> src_g_unused_inputs =
+        set_of(get_unused_open_dataflow_graph_inputs(src_g));
+    ASSERT(already_mapped_src_inputs == src_g_unused_inputs);
   }
 
   {
-    std::unordered_set<DataflowGraphInput> already_mapped_dst_inputs =
+    std::set<DataflowGraphInput> already_mapped_dst_inputs =
         right_entries(unused_graph_inputs_mapping);
-    std::unordered_set<DataflowGraphInput> dst_g_unused_inputs =
-        get_unused_open_dataflow_graph_inputs(dst_g);
-    assert(already_mapped_dst_inputs == dst_g_unused_inputs);
+    std::set<DataflowGraphInput> dst_g_unused_inputs =
+        set_of(get_unused_open_dataflow_graph_inputs(dst_g));
+    ASSERT(already_mapped_dst_inputs == dst_g_unused_inputs);
   }
 
   std::optional<OpenDataflowGraphIsomorphism> result =
@@ -141,9 +139,9 @@ static std::optional<OpenDataflowGraphIsomorphism>
       return;
     }
 
-    assert(get_open_dataflow_edge_dst(src_edge).idx ==
+    ASSERT(get_open_dataflow_edge_dst(src_edge).idx ==
            get_open_dataflow_edge_dst(dst_edge).idx);
-    assert(
+    ASSERT(
         get_open_dataflow_edge_dst(src_edge).node ==
         result->node_mapping.at_r(get_open_dataflow_edge_dst(dst_edge).node));
 
@@ -196,13 +194,13 @@ static std::optional<OpenDataflowGraphIsomorphism>
   return result;
 }
 
-std::unordered_set<OpenDataflowGraphIsomorphism>
+std::set<OpenDataflowGraphIsomorphism>
     find_isomorphisms(OpenDataflowGraphView const &src,
                       OpenDataflowGraphView const &dst) {
-  std::unordered_set<OpenDataflowGraphIsomorphism> result;
+  std::set<OpenDataflowGraphIsomorphism> result;
 
   std::vector<Node> src_sink_nodes = vector_of(get_terminal_nodes(src));
-  std::unordered_set<Node> dst_sink_nodes = get_terminal_nodes(dst);
+  std::set<Node> dst_sink_nodes = get_terminal_nodes(dst);
 
   if (src_sink_nodes.size() != dst_sink_nodes.size()) {
     return {};
@@ -210,7 +208,7 @@ std::unordered_set<OpenDataflowGraphIsomorphism>
 
   std::vector<DataflowGraphInput> src_unused_graph_inputs =
       vector_of(get_unused_open_dataflow_graph_inputs(src));
-  std::unordered_set<DataflowGraphInput> dst_unused_graph_inputs =
+  std::set<DataflowGraphInput> dst_unused_graph_inputs =
       get_unused_open_dataflow_graph_inputs(dst);
 
   if (src_unused_graph_inputs.size() != dst_unused_graph_inputs.size()) {
@@ -235,7 +233,7 @@ std::unordered_set<OpenDataflowGraphIsomorphism>
               src, dst, sink_node_mapping, unused_graph_inputs_mapping);
 
       if (found.has_value()) {
-        assert(is_isomorphic_under(src, dst, found.value()));
+        ASSERT(is_isomorphic_under(src, dst, found.value()));
 
         result.insert(found.value());
       }

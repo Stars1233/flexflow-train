@@ -25,8 +25,8 @@ template LabelledOpenKwargDataflowGraphView<NodeLabel,
                                             SlotName>
     open_kwarg_dataflow_graph_view_with_labelling(
         OpenKwargDataflowGraphView<GraphInputName, SlotName> const &,
-        std::unordered_map<Node, NodeLabel> const &,
-        std::unordered_map<OpenKwargDataflowValue<GraphInputName, SlotName>,
-                           ValueLabel> const &);
+        std::map<Node, NodeLabel> const &,
+        std::map<OpenKwargDataflowValue<GraphInputName, SlotName>,
+                 ValueLabel> const &);
 
 } // namespace FlexFlow

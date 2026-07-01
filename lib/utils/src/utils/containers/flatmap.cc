@@ -32,6 +32,15 @@ using F3 = std::function<std::unordered_map<OutK, OutV>(InK, InV)>;
 template std::unordered_map<OutK, OutV>
     flatmap(std::unordered_map<InK, InV> const &, F3 &&);
 
+using O_InK = ordered_value_type<0>;
+using O_InV = value_type<1>;
+using O_OutK = ordered_value_type<2>;
+using O_OutV = value_type<3>;
+using O_F3 = std::function<std::map<O_OutK, O_OutV>(O_InK, O_InV)>;
+
+template std::map<O_OutK, O_OutV> flatmap(std::map<O_InK, O_InV> const &,
+                                          O_F3 &&);
+
 using F4 = std::function<std::optional<Out>(In const &)>;
 
 template std::optional<Out> flatmap(std::optional<In> const &o, F4 &&);

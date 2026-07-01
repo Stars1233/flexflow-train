@@ -108,8 +108,8 @@ ParallelTensorSpaceCoordinate ptensor_coord_for_task_space_coord(
     TaskSpaceCoordinate const &task_space_coordinate,
     num_ptensor_shard_dims_t num_dims) {
 
-  std::unordered_set<parallel_tensor_dim_idx_t> ptensor_dim_idxs =
-      unordered_set_of(dim_idxs_for_num_shard_dims(num_dims));
+  std::set<parallel_tensor_dim_idx_t> ptensor_dim_idxs =
+      dim_idxs_for_num_shard_dims(num_dims);
 
   DimCoord<parallel_tensor_dim_idx_t> mapped_dim_coord =
       mapping.raw_mapping.at_l(

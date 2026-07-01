@@ -11,15 +11,14 @@
 namespace FlexFlow {
 
 UndirectedSubgraphView::UndirectedSubgraphView(
-    UndirectedGraphView const &g,
-    std::unordered_set<Node> const &subgraph_nodes)
+    UndirectedGraphView const &g, std::set<Node> const &subgraph_nodes)
     : g(g), subgraph_nodes(subgraph_nodes) {}
 
 UndirectedSubgraphView *UndirectedSubgraphView::clone() const {
   return new UndirectedSubgraphView(g, subgraph_nodes);
 }
 
-std::unordered_set<UndirectedEdge> UndirectedSubgraphView::query_edges(
+std::set<UndirectedEdge> UndirectedSubgraphView::query_edges(
     UndirectedEdgeQuery const &query) const {
   UndirectedEdgeQuery subgraph_query = UndirectedEdgeQuery{
       query_set<Node>::match_values_in(set_of(this->subgraph_nodes)),
@@ -27,7 +26,7 @@ std::unordered_set<UndirectedEdge> UndirectedSubgraphView::query_edges(
   return this->g.query_edges(query_intersection(query, subgraph_query));
 }
 
-std::unordered_set<Node>
+std::set<Node>
     UndirectedSubgraphView::query_nodes(NodeQuery const &query) const {
   NodeQuery subgraph_query = NodeQuery{
       query_set<Node>::match_values_in(set_of(this->subgraph_nodes)),
@@ -37,10 +36,10 @@ std::unordered_set<Node>
 }
 
 DiSubgraphView::DiSubgraphView(DiGraphView const &g,
-                               std::unordered_set<Node> const &subgraph_nodes)
+                               std::set<Node> const &subgraph_nodes)
     : g(g), subgraph_nodes(subgraph_nodes) {}
 
-std::unordered_set<DirectedEdge>
+std::set<DirectedEdge>
     DiSubgraphView::query_edges(DirectedEdgeQuery const &query) const {
   DirectedEdgeQuery subgraph_query = DirectedEdgeQuery{
       query_set<Node>::match_values_in(set_of(this->subgraph_nodes)),
@@ -49,8 +48,7 @@ std::unordered_set<DirectedEdge>
   return this->g.query_edges(query_intersection(query, subgraph_query));
 }
 
-std::unordered_set<Node>
-    DiSubgraphView::query_nodes(NodeQuery const &query) const {
+std::set<Node> DiSubgraphView::query_nodes(NodeQuery const &query) const {
   NodeQuery subgraph_query = NodeQuery{
       query_set<Node>::match_values_in(set_of(this->subgraph_nodes)),
   };
@@ -62,14 +60,13 @@ DiSubgraphView *DiSubgraphView::clone() const {
   return new DiSubgraphView(g, subgraph_nodes);
 }
 
-UndirectedGraphView
-    view_subgraph(UndirectedGraphView const &g,
-                  std::unordered_set<Node> const &subgraph_nodes) {
+UndirectedGraphView view_subgraph(UndirectedGraphView const &g,
+                                  std::set<Node> const &subgraph_nodes) {
   return UndirectedGraphView::create<UndirectedSubgraphView>(g, subgraph_nodes);
 }
 
 DiGraphView view_subgraph(DiGraphView const &g,
-                          std::unordered_set<Node> const &subgraph_nodes) {
+                          std::set<Node> const &subgraph_nodes) {
   return DiGraphView::create<DiSubgraphView>(g, subgraph_nodes);
 }
 
@@ -77,20 +74,20 @@ UndirectedEdge to_undirected_edge(DirectedEdge const &e) {
   return make_undirected_edge(e.src, e.dst);
 }
 
-std::unordered_set<UndirectedEdge> to_undirected_edges(
-    std::unordered_set<DirectedEdge> const &directed_edges) {
+std::set<UndirectedEdge>
+    to_undirected_edges(std::set<DirectedEdge> const &directed_edges) {
   return transform(directed_edges,
                    [](DirectedEdge const &e) { return to_undirected_edge(e); });
 }
 
-std::unordered_set<DirectedEdge> to_directed_edges(UndirectedEdge const &e) {
-  return std::unordered_set<DirectedEdge>{
+std::set<DirectedEdge> to_directed_edges(UndirectedEdge const &e) {
+  return std::set<DirectedEdge>{
       DirectedEdge{e.endpoints.min(), e.endpoints.max()},
       DirectedEdge{e.endpoints.max(), e.endpoints.min()}};
 }
 
-std::unordered_set<DirectedEdge> to_directed_edges(
-    std::unordered_set<UndirectedEdge> const &undirected_edges) {
+std::set<DirectedEdge>
+    to_directed_edges(std::set<UndirectedEdge> const &undirected_edges) {
   return flatmap(undirected_edges,
                  [](UndirectedEdge const &e) { return to_directed_edges(e); });
 }
@@ -98,7 +95,7 @@ std::unordered_set<DirectedEdge> to_directed_edges(
 ViewDiGraphAsUndirectedGraph::ViewDiGraphAsUndirectedGraph(DiGraphView const &g)
     : g(g) {}
 
-std::unordered_set<UndirectedEdge> ViewDiGraphAsUndirectedGraph::query_edges(
+std::set<UndirectedEdge> ViewDiGraphAsUndirectedGraph::query_edges(
     UndirectedEdgeQuery const &undirected_query) const {
   DirectedEdgeQuery q1{undirected_query.nodes, query_set<Node>::matchall()};
   DirectedEdgeQuery q2{query_set<Node>::matchall(), undirected_query.nodes};
@@ -106,7 +103,7 @@ std::unordered_set<UndirectedEdge> ViewDiGraphAsUndirectedGraph::query_edges(
       set_union(this->g.query_edges(q1), this->g.query_edges(q2)));
 }
 
-std::unordered_set<Node> ViewDiGraphAsUndirectedGraph::query_nodes(
+std::set<Node> ViewDiGraphAsUndirectedGraph::query_nodes(
     NodeQuery const &node_query) const {
   return this->g.query_nodes(node_query);
 }
@@ -123,18 +120,18 @@ ViewUndirectedGraphAsDiGraph *ViewUndirectedGraphAsDiGraph::clone() const {
   return new ViewUndirectedGraphAsDiGraph(g);
 }
 
-std::unordered_set<DirectedEdge> ViewUndirectedGraphAsDiGraph::query_edges(
+std::set<DirectedEdge> ViewUndirectedGraphAsDiGraph::query_edges(
     DirectedEdgeQuery const &q) const {
-  std::unordered_set<UndirectedEdge> undirected_edges =
+  std::set<UndirectedEdge> undirected_edges =
       g.query_edges(UndirectedEdgeQuery{query_union(q.srcs, q.dsts)});
-  std::unordered_set<DirectedEdge> directed_edges =
+  std::set<DirectedEdge> directed_edges =
       flatmap(undirected_edges,
               [](UndirectedEdge const &e) { return to_directed_edges(e); });
   return filter(directed_edges,
                 [&](DirectedEdge const &e) { return matches_edge(q, e); });
 }
 
-std::unordered_set<Node>
+std::set<Node>
     ViewUndirectedGraphAsDiGraph::query_nodes(NodeQuery const &q) const {
   return g.query_nodes(q);
 }

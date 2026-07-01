@@ -8,7 +8,7 @@ namespace FlexFlow {
 
 OperatorAttributeValue evaluate_output_operator_attribute_expr(
     OutputOperatorAttributeExpr const &,
-    std::unordered_map<PatternNode, PCGOperatorAttrs> const &node_match);
+    std::map<PatternNode, PCGOperatorAttrs> const &node_match);
 
 } // namespace FlexFlow
 

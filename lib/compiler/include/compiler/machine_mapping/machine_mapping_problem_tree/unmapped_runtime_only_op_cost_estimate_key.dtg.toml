@@ -3,6 +3,7 @@ name = "UnmappedRuntimeOnlyOpCostEstimateKey"
 type = "struct"
 features = [
   "eq",
+  "ord",
   "fmt",
   "hash",
 ]
@@ -15,8 +16,8 @@ includes = [
 ]
 
 src_includes = [
-  "utils/hash/unordered_map.h",
-  "utils/fmt/unordered_map.h",
+  "utils/hash/map.h",
+  "utils/fmt/map.h",
 ]
 
 [[fields]]
@@ -25,12 +26,12 @@ type = "::FlexFlow::PCGOperatorAttrs"
 
 [[fields]]
 name = "input_shapes"
-type = "std::unordered_map<::FlexFlow::TensorSlotName, ::FlexFlow::ParallelTensorShape>"
+type = "std::map<::FlexFlow::TensorSlotName, ::FlexFlow::ParallelTensorShape>"
 
 [[fields]]
 name = "weight_shapes"
-type = "std::unordered_map<::FlexFlow::TensorSlotName, ::FlexFlow::ParallelTensorShape>"
+type = "std::map<::FlexFlow::TensorSlotName, ::FlexFlow::ParallelTensorShape>"
 
 [[fields]]
 name = "output_shapes"
-type = "std::unordered_map<::FlexFlow::TensorSlotName, ::FlexFlow::ParallelTensorShape>"
+type = "std::map<::FlexFlow::TensorSlotName, ::FlexFlow::ParallelTensorShape>"

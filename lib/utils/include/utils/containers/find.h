@@ -2,7 +2,7 @@
 #define _FLEXFLOW_LIB_UTILS_INCLUDE_UTILS_CONTAINERS_FIND_H
 
 #include <algorithm>
-#include <unordered_set>
+#include <set>
 
 namespace FlexFlow {
 
@@ -13,8 +13,7 @@ typename Container::const_iterator
 }
 
 template <typename V>
-typename std::unordered_set<V>::const_iterator
-    find(std::unordered_set<V> const &c, V const &e) {
+typename std::set<V>::const_iterator find(std::set<V> const &c, V const &e) {
   return c.find(e);
 }
 

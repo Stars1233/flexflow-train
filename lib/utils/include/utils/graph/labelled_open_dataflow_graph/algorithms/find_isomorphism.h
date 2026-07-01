@@ -19,7 +19,7 @@ template <typename NodeLabel, typename ValueLabel>
 std::optional<OpenDataflowGraphIsomorphism> find_isomorphism(
     LabelledOpenDataflowGraphView<NodeLabel, ValueLabel> const &src,
     LabelledOpenDataflowGraphView<NodeLabel, ValueLabel> const &dst) {
-  std::unordered_set<OpenDataflowGraphIsomorphism> unlabelled_isomorphisms =
+  std::set<OpenDataflowGraphIsomorphism> unlabelled_isomorphisms =
       find_isomorphisms(static_cast<OpenDataflowGraphView>(src),
                         static_cast<OpenDataflowGraphView>(dst));
 

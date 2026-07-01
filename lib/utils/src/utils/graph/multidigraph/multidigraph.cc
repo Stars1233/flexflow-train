@@ -18,11 +18,11 @@ void MultiDiGraph::remove_edge(MultiDiEdge const &e) {
   this->get_interface().remove_edge(e);
 }
 
-std::unordered_set<Node> MultiDiGraph::query_nodes(NodeQuery const &q) const {
+std::set<Node> MultiDiGraph::query_nodes(NodeQuery const &q) const {
   return this->get_interface().query_nodes(q);
 }
 
-std::unordered_set<MultiDiEdge>
+std::set<MultiDiEdge>
     MultiDiGraph::query_edges(MultiDiEdgeQuery const &q) const {
   return this->get_interface().query_edges(q);
 }

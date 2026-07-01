@@ -5,6 +5,7 @@
 #include "utils/graph/instances/unordered_set_labelled_open_kwarg_dataflow_graph.h"
 #include "utils/graph/node/algorithms.h"
 #include <doctest/doctest.h>
+#include <nlohmann/json.hpp>
 
 using namespace ::FlexFlow;
 
@@ -21,6 +22,7 @@ TEST_SUITE(FF_TEST_SUITE) {
               },
           }},
           /*parallel_tensor_shape=*/std::nullopt,
+          /*create_grad=*/std::nullopt,
           /*shard_coord=*/std::nullopt,
           /*mapping=*/std::nullopt,
           /*accessor=*/std::nullopt,
@@ -32,6 +34,7 @@ TEST_SUITE(FF_TEST_SUITE) {
       return DynamicTensorSlot{
           /*slot_name=*/slot_name,
           /*slot_tensor_role=*/std::nullopt,
+          /*task_shard=*/std::nullopt,
       };
     };
 
@@ -50,7 +53,7 @@ TEST_SUITE(FF_TEST_SUITE) {
 
     SUBCASE("correct usage") {
       DynamicNodeInvocation invocation_1 = DynamicNodeInvocation{
-          /*inputs=*/std::unordered_map<DynamicTensorSlot, DynamicValueAttrs>{
+          /*inputs=*/std::map<DynamicTensorSlot, DynamicValueAttrs>{
               {
                   mk_slot(TensorSlotName::INPUT),
                   value_1,
@@ -58,7 +61,7 @@ TEST_SUITE(FF_TEST_SUITE) {
           },
           /*node_attrs=*/node_attrs,
           /*outputs=*/
-          std::unordered_map<DynamicTensorSlot, DynamicValueAttrs>{
+          std::map<DynamicTensorSlot, DynamicValueAttrs>{
               {
                   mk_slot(TensorSlotName::OUTPUT),
                   value_2,
@@ -67,10 +70,10 @@ TEST_SUITE(FF_TEST_SUITE) {
       };
 
       DynamicNodeInvocation invocation_2 = DynamicNodeInvocation{
-          /*inputs=*/std::unordered_map<DynamicTensorSlot, DynamicValueAttrs>{},
+          /*inputs=*/std::map<DynamicTensorSlot, DynamicValueAttrs>{},
           /*node_attrs=*/node_attrs,
           /*outputs=*/
-          std::unordered_map<DynamicTensorSlot, DynamicValueAttrs>{
+          std::map<DynamicTensorSlot, DynamicValueAttrs>{
               {
                   mk_slot(TensorSlotName::OUTPUT),
                   value_3,
@@ -79,7 +82,7 @@ TEST_SUITE(FF_TEST_SUITE) {
       };
 
       DynamicNodeInvocation invocation_3 = DynamicNodeInvocation{
-          /*inputs=*/std::unordered_map<DynamicTensorSlot, DynamicValueAttrs>{
+          /*inputs=*/std::map<DynamicTensorSlot, DynamicValueAttrs>{
               {
                   mk_slot(TensorSlotName::INPUT),
                   value_1,
@@ -95,10 +98,10 @@ TEST_SUITE(FF_TEST_SUITE) {
           },
           /*node_attrs=*/node_attrs,
           /*outputs=*/
-          std::unordered_map<DynamicTensorSlot, DynamicValueAttrs>{},
+          std::map<DynamicTensorSlot, DynamicValueAttrs>{},
       };
 
-      std::unordered_set<DynamicNodeInvocation> invocation_set = {
+      std::set<DynamicNodeInvocation> invocation_set = {
           invocation_1,
           invocation_2,
           invocation_3,
@@ -112,7 +115,7 @@ TEST_SUITE(FF_TEST_SUITE) {
 
     SUBCASE("throws if multiple invocations produce the same value") {
       DynamicNodeInvocation invocation_1 = DynamicNodeInvocation{
-          /*inputs=*/std::unordered_map<DynamicTensorSlot, DynamicValueAttrs>{
+          /*inputs=*/std::map<DynamicTensorSlot, DynamicValueAttrs>{
               {
                   mk_slot(TensorSlotName::INPUT),
                   value_1,
@@ -120,7 +123,7 @@ TEST_SUITE(FF_TEST_SUITE) {
           },
           /*node_attrs=*/node_attrs,
           /*outputs=*/
-          std::unordered_map<DynamicTensorSlot, DynamicValueAttrs>{
+          std::map<DynamicTensorSlot, DynamicValueAttrs>{
               {
                   mk_slot(TensorSlotName::OUTPUT),
                   value_2,
@@ -129,10 +132,10 @@ TEST_SUITE(FF_TEST_SUITE) {
       };
 
       DynamicNodeInvocation invocation_2 = DynamicNodeInvocation{
-          /*inputs=*/std::unordered_map<DynamicTensorSlot, DynamicValueAttrs>{},
+          /*inputs=*/std::map<DynamicTensorSlot, DynamicValueAttrs>{},
           /*node_attrs=*/node_attrs,
           /*outputs=*/
-          std::unordered_map<DynamicTensorSlot, DynamicValueAttrs>{
+          std::map<DynamicTensorSlot, DynamicValueAttrs>{
               {
                   mk_slot(TensorSlotName::OUTPUT),
                   value_2,
@@ -140,7 +143,7 @@ TEST_SUITE(FF_TEST_SUITE) {
           },
       };
 
-      std::unordered_set<DynamicNodeInvocation> invocation_set = {
+      std::set<DynamicNodeInvocation> invocation_set = {
           invocation_1,
           invocation_2,
       };
@@ -151,7 +154,7 @@ TEST_SUITE(FF_TEST_SUITE) {
 
     SUBCASE("throws if invocations contain/create cycle") {
       DynamicNodeInvocation invocation_1 = DynamicNodeInvocation{
-          /*inputs=*/std::unordered_map<DynamicTensorSlot, DynamicValueAttrs>{
+          /*inputs=*/std::map<DynamicTensorSlot, DynamicValueAttrs>{
               {
                   mk_slot(TensorSlotName::INPUT),
                   value_1,
@@ -159,7 +162,7 @@ TEST_SUITE(FF_TEST_SUITE) {
           },
           /*node_attrs=*/node_attrs,
           /*outputs=*/
-          std::unordered_map<DynamicTensorSlot, DynamicValueAttrs>{
+          std::map<DynamicTensorSlot, DynamicValueAttrs>{
               {
                   mk_slot(TensorSlotName::OUTPUT),
                   value_2,
@@ -168,7 +171,7 @@ TEST_SUITE(FF_TEST_SUITE) {
       };
 
       DynamicNodeInvocation invocation_2 = DynamicNodeInvocation{
-          /*inputs=*/std::unordered_map<DynamicTensorSlot, DynamicValueAttrs>{
+          /*inputs=*/std::map<DynamicTensorSlot, DynamicValueAttrs>{
               {
                   mk_slot(TensorSlotName::INPUT),
                   value_2,
@@ -176,7 +179,7 @@ TEST_SUITE(FF_TEST_SUITE) {
           },
           /*node_attrs=*/node_attrs,
           /*outputs=*/
-          std::unordered_map<DynamicTensorSlot, DynamicValueAttrs>{
+          std::map<DynamicTensorSlot, DynamicValueAttrs>{
               {
                   mk_slot(TensorSlotName::OUTPUT),
                   value_1,
@@ -184,7 +187,7 @@ TEST_SUITE(FF_TEST_SUITE) {
           },
       };
 
-      std::unordered_set<DynamicNodeInvocation> invocation_set = {
+      std::set<DynamicNodeInvocation> invocation_set = {
           invocation_1,
           invocation_2,
       };
@@ -205,6 +208,7 @@ TEST_SUITE(FF_TEST_SUITE) {
               },
           }},
           /*parallel_tensor_shape=*/std::nullopt,
+          /*create_grad=*/std::nullopt,
           /*shard_coord=*/std::nullopt,
           /*mapping=*/std::nullopt,
           /*accessor=*/std::nullopt,
@@ -212,36 +216,44 @@ TEST_SUITE(FF_TEST_SUITE) {
       };
     };
 
+    auto mk_node_attrs = [](int node_id) -> DynamicNodeAttrs {
+      return DynamicNodeAttrs{
+          /*task_type=*/std::nullopt,
+          /*device_coord=*/std::nullopt,
+          /*mapping=*/std::nullopt,
+          /*op_attrs=*/std::nullopt,
+          /*layer_guid=*/dynamic_layer_guid_t{parallel_layer_guid_t{Node{4}}},
+          /*per_device_op_state=*/std::nullopt,
+      };
+    };
+
     DynamicValueAttrs value_1 = mk_dynamic_value(1, TensorSlotName::OUTPUT);
     DynamicValueAttrs value_2 = mk_dynamic_value(2, TensorSlotName::OUTPUT);
     DynamicValueAttrs value_3 = mk_dynamic_value(3, TensorSlotName::OUTPUT);
 
-    DynamicNodeAttrs node_attrs = DynamicNodeAttrs{
-        /*task_type=*/std::nullopt,
-        /*device_coord=*/std::nullopt,
-        /*mapping=*/std::nullopt,
-        /*op_attrs=*/std::nullopt,
-        /*layer_guid=*/dynamic_layer_guid_t{parallel_layer_guid_t{Node{4}}},
-        /*per_device_op_state=*/std::nullopt,
-    };
+    DynamicNodeAttrs node_2 = mk_node_attrs(2);
+    DynamicNodeAttrs node_3 = mk_node_attrs(3);
+    DynamicNodeAttrs node_4 = mk_node_attrs(4);
 
     DynamicNodeInvocation invocation_1 = DynamicNodeInvocation{
-        /*inputs=*/std::unordered_map<DynamicTensorSlot, DynamicValueAttrs>{
+        /*inputs=*/std::map<DynamicTensorSlot, DynamicValueAttrs>{
             {
                 DynamicTensorSlot{
                     /*slot_name=*/TensorSlotName::INPUT,
                     /*slot_tensor_role=*/std::nullopt,
+                    /*task_shard=*/std::nullopt,
                 },
                 value_1,
             },
         },
-        /*node_attrs=*/node_attrs,
+        /*node_attrs=*/node_2,
         /*outputs=*/
-        std::unordered_map<DynamicTensorSlot, DynamicValueAttrs>{
+        std::map<DynamicTensorSlot, DynamicValueAttrs>{
             {
                 DynamicTensorSlot{
                     /*slot_name=*/TensorSlotName::OUTPUT,
                     /*slot_tensor_role=*/std::nullopt,
+                    /*task_shard=*/std::nullopt,
                 },
                 value_2,
             },
@@ -249,11 +261,28 @@ TEST_SUITE(FF_TEST_SUITE) {
     };
 
     DynamicNodeInvocation invocation_2 = DynamicNodeInvocation{
-        /*inputs=*/std::unordered_map<DynamicTensorSlot, DynamicValueAttrs>{
+        /*inputs=*/std::map<DynamicTensorSlot, DynamicValueAttrs>{},
+        /*node_attrs=*/node_3,
+        /*outputs=*/
+        std::map<DynamicTensorSlot, DynamicValueAttrs>{
+            {
+                DynamicTensorSlot{
+                    /*slot_name=*/TensorSlotName::OUTPUT,
+                    /*slot_tensor_role=*/std::nullopt,
+                    /*task_shard=*/std::nullopt,
+                },
+                value_3,
+            },
+        },
+    };
+
+    DynamicNodeInvocation invocation_3 = DynamicNodeInvocation{
+        /*inputs=*/std::map<DynamicTensorSlot, DynamicValueAttrs>{
             {
                 DynamicTensorSlot{
                     /*slot_name=*/TensorSlotName::INPUT,
                     /*slot_tensor_role=*/std::nullopt,
+                    /*task_shard=*/std::nullopt,
                 },
                 value_2,
             },
@@ -261,58 +290,85 @@ TEST_SUITE(FF_TEST_SUITE) {
                 DynamicTensorSlot{
                     /*slot_name=*/TensorSlotName::WEIGHT,
                     /*slot_tensor_role=*/std::nullopt,
+                    /*task_shard=*/std::nullopt,
                 },
-                value_3,
+                value_2,
+            },
+            {
+                DynamicTensorSlot{
+                    /*slot_name=*/TensorSlotName::BIAS,
+                    /*slot_tensor_role=*/std::nullopt,
+                    /*task_shard=*/std::nullopt,
+                },
+                value_1,
             },
         },
-        /*node_attrs=*/node_attrs,
-        /*outputs=*/{},
+        /*node_attrs=*/node_4,
+        /*outputs=*/std::map<DynamicTensorSlot, DynamicValueAttrs>{},
+    };
+
+    std::set<DynamicNodeInvocation> invocation_set = {
+        invocation_1,
+        invocation_2,
+        invocation_3,
     };
 
     DynamicOpenDataflowGraph g =
-        dynamic_open_dataflow_graph_from_invocation_set(
-            std::unordered_set{invocation_1, invocation_2});
+        dynamic_open_dataflow_graph_from_invocation_set(invocation_set);
 
-    std::unordered_set<DynamicSlotSite> result = get_dynamic_slot_sites(g);
+    dynamic_invocation_id_t invocation_1_id =
+        dynamic_graph_get_id_for_invocation(g, invocation_1);
+    dynamic_invocation_id_t invocation_2_id =
+        dynamic_graph_get_id_for_invocation(g, invocation_2);
+    dynamic_invocation_id_t invocation_3_id =
+        dynamic_graph_get_id_for_invocation(g, invocation_3);
 
-    auto mk_internal_slot_site = [](DynamicNodeInvocation const &invocation,
-                                    TensorDirection direction,
-                                    TensorSlotName slot_name) {
+    dynamic_value_id_t value_1_id = dynamic_graph_get_id_for_value(g, value_1);
+
+    std::set<DynamicSlotSite> result = get_dynamic_slot_sites(g);
+
+    auto mk_internal_slot_site =
+        [](dynamic_invocation_id_t const &invocation_id,
+           TensorDirection direction,
+           TensorSlotName slot_name) -> DynamicSlotSite {
       return DynamicSlotSite{
           InternalDynamicSlotSite{
-              /*invocation=*/invocation,
+              /*invocation_id=*/invocation_id,
               /*direction=*/direction,
               /*slot_name=*/
               DynamicTensorSlot{
                   /*slot_name=*/slot_name,
                   /*slot_tensor_role=*/std::nullopt,
+                  /*task_shard=*/std::nullopt,
               },
           },
       };
     };
 
-    std::unordered_set<DynamicSlotSite> correct = {
+    std::set<DynamicSlotSite> correct = {
         DynamicSlotSite{
             ExternalDynamicSlotSite{
-                value_1,
-            },
-        },
-        DynamicSlotSite{
-            ExternalDynamicSlotSite{
-                value_3,
+                value_1_id.require_external(),
             },
         },
         mk_internal_slot_site(
-            invocation_1, TensorDirection::INCOMING, TensorSlotName::INPUT),
+            invocation_1_id, TensorDirection::INCOMING, TensorSlotName::INPUT),
         mk_internal_slot_site(
-            invocation_1, TensorDirection::OUTPUT, TensorSlotName::OUTPUT),
+            invocation_1_id, TensorDirection::OUTPUT, TensorSlotName::OUTPUT),
         mk_internal_slot_site(
-            invocation_2, TensorDirection::INCOMING, TensorSlotName::INPUT),
+            invocation_2_id, TensorDirection::OUTPUT, TensorSlotName::OUTPUT),
         mk_internal_slot_site(
-            invocation_2, TensorDirection::INCOMING, TensorSlotName::WEIGHT),
+            invocation_3_id, TensorDirection::INCOMING, TensorSlotName::INPUT),
+        mk_internal_slot_site(
+            invocation_3_id, TensorDirection::INCOMING, TensorSlotName::WEIGHT),
+        mk_internal_slot_site(
+            invocation_3_id, TensorDirection::INCOMING, TensorSlotName::BIAS),
     };
 
-    CHECK(result == correct);
+    nlohmann::json result_json = result;
+    nlohmann::json correct_json = correct;
+
+    CHECK(result_json == correct_json);
   }
 
   TEST_CASE(
@@ -361,11 +417,13 @@ TEST_SUITE(FF_TEST_SUITE) {
     DynamicTensorSlot fwd_weight_output_slot1 = DynamicTensorSlot{
         /*slot_name=*/TensorSlotName::OUTPUT,
         /*slot_tensor_role=*/mk_dynamic_tensor_role_fwd(),
+        /*task_shard=*/std::nullopt,
     };
 
     DynamicValueAttrs fwd_weight_output_attrs1 = DynamicValueAttrs{
         /*tensor_guid=*/tensor_guid,
         /*parallel_tensor_shape=*/std::nullopt,
+        /*create_grad=*/std::nullopt,
         /*shard_coord=*/std::nullopt,
         /*mapping=*/std::nullopt,
         /*accessor=*/std::nullopt,
@@ -376,7 +434,7 @@ TEST_SUITE(FF_TEST_SUITE) {
         /*inputs=*/{},
         /*node_attrs=*/fwd_weight_node_attrs,
         /*outputs=*/
-        std::unordered_map<DynamicTensorSlot, DynamicValueAttrs>{
+        std::map<DynamicTensorSlot, DynamicValueAttrs>{
             {
                 fwd_weight_output_slot1,
                 fwd_weight_output_attrs1,
@@ -396,11 +454,13 @@ TEST_SUITE(FF_TEST_SUITE) {
     DynamicTensorSlot upd_weight_input_slot2 = DynamicTensorSlot{
         /*slot_name=*/TensorSlotName::OUTPUT,
         /*slot_tensor_role=*/mk_dynamic_tensor_role_bwd(),
+        /*task_shard=*/std::nullopt,
     };
 
     DynamicValueAttrs upd_weight_input_attrs2 = DynamicValueAttrs{
         /*tensor_guid=*/tensor_guid,
         /*parallel_tensor_shape=*/std::nullopt,
+        /*create_grad=*/std::nullopt,
         /*shard_coord=*/std::nullopt,
         /*mapping=*/std::nullopt,
         /*accessor=*/std::nullopt,
@@ -411,11 +471,13 @@ TEST_SUITE(FF_TEST_SUITE) {
         /*slot_name=*/TensorSlotName::OUTPUT,
         /*slot_tensor_role=*/
         mk_dynamic_tensor_role_opt(OptimizerSlotName::SGD_V),
+        /*task_shard=*/std::nullopt,
     };
 
     DynamicValueAttrs upd_weight_input_attrs3 = DynamicValueAttrs{
         /*tensor_guid=*/tensor_guid,
         /*parallel_tensor_shape=*/std::nullopt,
+        /*create_grad=*/std::nullopt,
         /*shard_coord=*/std::nullopt,
         /*mapping=*/std::nullopt,
         /*accessor=*/std::nullopt,
