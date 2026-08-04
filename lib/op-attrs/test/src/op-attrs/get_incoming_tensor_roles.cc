@@ -18,15 +18,15 @@ TEST_SUITE(FF_TEST_SUITE) {
           get_incoming_tensor_roles(attrs);
       std::map<TensorSlotName, IncomingTensorRole> correct = {
           {
-              TensorSlotName::INPUT_0,
+              TensorSlotName::INPUT_00,
               IncomingTensorRole::INPUT,
           },
           {
-              TensorSlotName::INPUT_1,
+              TensorSlotName::INPUT_01,
               IncomingTensorRole::INPUT,
           },
           {
-              TensorSlotName::INPUT_2,
+              TensorSlotName::INPUT_02,
               IncomingTensorRole::INPUT,
           },
       };

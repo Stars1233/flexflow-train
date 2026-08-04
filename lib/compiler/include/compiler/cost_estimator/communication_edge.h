@@ -2,6 +2,7 @@
 #define _FLEXFLOW_LIB_COMPILER_INCLUDE_COMPILER_COST_ESTIMATOR_COMMUNICATION_EDGE_H
 
 #include "pcg/machine_space_coordinate.dtg.h"
+#include <nlohmann/json.hpp>
 
 namespace FlexFlow {
 
@@ -36,6 +37,16 @@ std::string format_as(CommunicationEdge const &);
 std::ostream &operator<<(std::ostream &, CommunicationEdge const &);
 
 } // namespace FlexFlow
+
+namespace nlohmann {
+
+template <>
+struct adl_serializer<::FlexFlow::CommunicationEdge> {
+  static ::FlexFlow::CommunicationEdge from_json(json const &);
+  static void to_json(json &, ::FlexFlow::CommunicationEdge const &);
+};
+
+} // namespace nlohmann
 
 namespace std {
 

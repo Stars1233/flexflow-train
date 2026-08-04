@@ -19,3 +19,6 @@ name = "TANH"
 
 [[values]]
 name = "GELU"
+
+[[values]]
+name = "SILU"

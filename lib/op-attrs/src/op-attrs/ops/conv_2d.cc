@@ -1,7 +1,7 @@
 #include "op-attrs/ops/conv_2d.h"
 #include "op-attrs/initializers/kaiming_initializer_mode.h"
-#include "op-attrs/ops/conv_2d/conv_2d_input_shape.h"
-#include "op-attrs/ops/conv_2d/conv_2d_parallel_input_shape.h"
+#include "op-attrs/parallel_tensor_dim_degrees.h"
+#include "op-attrs/tensor_dims.h"
 #include "utils/fmt/optional.h"
 #include "utils/integer_conversions.h"
 #include <libassert/assert.hpp>
@@ -22,178 +22,320 @@ std::map<TensorSlotName, IncomingTensorRole>
   return result;
 }
 
-TensorShape get_kernel_shape(Conv2DAttrs const &attrs,
-                             TensorShape const &raw_input_shape) {
-  assert(attrs.groups == 1); // TODO(@lockshaw): currently not supported
-  Conv2DInputShape input = parse_input_shape(raw_input_shape);
+TensorShape conv2d_get_kernel_shape(Conv2DAttrs const &attrs,
+                                    TensorShape const &raw_input_shape) {
+  ASSERT(get_num_dims(raw_input_shape.dims) == 4);
+
+  positive_int input_n = dim_at_idx(raw_input_shape.dims, ff_dim_t{0_n});
+  positive_int input_c = dim_at_idx(raw_input_shape.dims, ff_dim_t{1_n});
+  positive_int input_h = dim_at_idx(raw_input_shape.dims, ff_dim_t{2_n});
+  positive_int input_w = dim_at_idx(raw_input_shape.dims, ff_dim_t{3_n});
 
   return TensorShape{
       TensorDims{FFOrdered<positive_int>{
           attrs.out_channels,
-          input.num_channels,
+          positive_int{input_c / attrs.groups},
           attrs.kernel_h,
           attrs.kernel_w,
       }},
-      input.datatype,
+      raw_input_shape.data_type,
   };
 }
 
-TensorShape get_bias_shape(Conv2DAttrs const &attrs,
-                           TensorShape const &raw_input_shape) {
-  assert(attrs.groups == 1); // TODO(@lockshaw): currently not supported
-  Conv2DInputShape input = parse_input_shape(raw_input_shape);
+TensorShape conv2d_get_bias_shape(Conv2DAttrs const &attrs,
+                                  TensorShape const &raw_input_shape) {
+  ASSERT(get_num_dims(raw_input_shape.dims) == 4);
+
+  positive_int input_n = dim_at_idx(raw_input_shape.dims, ff_dim_t{0_n});
+  positive_int input_c = dim_at_idx(raw_input_shape.dims, ff_dim_t{1_n});
+  positive_int input_h = dim_at_idx(raw_input_shape.dims, ff_dim_t{2_n});
+  positive_int input_w = dim_at_idx(raw_input_shape.dims, ff_dim_t{3_n});
 
   return TensorShape{
       TensorDims{
           FFOrdered<positive_int>{attrs.out_channels},
       },
-      input.datatype,
+      raw_input_shape.data_type,
   };
 }
 
-static positive_int calculate_output_size(positive_int input_size,
-                                          nonnegative_int padding_size,
-                                          positive_int kernel_size,
-                                          positive_int stride) {
-  int input_size_raw = input_size.int_from_positive_int();
-  int padding_raw = padding_size.unwrap_nonnegative();
-  int kernel_size_raw = kernel_size.int_from_positive_int();
-  int stride_raw = stride.int_from_positive_int();
+TensorShape conv2d_get_output_shape(Conv2DAttrs const &attrs,
+                                    TensorShape const &raw_input_shape) {
 
-  return positive_int{
-      (input_size_raw + (2 * padding_raw) - kernel_size_raw) / stride_raw + 1};
-}
+  positive_int input_n = dim_at_idx(raw_input_shape.dims, ff_dim_t{0_n});
+  positive_int input_c = dim_at_idx(raw_input_shape.dims, ff_dim_t{1_n});
+  positive_int input_h = dim_at_idx(raw_input_shape.dims, ff_dim_t{2_n});
+  positive_int input_w = dim_at_idx(raw_input_shape.dims, ff_dim_t{3_n});
 
-TensorShape get_output_shape(Conv2DAttrs const &attrs,
-                             TensorShape const &raw_input_shape) {
-  assert(attrs.groups == 1); // TODO(@lockshaw): currently not supported
-  Conv2DInputShape input = parse_input_shape(raw_input_shape);
+  auto calculate_output_dim_size = [](positive_int input_size,
+                                      nonnegative_int padding_size,
+                                      positive_int kernel_size,
+                                      positive_int stride) -> positive_int {
+    int input_size_raw = input_size.int_from_positive_int();
+    int padding_raw = padding_size.unwrap_nonnegative();
+    int kernel_size_raw = kernel_size.int_from_positive_int();
+    int stride_raw = stride.int_from_positive_int();
+
+    return positive_int{
+        (input_size_raw + (2 * padding_raw) - kernel_size_raw) / stride_raw + 1,
+    };
+  };
 
   positive_int out_height =
-      calculate_output_size(/*input_size=*/input.height,
-                            /*padding_size=*/attrs.padding_h,
-                            /*kernel_size=*/attrs.kernel_h,
-                            /*stride_size=*/attrs.stride_h);
+      calculate_output_dim_size(/*input_size=*/input_h,
+                                /*padding_size=*/attrs.padding_h,
+                                /*kernel_size=*/attrs.kernel_h,
+                                /*stride_size=*/attrs.stride_h);
   positive_int out_width =
-      calculate_output_size(/*input_size=*/input.width,
-                            /*padding_size=*/attrs.padding_w,
-                            /*kernel_size=*/attrs.kernel_w,
-                            /*stride_size=*/attrs.stride_w);
+      calculate_output_dim_size(/*input_size=*/input_w,
+                                /*padding_size=*/attrs.padding_w,
+                                /*kernel_size=*/attrs.kernel_w,
+                                /*stride_size=*/attrs.stride_w);
 
-  return TensorShape{TensorDims{FFOrdered<positive_int>{
-                         input.num_samples,
-                         attrs.out_channels,
-                         out_height,
-                         out_width,
-                     }},
-                     input.datatype};
+  return TensorShape{
+      TensorDims{
+          FFOrdered<positive_int>{
+              input_n,
+              attrs.out_channels,
+              out_height,
+              out_width,
+          },
+      },
+      raw_input_shape.data_type,
+  };
 }
 
 std::map<TensorSlotName, TensorShape>
-    get_weight_shapes(Conv2DAttrs const &attrs,
-                      TensorShape const &input_shape) {
+    conv2d_get_weight_shapes(Conv2DAttrs const &attrs,
+                             TensorShape const &input_shape) {
   std::map<TensorSlotName, TensorShape> weight_shapes = {
       {
           TensorSlotName::FILTER,
-          get_kernel_shape(attrs, input_shape),
+          conv2d_get_kernel_shape(attrs, input_shape),
       },
   };
 
   if (attrs.use_bias) {
     weight_shapes.insert({
         TensorSlotName::BIAS,
-        get_bias_shape(attrs, input_shape),
+        conv2d_get_bias_shape(attrs, input_shape),
     });
   }
 
   return weight_shapes;
 }
 
-ParallelTensorShape get_kernel_shape(Conv2DAttrs const &attrs,
-                                     ParallelTensorShape const &input) {
-  assert(attrs.groups == 1); // TODO(@lockshaw): currently not supported
+ParallelTensorDimDegrees conv2d_get_kernel_parallel_dim_degrees(
+    Conv2DAttrs const &attrs,
+    ParallelTensorDimDegrees const &input_dim_degrees) {
+  ASSERT(get_ptensor_dim_degrees_num_shard_dims(input_dim_degrees) ==
+         num_ptensor_shard_dims_t{4_n});
 
-  Conv2DParallelInputShape parsed = parse_parallel_input_shape(input);
-
-  TensorShape unpar = get_kernel_shape(attrs, get_reduced_shape(input));
-
-  assert(parsed.height_dim.degree == 1);
-  assert(parsed.width_dim.degree == 1);
+  positive_int input_sum_degree = input_dim_degrees.sum_degree.value;
+  positive_int input_discard_copy_degree =
+      input_dim_degrees.discard_copy_degree.value;
+  positive_int input_n_degree =
+      input_dim_degrees.shard_degrees.at(ff_dim_t{0_n});
+  positive_int input_c_degree =
+      input_dim_degrees.shard_degrees.at(ff_dim_t{1_n});
+  ASSERT(input_dim_degrees.shard_degrees.at(ff_dim_t{2_n}) == 1);
+  ASSERT(input_dim_degrees.shard_degrees.at(ff_dim_t{3_n}) == 1);
 
   SumDegree sum_degree = SumDegree{1_p};
-  DiscardCopyDegree discard_copy_degree =
-      DiscardCopyDegree{parsed.sample_dim.degree * parsed.sum_reduction_degree};
-  FFOrdered<positive_int> shard_degrees = FFOrdered{
-      parsed.discard_copy_reduction_degree,
-      parsed.channel_dim.degree,
-      1_p,
-      1_p,
+  DiscardCopyDegree discard_copy_degree = DiscardCopyDegree{
+      input_n_degree * input_sum_degree,
   };
 
-  return lift_to_parallel_with_degrees(
-      unpar, sum_degree, discard_copy_degree, shard_degrees);
+  if (input_c_degree % attrs.groups == 0) {
+    FFOrdered<positive_int> shard_degrees = FFOrdered{
+        input_discard_copy_degree * attrs.groups,
+        positive_int{input_c_degree / attrs.groups},
+        1_p,
+        1_p,
+    };
+
+    return ParallelTensorDimDegrees{
+        /*sum_degree=*/sum_degree,
+        /*discard_copy_degree=*/discard_copy_degree,
+        /*shard_degrees=*/shard_degrees,
+    };
+  } else if (attrs.groups % input_c_degree == 0) {
+    FFOrdered<positive_int> shard_degrees = FFOrdered{
+        input_discard_copy_degree * input_c_degree,
+        1_p,
+        1_p,
+        1_p,
+    };
+
+    return ParallelTensorDimDegrees{
+        /*sum_degree=*/sum_degree,
+        /*discard_copy_degree=*/discard_copy_degree,
+        /*shard_degrees=*/shard_degrees,
+    };
+  } else {
+    PANIC("input_channel_degree and group count are not compatible",
+          input_c_degree,
+          attrs.groups);
+  }
 }
 
-ParallelTensorShape get_bias_shape(Conv2DAttrs const &attrs,
-                                   ParallelTensorShape const &input) {
-  assert(attrs.groups == 1); // TODO(@lockshaw): currently not supported
+ParallelTensorDimDegrees conv2d_get_bias_parallel_dim_degrees(
+    Conv2DAttrs const &attrs,
+    ParallelTensorDimDegrees const &input_dim_degrees) {
+  ASSERT(get_ptensor_dim_degrees_num_shard_dims(input_dim_degrees) ==
+         num_ptensor_shard_dims_t{4_n});
 
-  Conv2DParallelInputShape parsed = parse_parallel_input_shape(input);
+  positive_int input_sum_degree = input_dim_degrees.sum_degree.value;
+  positive_int input_discard_copy_degree =
+      input_dim_degrees.discard_copy_degree.value;
+  positive_int input_n_degree =
+      input_dim_degrees.shard_degrees.at(ff_dim_t{0_n});
+  positive_int input_c_degree =
+      input_dim_degrees.shard_degrees.at(ff_dim_t{1_n});
+  ASSERT(input_dim_degrees.shard_degrees.at(ff_dim_t{2_n}) == 1);
+  ASSERT(input_dim_degrees.shard_degrees.at(ff_dim_t{3_n}) == 1);
 
-  TensorShape unpar = get_bias_shape(attrs, get_reduced_shape(input));
+  DiscardCopyDegree discard_copy_degree = DiscardCopyDegree{input_n_degree};
 
-  SumDegree sum_degree =
-      SumDegree{parsed.sum_reduction_degree * parsed.channel_dim.degree};
-  DiscardCopyDegree discard_copy_degree =
-      DiscardCopyDegree{parsed.height_dim.degree * parsed.width_dim.degree *
-                        parsed.sample_dim.degree};
-  FFOrdered<positive_int> shard_degrees = FFOrdered{
-      parsed.discard_copy_reduction_degree,
-  };
+  if (input_c_degree % attrs.groups == 0) {
+    SumDegree sum_degree = SumDegree{
+        input_sum_degree * positive_int{input_c_degree / attrs.groups},
+    };
 
-  return lift_to_parallel_with_degrees(
-      unpar, sum_degree, discard_copy_degree, shard_degrees);
+    FFOrdered<positive_int> shard_degrees = FFOrdered{
+        input_discard_copy_degree * attrs.groups,
+    };
+
+    return ParallelTensorDimDegrees{
+        /*sum_degree=*/sum_degree,
+        /*discard_copy_degree=*/discard_copy_degree,
+        /*shard_degrees=*/shard_degrees,
+    };
+  } else if (attrs.groups % input_c_degree == 0) {
+    SumDegree sum_degree = SumDegree{
+        input_sum_degree,
+    };
+
+    FFOrdered<positive_int> shard_degrees = FFOrdered{
+        input_discard_copy_degree * input_c_degree,
+    };
+
+    return ParallelTensorDimDegrees{
+        /*sum_degree=*/sum_degree,
+        /*discard_copy_degree=*/discard_copy_degree,
+        /*shard_degrees=*/shard_degrees,
+    };
+  } else {
+    PANIC("input_channel_degree and group count are not compatible",
+          input_c_degree,
+          attrs.groups);
+  }
 }
 
-ParallelTensorShape get_output_shape(Conv2DAttrs const &attrs,
-                                     ParallelTensorShape const &input) {
-  assert(attrs.groups == 1); // TODO(@lockshaw): currently not supported
+ParallelTensorDimDegrees conv2d_get_output_parallel_dim_degrees(
+    Conv2DAttrs const &attrs,
+    ParallelTensorDimDegrees const &input_dim_degrees) {
+  ASSERT(get_ptensor_dim_degrees_num_shard_dims(input_dim_degrees) ==
+         num_ptensor_shard_dims_t{4_n});
 
-  Conv2DParallelInputShape parsed = parse_parallel_input_shape(input);
+  positive_int input_sum_degree = input_dim_degrees.sum_degree.value;
+  positive_int input_discard_copy_degree =
+      input_dim_degrees.discard_copy_degree.value;
+  positive_int input_n_degree =
+      input_dim_degrees.shard_degrees.at(ff_dim_t{0_n});
+  positive_int input_c_degree =
+      input_dim_degrees.shard_degrees.at(ff_dim_t{1_n});
+  ASSERT(input_dim_degrees.shard_degrees.at(ff_dim_t{2_n}) == 1);
+  ASSERT(input_dim_degrees.shard_degrees.at(ff_dim_t{3_n}) == 1);
 
-  TensorShape unpar = get_output_shape(attrs, get_reduced_shape(input));
-
-  assert(parsed.height_dim.degree == 1);
-  assert(parsed.width_dim.degree == 1);
-
-  SumDegree sum_degree =
-      SumDegree{parsed.sum_reduction_degree * parsed.channel_dim.degree};
   DiscardCopyDegree discard_copy_degree = DiscardCopyDegree{1_p};
-  FFOrdered<positive_int> shard_degrees = FFOrdered{
-      parsed.sample_dim.degree,
-      parsed.discard_copy_reduction_degree,
-      1_p,
-      1_p,
-  };
 
-  return lift_to_parallel_with_degrees(
-      unpar, sum_degree, discard_copy_degree, shard_degrees);
+  if (input_c_degree % attrs.groups == 0) {
+    SumDegree sum_degree = SumDegree{
+        input_sum_degree * positive_int{input_c_degree / attrs.groups},
+    };
+
+    FFOrdered<positive_int> shard_degrees = FFOrdered{
+        input_n_degree,
+        input_discard_copy_degree * attrs.groups,
+        1_p,
+        1_p,
+    };
+
+    return ParallelTensorDimDegrees{
+        /*sum_degree=*/sum_degree,
+        /*discard_copy_degree=*/discard_copy_degree,
+        /*shard_degrees=*/shard_degrees,
+    };
+  } else if (attrs.groups % input_c_degree == 0) {
+    SumDegree sum_degree = SumDegree{
+        input_sum_degree,
+    };
+
+    FFOrdered<positive_int> shard_degrees = FFOrdered{
+        input_n_degree,
+        input_discard_copy_degree * input_c_degree,
+        1_p,
+        1_p,
+    };
+
+    return ParallelTensorDimDegrees{
+        /*sum_degree=*/sum_degree,
+        /*discard_copy_degree=*/discard_copy_degree,
+        /*shard_degrees=*/shard_degrees,
+    };
+  } else {
+    PANIC("input_channel_degree and group count are not compatible",
+          input_c_degree,
+          attrs.groups);
+  }
+}
+
+ParallelTensorShape
+    conv2d_get_kernel_parallel_shape(Conv2DAttrs const &attrs,
+                                     ParallelTensorShape const &input) {
+  TensorShape unpar = conv2d_get_kernel_shape(attrs, get_reduced_shape(input));
+  ParallelTensorDimDegrees degrees = conv2d_get_kernel_parallel_dim_degrees(
+      attrs, get_parallel_degrees(input));
+
+  return lift_to_parallel_with_degrees(unpar, degrees);
+}
+
+ParallelTensorShape
+    conv2d_get_bias_parallel_shape(Conv2DAttrs const &attrs,
+                                   ParallelTensorShape const &input) {
+  TensorShape unpar = conv2d_get_bias_shape(attrs, get_reduced_shape(input));
+  ParallelTensorDimDegrees degrees =
+      conv2d_get_bias_parallel_dim_degrees(attrs, get_parallel_degrees(input));
+
+  return lift_to_parallel_with_degrees(unpar, degrees);
+}
+
+ParallelTensorShape
+    conv2d_get_output_parallel_shape(Conv2DAttrs const &attrs,
+                                     ParallelTensorShape const &input) {
+
+  TensorShape unpar = conv2d_get_output_shape(attrs, get_reduced_shape(input));
+  ParallelTensorDimDegrees degrees = conv2d_get_output_parallel_dim_degrees(
+      attrs, get_parallel_degrees(input));
+
+  return lift_to_parallel_with_degrees(unpar, degrees);
 }
 
 std::map<TensorSlotName, ParallelTensorShape>
-    get_weight_shapes(Conv2DAttrs const &attrs,
-                      ParallelTensorShape const &input_shape) {
+    conv2d_get_weight_parallel_shapes(Conv2DAttrs const &attrs,
+                                      ParallelTensorShape const &input_shape) {
   std::map<TensorSlotName, ParallelTensorShape> weight_shapes = {
       {
           TensorSlotName::FILTER,
-          get_kernel_shape(attrs, input_shape),
+          conv2d_get_kernel_parallel_shape(attrs, input_shape),
       },
   };
 
   if (attrs.use_bias) {
     weight_shapes.insert({
         TensorSlotName::BIAS,
-        get_bias_shape(attrs, input_shape),
+        conv2d_get_bias_parallel_shape(attrs, input_shape),
     });
   }
 
@@ -206,13 +348,13 @@ std::map<TensorSlotName, ParallelTensorShape>
  * see
  * https://github.com/pytorch/pytorch/blob/1eba9b3aa3c43f86f4a2c807ac8e12c4a7767340/torch/nn/modules/conv.py#L178-L187
  */
-std::map<TensorSlotName, InitializerAttrs>
-    get_initializers(Conv2DAttrs const &attrs,
-                     TensorShape const &input_shape,
-                     std::optional<InitializerAttrs> maybe_kernel_initializer,
-                     std::optional<InitializerAttrs> maybe_bias_initializer) {
+std::map<TensorSlotName, InitializerAttrs> conv2d_get_initializers(
+    Conv2DAttrs const &attrs,
+    TensorShape const &input_shape,
+    std::optional<InitializerAttrs> maybe_kernel_initializer,
+    std::optional<InitializerAttrs> maybe_bias_initializer) {
 
-  TensorShape kernel_shape = get_kernel_shape(attrs, input_shape);
+  TensorShape kernel_shape = conv2d_get_kernel_shape(attrs, input_shape);
 
   InitializerAttrs kernel_default_initializer =
       InitializerAttrs{KaimingNormalAttrs{

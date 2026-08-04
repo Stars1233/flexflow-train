@@ -1,0 +1,31 @@
+namespace = "FlexFlow"
+name = "YOLOv10LayerConfigConcat"
+type = "struct"
+features = [
+  "eq",
+  "ord",
+  "hash",
+  "json",
+  "fmt",
+]
+
+includes = [
+  "models/yolov10/yolov10_tensor_idx_t.dtg.h",
+  "op-attrs/relative_ff_dim_t.dtg.h",
+  "<vector>",
+
+]
+
+src_includes = [
+  "utils/hash/vector.h",
+  "utils/fmt/vector.h",
+  "utils/ord/vector.h",
+]
+
+[[fields]]
+name = "input_tensor_idxs"
+type = "std::vector<::FlexFlow::yolov10_tensor_idx_t>"
+
+[[fields]]
+name = "dim"
+type = "::FlexFlow::relative_ff_dim_t"

@@ -21,6 +21,8 @@ struct GenericTaskImplFunction {
 std::string format_as(GenericTaskImplFunction const &x);
 std::ostream &operator<<(std::ostream &s, GenericTaskImplFunction const &x);
 
+void to_json(nlohmann::json &, GenericTaskImplFunction const &);
+
 } // namespace FlexFlow
 
 ///\cond

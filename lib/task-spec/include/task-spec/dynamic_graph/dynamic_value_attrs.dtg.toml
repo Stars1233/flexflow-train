@@ -6,6 +6,7 @@ features = [
   "ord",
   "fmt",
   "hash",
+  "json_serialize",
 ]
 
 includes = [
@@ -22,6 +23,7 @@ includes = [
 
 src_includes = [
   "utils/fmt/optional.h",
+  "utils/json/optional.h",
 ]
 
 [[fields]]

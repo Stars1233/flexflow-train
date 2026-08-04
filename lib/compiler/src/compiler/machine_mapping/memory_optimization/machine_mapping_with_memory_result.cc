@@ -211,6 +211,26 @@ MachineMappingWithMemoryResult
 
 } // namespace FlexFlow
 
+namespace nlohmann {
+
+::FlexFlow::MachineMappingWithMemoryResult
+    adl_serializer<::FlexFlow::MachineMappingWithMemoryResult>::from_json(
+        json const &j) {
+  ASSERT(j.at("__type").template get<std::string>() ==
+         "MachineMappingWithMemoryResult");
+  return ::FlexFlow::MachineMappingWithMemoryResult{
+      j.at("pareto_frontier"),
+  };
+}
+
+void adl_serializer<::FlexFlow::MachineMappingWithMemoryResult>::to_json(
+    json &j, ::FlexFlow::MachineMappingWithMemoryResult const &r) {
+  j["__type"] = "MachineMappingWithMemoryResult";
+  j["pareto_frontier"] = r.get_pareto_frontier();
+}
+
+} // namespace nlohmann
+
 namespace std {
 
 size_t hash<::FlexFlow::MachineMappingWithMemoryResult>::operator()(

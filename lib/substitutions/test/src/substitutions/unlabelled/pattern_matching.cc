@@ -55,7 +55,7 @@ namespace rc {
 } // namespace rc
 
 TEST_SUITE(FF_TEST_SUITE) {
-  TEST_CASE("find_pattern_matches") {
+  TEST_CASE("pattern matching") {
     OpenKwargDataflowGraph<int, TensorSlotName> pattern_graph =
         OpenKwargDataflowGraph<int, TensorSlotName>::create<
             UnorderedSetOpenKwargDataflowGraph<int, TensorSlotName>>();

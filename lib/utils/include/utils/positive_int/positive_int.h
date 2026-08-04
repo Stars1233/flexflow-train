@@ -13,6 +13,7 @@ struct positive_int {
 
   explicit operator int() const noexcept;
   explicit operator nonnegative_int() const noexcept;
+  explicit operator float() const noexcept;
 
   bool operator<(positive_int other) const;
   bool operator==(positive_int other) const;
@@ -57,6 +58,7 @@ struct positive_int {
   positive_int &operator+=(nonnegative_int other);
 
   friend positive_int operator+(nonnegative_int lhs, positive_int rhs);
+  friend nonnegative_int &operator+=(nonnegative_int &lhs, positive_int rhs);
 
   positive_int operator*(positive_int other) const;
   positive_int &operator*=(positive_int other);
@@ -64,11 +66,20 @@ struct positive_int {
 
   friend nonnegative_int operator*(nonnegative_int lhs, positive_int rhs);
 
+  float operator*(float other) const;
+  friend float operator*(float lhs, positive_int rhs);
+
+  int operator/(int other) const;
   nonnegative_int operator/(positive_int other) const;
   friend nonnegative_int operator/(nonnegative_int lhs, positive_int rhs);
 
+  friend int &operator/=(int &lhs, positive_int rhs);
+
   friend float operator/(float lhs, positive_int rhs);
   friend float &operator/=(float &lhs, positive_int rhs);
+
+  int operator%(int other) const;
+  friend nonnegative_int operator%(int lhs, positive_int rhs);
 
   nonnegative_int operator%(positive_int other) const;
   friend nonnegative_int operator%(nonnegative_int lhs, positive_int rhs);

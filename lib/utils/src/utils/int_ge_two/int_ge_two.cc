@@ -319,6 +319,14 @@ nonnegative_int operator/(nonnegative_int lhs, int_ge_two rhs) {
   return lhs / rhs.positive_int_from_int_ge_two();
 }
 
+int &operator/=(int &lhs, int_ge_two rhs) {
+  return (lhs /= rhs.value_);
+}
+
+nonnegative_int &operator/=(nonnegative_int &lhs, int_ge_two rhs) {
+  return (lhs /= rhs.nonnegative_int_from_int_ge_two());
+}
+
 nonnegative_int operator%(positive_int lhs, int_ge_two rhs) {
   return lhs % rhs.positive_int_from_int_ge_two();
 }

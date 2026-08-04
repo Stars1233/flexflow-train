@@ -66,6 +66,17 @@ std::ostream &operator<<(std::ostream &,
 
 } // namespace FlexFlow
 
+namespace nlohmann {
+
+template <>
+struct adl_serializer<::FlexFlow::MachineMappingWithMemoryResult> {
+  static ::FlexFlow::MachineMappingWithMemoryResult from_json(json const &);
+  static void to_json(json &,
+                      ::FlexFlow::MachineMappingWithMemoryResult const &);
+};
+
+} // namespace nlohmann
+
 namespace std {
 
 template <>

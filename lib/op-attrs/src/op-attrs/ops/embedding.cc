@@ -1,6 +1,6 @@
 #include "op-attrs/ops/embedding.h"
-#include "op-attrs/ff_ordered/slice.h"
-#include "op-attrs/ff_ordered/transform.h"
+#include "op-attrs/ff_ordered/ff_ordered_slice.h"
+#include "op-attrs/ff_ordered/ff_ordered_transform.h"
 #include "op-attrs/ops/embedding_attrs.dtg.h"
 #include "op-attrs/parallel_tensor_dims.h"
 #include "op-attrs/tensor_dims.h"
@@ -79,8 +79,8 @@ tl::expected<ParallelTensorShape, std::string>
       SumDegree{shard_dim_at_idx(input, relative_ff_dim_t{-1}).degree};
   DiscardCopyDegree discard_copy_degree = DiscardCopyDegree{1_p};
   FFOrdered<positive_int> shard_degrees =
-      transform(input.dims.shard_dims,
-                [](ShardParallelDim const &d) { return d.degree; });
+      ff_ordered_transform(input.dims.shard_dims,
+                           [](ShardParallelDim const &d) { return d.degree; });
   shard_degrees.at(relative_ff_dim_t{-1}) = get_discard_copy_degree(input);
 
   return lift_to_parallel_with_degrees(
@@ -100,9 +100,10 @@ tl::expected<ParallelTensorShape, std::string>
   });
 
   SumDegree sum_degree = SumDegree{1_p};
-  DiscardCopyDegree discard_copy_degree = DiscardCopyDegree{product(transform(
-      ff_ordered_shard_dims(input.dims),
-      [](ShardParallelDim const &d) -> positive_int { return d.degree; }))};
+  DiscardCopyDegree discard_copy_degree =
+      DiscardCopyDegree{product(ff_ordered_transform(
+          ff_ordered_shard_dims(input.dims),
+          [](ShardParallelDim const &d) -> positive_int { return d.degree; }))};
   positive_int entry_dim_degree = 1_p;
   positive_int out_channel_degree = get_discard_copy_degree(input);
   FFOrdered<positive_int> shard_degrees = FFOrdered{

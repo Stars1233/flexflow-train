@@ -93,13 +93,13 @@ TEST_SUITE(FF_TEST_SUITE) {
     DynamicValueAttrs graph_input2 =
         mk_value(1, TensorSlotName::OUTPUT, std::nullopt);
     DynamicValueAttrs invocation1_output1 =
-        mk_value(invocation1_id, TensorSlotName::OUTPUT_1, std::nullopt);
+        mk_value(invocation1_id, TensorSlotName::OUTPUT_01, std::nullopt);
     DynamicValueAttrs invocation1_output2 =
-        mk_value(invocation1_id, TensorSlotName::OUTPUT_2, std::nullopt);
+        mk_value(invocation1_id, TensorSlotName::OUTPUT_02, std::nullopt);
     DynamicValueAttrs invocation2_output1 =
-        mk_value(invocation2_id, TensorSlotName::OUTPUT_4, std::nullopt);
+        mk_value(invocation2_id, TensorSlotName::OUTPUT_04, std::nullopt);
     DynamicValueAttrs invocation3_output1 =
-        mk_value(invocation3_id, TensorSlotName::OUTPUT_1, std::nullopt);
+        mk_value(invocation3_id, TensorSlotName::OUTPUT_01, std::nullopt);
 
     DynamicNodeInvocation invocation1 = DynamicNodeInvocation{
         /*inputs=*/{
@@ -125,11 +125,11 @@ TEST_SUITE(FF_TEST_SUITE) {
         /*outputs=*/
         {
             {
-                mk_slot(TensorSlotName::OUTPUT_1),
+                mk_slot(TensorSlotName::OUTPUT_01),
                 invocation1_output1,
             },
             {
-                mk_slot(TensorSlotName::OUTPUT_2),
+                mk_slot(TensorSlotName::OUTPUT_02),
                 invocation1_output2,
             },
         },
@@ -152,7 +152,7 @@ TEST_SUITE(FF_TEST_SUITE) {
         /*outputs=*/
         {
             {
-                mk_slot(TensorSlotName::OUTPUT_4),
+                mk_slot(TensorSlotName::OUTPUT_04),
                 invocation2_output1,
             },
         },
@@ -186,7 +186,7 @@ TEST_SUITE(FF_TEST_SUITE) {
         /*outputs=*/
         {
             {
-                mk_slot(TensorSlotName::OUTPUT_1),
+                mk_slot(TensorSlotName::OUTPUT_01),
                 invocation3_output1,
             },
         },

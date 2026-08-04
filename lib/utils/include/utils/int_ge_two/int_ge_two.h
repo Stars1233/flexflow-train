@@ -90,9 +90,13 @@ struct int_ge_two {
   friend positive_int &operator*=(positive_int &lhs, int_ge_two rhs);
   friend nonnegative_int &operator*=(nonnegative_int &lhs, int_ge_two rhs);
 
+  int operator/(int other) const;
   nonnegative_int operator/(int_ge_two other) const;
   friend nonnegative_int operator/(positive_int lhs, int_ge_two rhs);
   friend nonnegative_int operator/(nonnegative_int lhs, int_ge_two rhs);
+
+  friend int &operator/=(int &lhs, int_ge_two rhs);
+  friend nonnegative_int &operator/=(nonnegative_int &lhs, int_ge_two rhs);
 
   friend nonnegative_int operator%(positive_int lhs, int_ge_two rhs);
   friend nonnegative_int operator%(nonnegative_int lhs, int_ge_two rhs);

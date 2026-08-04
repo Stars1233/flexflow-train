@@ -2,6 +2,7 @@
 #define _FLEXFLOW_LIB_UTILS_INCLUDE_UTILS_DOT_DOT_HTML_TABLE_CELL_CONTENTS_H
 
 #include <memory>
+#include <nlohmann/json.hpp>
 #include <string>
 #include <variant>
 
@@ -26,10 +27,14 @@ public:
 
 private:
   std::variant<std::string, std::shared_ptr<DotHtmlTable>> value;
+
+  friend void to_json(nlohmann::json &, DotHtmlTableCellContents const &);
 };
 
 std::string format_as(DotHtmlTableCellContents const &);
 std::ostream &operator<<(std::ostream &, DotHtmlTableCellContents const &);
+
+void to_json(nlohmann::json &, DotHtmlTableCellContents const &);
 
 } // namespace FlexFlow
 

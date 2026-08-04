@@ -78,6 +78,37 @@ TEST_SUITE(FF_TEST_SUITE) {
     }
   }
 
+  TEST_CASE("permute_tensor_dims") {
+    TensorDimPermutation p = TensorDimPermutation{
+        bidict<ff_dim_t, ff_dim_t>{
+            {ff_dim_t{0_n}, ff_dim_t{3_n}},
+            {ff_dim_t{1_n}, ff_dim_t{1_n}},
+            {ff_dim_t{2_n}, ff_dim_t{0_n}},
+            {ff_dim_t{3_n}, ff_dim_t{2_n}},
+        },
+    };
+
+    TensorDims input_dims = TensorDims{
+        FFOrdered<positive_int>{
+            4_p,
+            3_p,
+            10_p,
+            12_p,
+        },
+    };
+
+    TensorDims result = permute_tensor_dims(p, input_dims);
+
+    TensorDims correct = TensorDims{
+        FFOrdered<positive_int>{
+            12_p,
+            3_p,
+            4_p,
+            10_p,
+        },
+    };
+  }
+
   TEST_CASE("Arbitrary<TensorDimPermutation>") {
     RC_SUBCASE([](TensorDimPermutation) {});
   }

@@ -137,6 +137,44 @@ TEST_SUITE(FF_TEST_SUITE) {
                   check_kv("result", format_accessor_w_contents(result)));
   }
 
+  TEST_CASE("tensor_accessor_batch_transpose") {
+    Allocator cpu_allocator = create_local_cpu_memory_allocator();
+
+    GenericTensorAccessorR input = create_3d_accessor_r_with_contents<float>(
+        {
+            {
+                {3, 3, 6},
+                {0, -1, 0.75},
+            },
+            {
+                {5, 1, -2},
+                {1, 2, 0},
+            },
+        },
+        cpu_allocator);
+
+    GenericTensorAccessorW result =
+        tensor_accessor_batch_transpose(input, cpu_allocator);
+
+    GenericTensorAccessorR correct = create_3d_accessor_r_with_contents<float>(
+        {
+            {
+                {3, 0},
+                {3, -1},
+                {6, 0.75},
+            },
+            {
+                {5, 1},
+                {1, 2},
+                {-2, 0},
+            },
+        },
+        cpu_allocator);
+
+    CHECK_MESSAGE(accessors_are_equal(result, correct),
+                  check_kv("result", format_accessor_w_contents(result)));
+  }
+
   TEST_CASE("tensor_accessor_reduce") {
     Allocator cpu_allocator = create_local_cpu_memory_allocator();
 

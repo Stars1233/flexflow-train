@@ -6,8 +6,6 @@
 
 namespace FlexFlow {
 
-using namespace FlexFlow::Kernels::ElementUnary;
-
 static DeviceSpecificPerDeviceOpState
     init_task_impl(TaskArgumentAccessor const &acc) {
 
@@ -18,7 +16,8 @@ static DeviceSpecificPerDeviceOpState
   TensorShape output_shape = acc.get_tensor_shape(TensorSlotName::OUTPUT);
 
   std::optional<ElementUnaryPerDeviceState> per_device_state =
-      init_kernel(kernel_device_type, input_shape, output_shape, attrs);
+      element_unary_init_kernel(
+          kernel_device_type, input_shape, output_shape, attrs);
 
   return DeviceSpecificPerDeviceOpState{
       acc.make_device_specific(per_device_state),
@@ -38,7 +37,7 @@ static std::optional<milliseconds_t>
   std::optional<ElementUnaryPerDeviceState> per_device_state =
       acc.get_per_device_op_state().require_element_unary();
 
-  return profile(forward_kernel,
+  return profile(element_unary_forward_kernel,
                  profiling,
                  kernel_device_type,
                  "[ElementUnary] forward_time = {:.2lf}ms\n",
@@ -65,7 +64,7 @@ static std::optional<milliseconds_t>
   std::optional<ElementUnaryPerDeviceState> per_device_state =
       acc.get_per_device_op_state().require_element_unary();
 
-  return profile(backward_kernel,
+  return profile(element_unary_backward_kernel,
                  profiling,
                  kernel_device_type,
                  "[ElementUnary] backward_time = {:.2lf}ms\n",

@@ -4,7 +4,7 @@
 
 namespace FlexFlow {
 
-using K = ordered_value_type<0>;
+using K = value_type<0>;
 using V = value_type<1>;
 
 template std::unordered_map<K, V>

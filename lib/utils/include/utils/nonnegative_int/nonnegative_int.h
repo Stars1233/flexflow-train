@@ -48,8 +48,16 @@ public:
   nonnegative_int operator*(nonnegative_int const &other) const;
   nonnegative_int &operator*=(nonnegative_int const &other);
 
+  float operator*(float other) const;
+  friend float operator*(float lhs, nonnegative_int rhs);
+  friend float &operator*=(float &lhs, nonnegative_int rhs);
+
+  int operator/(int other) const;
   nonnegative_int operator/(nonnegative_int const &other) const;
   nonnegative_int &operator/=(nonnegative_int const &other);
+
+  friend int operator/(int lhs, nonnegative_int rhs);
+  friend int &operator/=(int &lhs, nonnegative_int rhs);
 
   friend float operator/(float lhs, nonnegative_int rhs);
   friend float &operator/=(float &lhs, nonnegative_int rhs);

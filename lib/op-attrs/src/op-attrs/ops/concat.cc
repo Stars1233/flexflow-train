@@ -1,5 +1,5 @@
 #include "op-attrs/ops/concat.h"
-#include "op-attrs/ff_ordered/enumerate.h"
+#include "op-attrs/ff_ordered/ff_ordered_enumerate.h"
 #include "op-attrs/ff_ordered/ff_ordered_from_map.h"
 #include "op-attrs/parallel_tensor_shape.h"
 #include "op-attrs/tensor_dims.h"
@@ -13,41 +13,25 @@
 
 namespace FlexFlow {
 
-tl::expected<TensorShape, std::string>
-    get_output_shape(ConcatAttrs const &attrs,
-                     std::vector<TensorShape> const &inputs) {
-  auto get_non_axis_dims = [&](TensorShape const &s) {
-    std::map<ff_dim_t, positive_int> dim_sizes = enumerate(ff_ordered(s.dims));
+TensorShape concat_get_output_shape(ConcatAttrs const &attrs,
+                                    std::vector<TensorShape> const &inputs) {
+  ASSERT(attrs.num_inputs == inputs.size());
+
+  auto get_non_axis_dims =
+      [&](TensorShape const &s) -> std::map<ff_dim_t, positive_int> {
+    std::map<ff_dim_t, positive_int> dim_sizes =
+        ff_ordered_enumerate(ff_ordered(s.dims));
     dim_sizes.erase(attrs.axis);
     return dim_sizes;
   };
 
-  if (inputs.size() <= 1) {
-    return tl::unexpected(fmt::format("get_output_shape for Concat expected 2 "
-                                      "or more input, but receieved {}",
-                                      inputs));
-  }
+  num_tensor_dims_t input_num_dims = require_all_same1(transform(
+      inputs, [](TensorShape const &s) { return get_num_dims(s.dims); }));
 
-  if (attrs.axis.value < 0) {
-    return tl::unexpected(fmt::format("ConcatAttrs requires axis >= 0"));
-  }
+  ASSERT(attrs.axis.value < input_num_dims.int_from_num_tensor_dims());
 
-  if (!are_all_same(transform(
-          inputs, [](TensorShape const &s) { return get_num_dims(s.dims); }))) {
-    return tl::unexpected(
-        fmt::format("get_output_shape for Concat expected all inputs to have "
-                    "the same number of dimensions, but receieved {}",
-                    inputs));
-  }
-
-  std::map<ff_dim_t, positive_int> non_axis_dims = ({
-    tl::expected<std::map<ff_dim_t, positive_int>, std::string> returned =
-        require_all_same1(transform(inputs, get_non_axis_dims));
-    if (!returned.has_value()) {
-      return tl::unexpected(returned.error());
-    }
-    returned.value();
-  });
+  std::map<ff_dim_t, positive_int> non_axis_dims =
+      require_all_same1(transform(inputs, get_non_axis_dims));
 
   std::vector<positive_int> axis_dim_sizes =
       transform(inputs, [&](TensorShape const &s) {
@@ -58,14 +42,8 @@ tl::expected<TensorShape, std::string>
 
   non_axis_dims.insert({attrs.axis, output_axis_dim_size});
 
-  DataType datatype = ({
-    tl::expected<DataType, std::string> returned = require_all_same1(
-        transform(inputs, [](TensorShape const &s) { return s.data_type; }));
-    if (!returned.has_value()) {
-      return tl::unexpected(returned.error());
-    }
-    returned.value();
-  });
+  DataType datatype = require_all_same1(
+      transform(inputs, [](TensorShape const &s) { return s.data_type; }));
 
   return TensorShape{
       TensorDims{
@@ -75,56 +53,33 @@ tl::expected<TensorShape, std::string>
   };
 }
 
-tl::expected<ParallelTensorShape, std::string>
-    get_output_shape(ConcatAttrs const &attrs,
-                     std::vector<ParallelTensorShape> const &inputs) {
-  TensorShape unpar = ({
-    tl::expected<TensorShape, std::string> returned =
-        get_output_shape(attrs, transform(inputs, get_reduced_shape));
-    if (!returned.has_value()) {
-      return tl::unexpected(returned.error());
-    }
-    returned.value();
-  });
+ParallelTensorShape concat_get_output_parallel_shape(
+    ConcatAttrs const &attrs, std::vector<ParallelTensorShape> const &inputs) {
+  TensorShape unpar =
+      concat_get_output_shape(attrs, transform(inputs, get_reduced_shape));
 
-  SumDegree sum_degree = ({
-    tl::expected<positive_int, std::string> returned =
-        require_all_same1(transform(inputs, get_sum_degree));
-    if (!returned.has_value()) {
-      return tl::unexpected(returned.error());
-    }
-    SumDegree{returned.value()};
-  });
+  SumDegree sum_degree = SumDegree{
+      require_all_same1(transform(inputs, get_sum_degree)),
+  };
 
-  DiscardCopyDegree discard_copy_degree = ({
-    tl::expected<positive_int, std::string> returned =
-        require_all_same1(transform(inputs, get_discard_copy_degree));
-    if (!returned.has_value()) {
-      return tl::unexpected(returned.error());
-    }
-    DiscardCopyDegree{returned.value()};
-  });
+  DiscardCopyDegree discard_copy_degree = DiscardCopyDegree{
+      require_all_same1(transform(inputs, get_discard_copy_degree)),
+  };
 
-  if (!all_of(inputs, [&](ParallelTensorShape const &s) {
-        return shard_dim_at_idx(s, relative_ff_dim_t_from_ff_dim_t(attrs.axis))
-                   .degree == 1;
-      })) {
-    return tl::unexpected(fmt::format(
-        "get_output_shape for Concat expected input tensors to have parallel "
-        "degree 1 in the concat axis dimension, but received {}",
-        inputs));
-  }
+  ASSERT(all_of(inputs,
+                [&](ParallelTensorShape const &s) {
+                  return shard_dim_at_idx(
+                             s, relative_ff_dim_t_from_ff_dim_t(attrs.axis))
+                             .degree == 1;
+                }),
+         "get_output_shape for Concat expected input tensors to have parallel "
+         "degree 1 in the concat axis dimension",
+         inputs);
 
-  ParallelTensorDimDegrees degrees = ({
-    tl::expected<ParallelTensorDimDegrees, std::string> returned =
-        require_all_same1(transform(inputs, [](ParallelTensorShape const &s) {
-          return get_parallel_degrees(s);
-        }));
-    if (!returned.has_value()) {
-      return tl::unexpected(returned.error());
-    }
-    returned.value();
-  });
+  ParallelTensorDimDegrees degrees =
+      require_all_same1(transform(inputs, [](ParallelTensorShape const &s) {
+        return get_parallel_degrees(s);
+      }));
 
   return lift_to_parallel_with_degrees(unpar, degrees);
 }

@@ -1,9 +1,8 @@
 #ifndef _FLEXFLOW_LIB_UTILS_INCLUDE_UTILS_CONTAINERS_SUBVEC_H
 #define _FLEXFLOW_LIB_UTILS_INCLUDE_UTILS_CONTAINERS_SUBVEC_H
 
-#include "utils/exception.h"
+#include <libassert/assert.hpp>
 #include <optional>
-#include <stdexcept>
 #include <vector>
 
 namespace FlexFlow {

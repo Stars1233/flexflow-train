@@ -1,6 +1,6 @@
 #include "op-attrs/ops/batch_norm.h"
-#include "op-attrs/ff_ordered/concat.h"
-#include "op-attrs/ff_ordered/slice.h"
+#include "op-attrs/ff_ordered/ff_ordered_concat.h"
+#include "op-attrs/ff_ordered/ff_ordered_slice.h"
 #include "op-attrs/parallel_tensor_shape.h"
 #include "op-attrs/tensor_dims.h"
 #include "op-attrs/tensor_shape.h"
@@ -137,9 +137,11 @@ static std::optional<std::string>
         input_degrees.discard_copy_degree);
   }
 
-  FFOrdered<positive_int> non_channel_degrees =
-      concat(slice(input_degrees.shard_degrees, ff_dim_t{0_n}, ff_dim_t{1_n}),
-             slice(input_degrees.shard_degrees, ff_dim_t{2_n}, std::nullopt));
+  FFOrdered<positive_int> non_channel_degrees = ff_ordered_concat(
+      ff_ordered_slice(
+          input_degrees.shard_degrees, ff_dim_t{0_n}, ff_dim_t{1_n}),
+      ff_ordered_slice(
+          input_degrees.shard_degrees, ff_dim_t{2_n}, std::nullopt));
 
   if (any_of(non_channel_degrees,
              [](positive_int degree) { return degree != 1_p; })) {

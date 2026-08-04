@@ -37,6 +37,13 @@ void tensor_accessor_transpose_to(GenericTensorAccessorR const &input,
                                   GenericTensorAccessorW const &output);
 
 GenericTensorAccessorW
+    tensor_accessor_batch_transpose(GenericTensorAccessorR const &input,
+                                    Allocator &output_allocator);
+
+void tensor_accessor_batch_transpose_to(GenericTensorAccessorR const &input,
+                                        GenericTensorAccessorW const &output);
+
+GenericTensorAccessorW
     tensor_accessor_reduce(GenericTensorAccessorR const &input,
                            ff_dim_t dim,
                            Allocator &output_allocator);

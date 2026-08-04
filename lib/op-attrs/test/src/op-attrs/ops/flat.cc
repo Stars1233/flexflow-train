@@ -7,7 +7,7 @@
 using namespace ::FlexFlow;
 
 TEST_SUITE(FF_TEST_SUITE) {
-  TEST_CASE("get_output_shape(FlatAttrs, TensorShape)") {
+  TEST_CASE("flat_get_output_shape") {
     TensorShape input_shape = TensorShape{
         TensorDims{FFOrdered{
             2_p,
@@ -21,10 +21,10 @@ TEST_SUITE(FF_TEST_SUITE) {
     SUBCASE("flatten all dims") {
       FlatAttrs attrs = FlatAttrs{
           /*start_dim=*/ff_dim_t{0_n},
-          /*end_dim=*/ff_dim_t{4_n},
+          /*end_dim=*/ff_dim_t{3_n},
       };
 
-      TensorShape result = get_output_shape(attrs, input_shape);
+      TensorShape result = flat_get_output_shape(attrs, input_shape);
       TensorShape correct = TensorShape{
           TensorDims{FFOrdered{
               2_p * 4_p * 2_p * 3_p,
@@ -38,10 +38,10 @@ TEST_SUITE(FF_TEST_SUITE) {
     SUBCASE("flatten trailing dims") {
       FlatAttrs attrs = FlatAttrs{
           /*start_dim=*/ff_dim_t{2_n},
-          /*end_dim=*/ff_dim_t{4_n},
+          /*end_dim=*/ff_dim_t{3_n},
       };
 
-      TensorShape result = get_output_shape(attrs, input_shape);
+      TensorShape result = flat_get_output_shape(attrs, input_shape);
       TensorShape correct = TensorShape{
           TensorDims{FFOrdered{
               2_p,
@@ -57,10 +57,10 @@ TEST_SUITE(FF_TEST_SUITE) {
     SUBCASE("flatten leading dims") {
       FlatAttrs attrs = FlatAttrs{
           /*start_dim=*/ff_dim_t{0_n},
-          /*end_dim=*/ff_dim_t{2_n},
+          /*end_dim=*/ff_dim_t{1_n},
       };
 
-      TensorShape result = get_output_shape(attrs, input_shape);
+      TensorShape result = flat_get_output_shape(attrs, input_shape);
       TensorShape correct = TensorShape{
           TensorDims{FFOrdered{
               2_p * 4_p,
@@ -76,10 +76,10 @@ TEST_SUITE(FF_TEST_SUITE) {
     SUBCASE("flatten middle dims") {
       FlatAttrs attrs = FlatAttrs{
           /*start_dim=*/ff_dim_t{1_n},
-          /*end_dim=*/ff_dim_t{3_n},
+          /*end_dim=*/ff_dim_t{2_n},
       };
 
-      TensorShape result = get_output_shape(attrs, input_shape);
+      TensorShape result = flat_get_output_shape(attrs, input_shape);
       TensorShape correct = TensorShape{
           TensorDims{FFOrdered{
               2_p,
@@ -92,35 +92,34 @@ TEST_SUITE(FF_TEST_SUITE) {
       CHECK(result == correct);
     }
 
-    SUBCASE("flatten no dims (start_dim == end_dim)") {
+    SUBCASE("flatten single dims (start_dim == end_dim)") {
       FlatAttrs attrs = FlatAttrs{
           /*start_dim=*/ff_dim_t{2_n},
           /*end_dim=*/ff_dim_t{2_n},
       };
 
-      TensorShape result = get_output_shape(attrs, input_shape);
+      TensorShape result = flat_get_output_shape(attrs, input_shape);
       TensorShape correct = input_shape;
 
       CHECK(result == correct);
     }
 
-    SUBCASE("flatten no dims (start_dim < end_dim)") {
+    SUBCASE("flatten no dims (start_dim > end_dim)") {
       FlatAttrs attrs = FlatAttrs{
-          /*start_dim=*/ff_dim_t{2_n},
-          /*end_dim=*/ff_dim_t{1_n},
+          /*start_dim=*/ff_dim_t{3_n},
+          /*end_dim=*/ff_dim_t{2_n},
       };
 
-      TensorShape result = get_output_shape(attrs, input_shape);
+      TensorShape result = flat_get_output_shape(attrs, input_shape);
       TensorShape correct = input_shape;
 
       CHECK(result == correct);
     }
   }
 
-  TEST_CASE(
-      "get_output_parallel_dim_degrees(FlatAttrs, ParallelTensorDimDegrees)") {
+  TEST_CASE("flat_get_output_parallel_dim_degrees") {
     FlatAttrs attrs = FlatAttrs{/*start_dim=*/ff_dim_t{1_n},
-                                /*end_dim=*/ff_dim_t{3_n}};
+                                /*end_dim=*/ff_dim_t{2_n}};
 
     SUBCASE("allows shard parallelism in non-flattened dims") {
       ParallelTensorDimDegrees input = ParallelTensorDimDegrees{
@@ -129,14 +128,13 @@ TEST_SUITE(FF_TEST_SUITE) {
           FFOrdered{2_p, 1_p, 1_p, 3_p},
       };
 
-      tl::expected<ParallelTensorDimDegrees, std::string> result =
-          get_output_parallel_dim_degrees(attrs, input);
-      tl::expected<ParallelTensorDimDegrees, std::string> correct =
-          ParallelTensorDimDegrees{
-              SumDegree{1_p},
-              DiscardCopyDegree{1_p},
-              FFOrdered{2_p, 1_p, 3_p},
-          };
+      ParallelTensorDimDegrees result =
+          flat_get_output_parallel_dim_degrees(attrs, input);
+      ParallelTensorDimDegrees correct = ParallelTensorDimDegrees{
+          SumDegree{1_p},
+          DiscardCopyDegree{1_p},
+          FFOrdered{2_p, 1_p, 3_p},
+      };
 
       CHECK(result == correct);
     }
@@ -148,7 +146,7 @@ TEST_SUITE(FF_TEST_SUITE) {
           FFOrdered{1_p, 1_p, 2_p, 1_p},
       };
 
-      CHECK_THROWS(get_output_parallel_dim_degrees(attrs, input));
+      CHECK_THROWS(flat_get_output_parallel_dim_degrees(attrs, input));
     }
 
     SUBCASE("allows sum parallelism") {
@@ -159,7 +157,7 @@ TEST_SUITE(FF_TEST_SUITE) {
       };
 
       ParallelTensorDimDegrees result =
-          get_output_parallel_dim_degrees(attrs, input);
+          flat_get_output_parallel_dim_degrees(attrs, input);
       ParallelTensorDimDegrees correct = ParallelTensorDimDegrees{
           SumDegree{2_p},
           DiscardCopyDegree{1_p},
@@ -177,7 +175,7 @@ TEST_SUITE(FF_TEST_SUITE) {
       };
 
       ParallelTensorDimDegrees result =
-          get_output_parallel_dim_degrees(attrs, input);
+          flat_get_output_parallel_dim_degrees(attrs, input);
       ParallelTensorDimDegrees correct = ParallelTensorDimDegrees{
           SumDegree{1_p},
           DiscardCopyDegree{2_p},
@@ -188,10 +186,9 @@ TEST_SUITE(FF_TEST_SUITE) {
     }
   }
 
-  TEST_CASE("get_output_shape(FlatAttrs, ParallelTensorShape)") {
+  TEST_CASE("flat_get_output_parallel_shape") {
     // since most of the edge cases are already tested in
-    // get_output_shape(FlatAttrs, TensorShape) and
-    // get_output_parallel_dim_degrees(FlatAttrs, ParallelTensorDimDegrees),
+    // flat_get_output_shape and flat_get_output_parallel_dim_degrees,
     // here we just do a basic check that they compose
 
     ParallelTensorShape input_shape = ParallelTensorShape{
@@ -212,26 +209,25 @@ TEST_SUITE(FF_TEST_SUITE) {
 
     FlatAttrs attrs = FlatAttrs{
         /*start_dim=*/ff_dim_t{nonnegative_int{1_p}},
-        /*end_dim=*/ff_dim_t{nonnegative_int{3_p}},
+        /*end_dim=*/ff_dim_t{nonnegative_int{2_p}},
     };
 
-    tl::expected<ParallelTensorShape, std::string> result =
-        get_output_shape(attrs, input_shape);
-    tl::expected<ParallelTensorShape, std::string> correct =
-        ParallelTensorShape{
-            ParallelTensorDims{
-                FFOrdered<ShardParallelDim>{
-                    ShardParallelDim{4_p, 2_p},
-                    ShardParallelDim{8_p * 6_p, 1_p},
-                    ShardParallelDim{9_p, 3_p},
-                },
-                ReplicaParallelDimSet{
-                    SumDegree{7_p},
-                    DiscardCopyDegree{5_p},
-                },
+    ParallelTensorShape result =
+        flat_get_output_parallel_shape(attrs, input_shape);
+    ParallelTensorShape correct = ParallelTensorShape{
+        ParallelTensorDims{
+            FFOrdered<ShardParallelDim>{
+                ShardParallelDim{4_p, 2_p},
+                ShardParallelDim{8_p * 6_p, 1_p},
+                ShardParallelDim{9_p, 3_p},
             },
-            DataType::FLOAT,
-        };
+            ReplicaParallelDimSet{
+                SumDegree{7_p},
+                DiscardCopyDegree{5_p},
+            },
+        },
+        DataType::FLOAT,
+    };
 
     CHECK(result == correct);
   }

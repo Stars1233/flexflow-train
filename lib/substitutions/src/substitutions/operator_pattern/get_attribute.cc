@@ -4,6 +4,16 @@
 
 namespace FlexFlow {
 
+std::optional<OperatorAttributeValue> get_attribute(BatchMatmulAttrs const &p,
+                                                    OperatorAttributeKey key) {
+  switch (key) {
+    case OperatorAttributeKey::OP_TYPE:
+      return OperatorAttributeValue{get_op_type(p)};
+    default:
+      return std::nullopt;
+  }
+}
+
 std::optional<OperatorAttributeValue> get_attribute(BatchNormAttrs const &p,
                                                     OperatorAttributeKey key) {
   switch (key) {
@@ -414,6 +424,16 @@ std::optional<OperatorAttributeValue> get_attribute(TransposeAttrs const &p,
       return OperatorAttributeValue{get_op_type(p)};
     case OperatorAttributeKey::PERMUTATION:
       return OperatorAttributeValue{p.permutation};
+    default:
+      return std::nullopt;
+  }
+}
+
+std::optional<OperatorAttributeValue> get_attribute(UpsampleAttrs const &p,
+                                                    OperatorAttributeKey key) {
+  switch (key) {
+    case OperatorAttributeKey::OP_TYPE:
+      return OperatorAttributeValue{get_op_type(p)};
     default:
       return std::nullopt;
   }

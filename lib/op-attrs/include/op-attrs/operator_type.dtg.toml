@@ -27,6 +27,7 @@ values = [
   { name = "SIGMOID" },
   { name = "TANH" },
   { name = "ELU" },
+  { name = "SILU" },
   { name = "FLAT" },
   { name = "SOFTMAX" },
   { name = "BATCHNORM" },
@@ -92,5 +93,6 @@ values = [
   { name = "BATCH" },
   { name = "PIPELINE" },
   { name = "FUSED_PARALLEL" },
+  { name = "UPSAMPLE" },
 ]
 

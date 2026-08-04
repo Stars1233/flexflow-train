@@ -15,14 +15,15 @@ TEST_SUITE(FF_TEST_SUITE) {
         {3, "three"},
     };
 
-    std::map<int, std::string> correct = {
-        {1, "one"},
-        {2, "two"},
-        {3, "three"},
-    };
     SUBCASE("maps are disjoint") {
       std::map<int, std::string> result =
           binary_merge_disjoint_maps(l_map, r_map);
+
+      std::map<int, std::string> correct = {
+          {1, "one"},
+          {2, "two"},
+          {3, "three"},
+      };
 
       CHECK(result == correct);
     }

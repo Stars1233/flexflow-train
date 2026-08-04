@@ -4,7 +4,8 @@
 #include "op-attrs/ff_dim_t.dtg.h"
 #include "op-attrs/relative_ff_dim_t.dtg.h"
 #include "utils/fmt/vector.h"
-#include "utils/stack_vector/stack_vector.h"
+#include "utils/hash/vector.h"
+#include "utils/type_traits_core.h"
 
 namespace FlexFlow {
 
@@ -15,12 +16,10 @@ struct FFOrdered {
   explicit FFOrdered(std::initializer_list<T> const &l)
       : contents(l.begin(), l.end()) {}
 
+  explicit FFOrdered(std::vector<T> const &l) : contents(l.begin(), l.end()) {}
+
   template <typename It>
   explicit FFOrdered(It begin, It end) : contents(begin, end) {}
-
-  template <size_t MAXSIZE>
-  explicit FFOrdered(stack_vector<T, MAXSIZE> const &contents)
-      : contents(contents.begin(), contents.end()) {}
 
   T const &at(ff_dim_t idx) const {
     int raw = idx.value.unwrap_nonnegative();
@@ -85,13 +84,11 @@ struct FFOrdered {
     return this->contents != other.contents;
   }
 
-  using iterator = typename stack_vector<T, MAX_TENSOR_DIM>::iterator;
-  using const_iterator =
-      typename stack_vector<T, MAX_TENSOR_DIM>::const_iterator;
-  using reverse_iterator =
-      typename stack_vector<T, MAX_TENSOR_DIM>::reverse_iterator;
+  using iterator = typename std::vector<T>::iterator;
+  using const_iterator = typename std::vector<T>::const_iterator;
+  using reverse_iterator = typename std::vector<T>::reverse_iterator;
   using const_reverse_iterator =
-      typename stack_vector<T, MAX_TENSOR_DIM>::const_reverse_iterator;
+      typename std::vector<T>::const_reverse_iterator;
   using value_type = T;
   using pointer = value_type *;
   using const_pointer = value_type const *;
@@ -161,7 +158,7 @@ struct FFOrdered {
   friend struct ::std::hash<FFOrdered>;
 
 private:
-  stack_vector<T, MAX_TENSOR_DIM> contents;
+  std::vector<T> contents;
 };
 
 template <typename T>
@@ -218,7 +215,7 @@ template <typename T>
 struct Arbitrary<::FlexFlow::FFOrdered<T>> {
   static Gen<::FlexFlow::FFOrdered<T>> arbitrary() {
     return gen::construct<::FlexFlow::FFOrdered<T>>(
-        gen::arbitrary<::FlexFlow::stack_vector<T, MAX_TENSOR_DIM>>());
+        gen::arbitrary<::std::vector<T>>());
   }
 };
 

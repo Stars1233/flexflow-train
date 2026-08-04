@@ -15,7 +15,7 @@
 
 #include "internal/device.h"
 #include "kernels/accessor.h"
-#include "kernels/legion_ordered/transform.h"
+#include "kernels/legion_ordered/legion_ordered_transform.h"
 #include "kernels/transpose_kernels_gpu.h"
 #include "utils/exception.h"
 #include "utils/nonnegative_int/num_elements.h"

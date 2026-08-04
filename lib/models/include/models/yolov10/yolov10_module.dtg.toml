@@ -1,0 +1,59 @@
+namespace = "FlexFlow"
+name = "YOLOv10Module"
+type = "enum"
+
+features = ["hash", "json", "rapidcheck", "fmt"]
+
+[[values]]
+name = "Conv"
+docstring = '''
+\brief Used to denote the <a href="https://github.com/ultralytics/ultralytics/blob/f8ad132a15b5f6818c2ce0647b40dc57e993bf0c/ultralytics/nn/modules/conv.py#L39-L89"><tt>Conv</tt> module from the ultralytics repo</a>.
+'''
+
+[[values]]
+name = "C2f"
+docstring = '''
+\brief Used to denote the <a href="https://github.com/ultralytics/ultralytics/blob/f8ad132a15b5f6818c2ce0647b40dc57e993bf0c/ultralytics/nn/modules/block.py#L288-L319"><tt>C2f</tt> module from the ultralytics repo</a>.
+'''
+
+[[values]]
+name = "SCDown"
+docstring = '''
+\brief Used to denote the <a href="https://github.com/ultralytics/ultralytics/blob/f8ad132a15b5f6818c2ce0647b40dc57e993bf0c/ultralytics/nn/modules/block.py#L1530-L1575"><tt>SCDown</tt> module from the ultralytics repo</a>.
+'''
+
+[[values]]
+name = "C2fCIB"
+docstring = '''
+\brief Used to denote the <a href="https://github.com/ultralytics/ultralytics/blob/f8ad132a15b5f6818c2ce0647b40dc57e993bf0c/ultralytics/nn/modules/block.py#L1240-L1268"><tt>C2fCIB</tt> module from the ultralytics repo</a>.
+'''
+
+[[values]]
+name = "SPPF"
+docstring = '''
+\brief Used to denote the <a href="https://github.com/ultralytics/ultralytics/blob/f8ad132a15b5f6818c2ce0647b40dc57e993bf0c/ultralytics/nn/modules/block.py#L208-L237"><tt>SPPF</tt> module from the ultralytics repo</a>.
+'''
+
+[[values]]
+name = "PSA"
+docstring = '''
+\brief Used to denote the <a href="https://github.com/ultralytics/ultralytics/blob/f8ad132a15b5f6818c2ce0647b40dc57e993bf0c/ultralytics/nn/modules/block.py#L1381-L1433"><tt>PSA</tt> module from the ultralytics repo</a>.
+'''
+
+[[values]]
+name = "Upsample"
+docstring = '''
+\brief Used to denote <a href="https://docs.pytorch.org/docs/2.12/generated/torch.nn.Upsample.html"><tt>torch.nn.Upsample</tt></a>.
+'''
+
+[[values]]
+name = "Concat"
+docstring = '''
+\brief Used to denote the <a href="https://github.com/ultralytics/ultralytics/blob/f8ad132a15b5f6818c2ce0647b40dc57e993bf0c/ultralytics/nn/modules/conv.py#L616-L641"><tt>Concat</tt> module from the ultralytics repo</a>.
+'''
+
+[[values]]
+name = "v10Detect"
+docstring = '''
+\brief Used to denote the <a href="https://github.com/ultralytics/ultralytics/blob/f8ad132a15b5f6818c2ce0647b40dc57e993bf0c/ultralytics/nn/modules/head.py#L1761-L1810"><tt>v10Detect</tt> module from the ultralytics repo</a>.
+'''

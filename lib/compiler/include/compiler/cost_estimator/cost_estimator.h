@@ -7,6 +7,7 @@
 #include "compiler/machine_mapping/machine_view.dtg.h"
 #include "op-attrs/parallel_tensor_shape.dtg.h"
 #include "op-attrs/pcg_operator_attrs.dtg.h"
+#include "utils/type_traits.h"
 #include <vector>
 
 namespace FlexFlow {

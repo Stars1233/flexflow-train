@@ -31,10 +31,10 @@ TEST_SUITE(FF_TEST_SUITE) {
           /*repartition_degree=*/degree,
       };
 
-      tl::expected<ParallelTensorShape, std::string> result =
-          get_output_shape(attrs, input);
+      ParallelTensorShape result =
+          combine_get_output_parallel_shape(attrs, input);
 
-      tl::expected<ParallelTensorShape, std::string> correct = [&] {
+      ParallelTensorShape correct = [&] {
         ParallelTensorShape output = input;
         positive_int old_shard_degree = output.dims.shard_dims.at(dim).degree;
         output.dims.shard_dims.at(dim).degree =
@@ -53,12 +53,7 @@ TEST_SUITE(FF_TEST_SUITE) {
           /*repartition_degree=*/degree,
       };
 
-      tl::expected<ParallelTensorShape, std::string> result =
-          get_output_shape(attrs, input);
-
-      CHECK_MESSAGE(!result.has_value(),
-                    "Unexpected successful result: ",
-                    result.error());
+      CHECK_THROWS(combine_get_output_parallel_shape(attrs, input));
     }
   }
 }

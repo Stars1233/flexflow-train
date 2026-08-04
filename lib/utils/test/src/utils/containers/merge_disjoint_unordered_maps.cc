@@ -1,37 +1,38 @@
-#include "test/utils/doctest/fmt/map.h"
-#include "utils/containers/merge_disjoint_maps.h"
+#include "utils/containers/merge_disjoint_unordered_maps.h"
+#include "test/utils/doctest/fmt/unordered_map.h"
 #include <doctest/doctest.h>
 
 using namespace ::FlexFlow;
 
 TEST_SUITE(FF_TEST_SUITE) {
-  TEST_CASE("merge_disjoint_maps") {
-    std::map<int, std::string> m1 = {
+  TEST_CASE("merge_disjoint_unordered_maps") {
+    std::unordered_map<int, std::string> m1 = {
         {4, "four"},
         {2, "two"},
     };
 
-    std::map<int, std::string> m2 = {
+    std::unordered_map<int, std::string> m2 = {
         {3, "four"},
     };
 
-    std::map<int, std::string> m3 = {
+    std::unordered_map<int, std::string> m3 = {
         {1, "one"},
     };
 
-    std::map<int, std::string> m4 = {};
+    std::unordered_map<int, std::string> m4 = {};
 
     SUBCASE("maps are disjoint") {
-      std::vector<std::map<int, std::string>> input = {
+      std::vector<std::unordered_map<int, std::string>> input = {
           m1,
           m2,
           m3,
           m4,
       };
 
-      std::map<int, std::string> result = merge_disjoint_maps(input);
+      std::unordered_map<int, std::string> result =
+          merge_disjoint_unordered_maps(input);
 
-      std::map<int, std::string> correct = {
+      std::unordered_map<int, std::string> correct = {
           {4, "four"},
           {2, "two"},
           {3, "four"},
@@ -42,12 +43,12 @@ TEST_SUITE(FF_TEST_SUITE) {
     }
 
     SUBCASE("maps are not disjoint") {
-      std::map<int, std::string> m5 = {
+      std::unordered_map<int, std::string> m5 = {
           {4, "five"},
           {6, "six"},
       };
 
-      std::vector<std::map<int, std::string>> input = {
+      std::vector<std::unordered_map<int, std::string>> input = {
           m1,
           m2,
           m3,
@@ -55,16 +56,16 @@ TEST_SUITE(FF_TEST_SUITE) {
           m5,
       };
 
-      CHECK_THROWS(merge_disjoint_maps(input));
+      CHECK_THROWS(merge_disjoint_unordered_maps(input));
     }
 
     SUBCASE("maps are not disjoint but have identical values") {
-      std::map<int, std::string> m5 = {
+      std::unordered_map<int, std::string> m5 = {
           {4, "four"},
           {6, "six"},
       };
 
-      std::vector<std::map<int, std::string>> input = {
+      std::vector<std::unordered_map<int, std::string>> input = {
           m1,
           m2,
           m3,
@@ -72,7 +73,7 @@ TEST_SUITE(FF_TEST_SUITE) {
           m5,
       };
 
-      CHECK_THROWS(merge_disjoint_maps(input));
+      CHECK_THROWS(merge_disjoint_unordered_maps(input));
     }
   }
 }

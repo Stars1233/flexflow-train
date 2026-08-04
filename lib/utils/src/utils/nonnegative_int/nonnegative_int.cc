@@ -129,6 +129,22 @@ nonnegative_int &nonnegative_int::operator*=(nonnegative_int const &other) {
   return *this;
 }
 
+float nonnegative_int::operator*(float other) const {
+  return this->value_ * other;
+}
+
+float operator*(float lhs, nonnegative_int rhs) {
+  return lhs * rhs.value_;
+}
+
+float &operator*=(float &lhs, nonnegative_int rhs) {
+  return (lhs *= rhs.value_);
+}
+
+int nonnegative_int::operator/(int other) const {
+  return (this->value_ / other);
+}
+
 nonnegative_int nonnegative_int::operator/(nonnegative_int const &other) const {
   return nonnegative_int{this->value_ / other.value_};
 }
@@ -136,6 +152,14 @@ nonnegative_int nonnegative_int::operator/(nonnegative_int const &other) const {
 nonnegative_int &nonnegative_int::operator/=(nonnegative_int const &other) {
   this->value_ /= other.value_;
   return *this;
+}
+
+int operator/(int lhs, nonnegative_int rhs) {
+  return (lhs / rhs.value_);
+}
+
+int &operator/=(int &lhs, nonnegative_int rhs) {
+  return (lhs /= rhs.value_);
 }
 
 float operator/(float lhs, nonnegative_int rhs) {

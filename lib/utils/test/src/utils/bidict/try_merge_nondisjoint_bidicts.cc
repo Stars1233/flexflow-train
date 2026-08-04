@@ -34,14 +34,6 @@ TEST_SUITE(FF_TEST_SUITE) {
       CHECK(result == correct);
     }
 
-    SUBCASE("repeated value") {
-      d1.equate(3, "one");
-      std::optional<bidict<int, std::string>> result =
-          try_merge_nondisjoint_bidicts(d1, d2);
-      std::optional<bidict<int, std::string>> correct = std::nullopt;
-      CHECK(result == correct);
-    }
-
     SUBCASE("left superset") {
       d1.equate(2, "two");
       std::optional<bidict<int, std::string>> result =

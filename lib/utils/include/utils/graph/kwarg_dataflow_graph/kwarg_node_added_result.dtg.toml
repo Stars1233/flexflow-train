@@ -5,6 +5,7 @@ features = [
   "eq",
   "ord",
   "fmt",
+  "json_serialize",
 ]
 
 template_params = [

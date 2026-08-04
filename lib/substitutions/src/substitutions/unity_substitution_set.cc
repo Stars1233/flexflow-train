@@ -225,7 +225,7 @@ Substitution create_replicate_linear_combine(positive_int num_dims,
       insert_replicate(b, degree, o_input);
 
   OutputGraphExprValue o_partition_weights_output =
-      insert_partition(b, degree, ff_dim_t{1_n}, o_weight);
+      insert_partition(b, degree, ff_dim_t{0_n}, o_weight);
 
   std::map<TensorSlotName, OutputGraphExprValue> o_linear_inputs = {
       {
@@ -240,7 +240,7 @@ Substitution create_replicate_linear_combine(positive_int num_dims,
 
   if (use_bias) {
     OutputGraphExprValue o_partition_bias_output =
-        insert_partition(b, degree, ff_dim_t{1_n}, o_bias.value());
+        insert_partition(b, degree, ff_dim_t{0_n}, o_bias.value());
 
     o_linear_inputs.insert({
         TensorSlotName::BIAS,
@@ -344,9 +344,8 @@ Substitution create_partition_linear_combine(positive_int num_dims,
   OutputGraphExprValue o_linear_output =
       insert_single_output_op(b, linear_expr, o_linear_inputs);
 
-  ff_dim_t combine_output_dim = ff_dim_t{
-      nonnegative_int{num_dims.int_from_positive_int() - 1},
-  };
+  ff_dim_t combine_output_dim = ff_dim_t{0_n};
+
   OutputGraphExprValue o_combine_output =
       insert_combine(b, degree, combine_output_dim, o_linear_output);
 

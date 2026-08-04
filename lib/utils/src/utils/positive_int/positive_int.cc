@@ -24,6 +24,10 @@ positive_int::operator nonnegative_int() const noexcept {
   return nonnegative_int{this->value_};
 }
 
+positive_int::operator float() const noexcept {
+  return static_cast<float>(this->value_);
+}
+
 bool positive_int::operator<(positive_int other) const {
   return this->value_ < other.value_;
 }
@@ -152,6 +156,10 @@ positive_int positive_int::operator+(nonnegative_int other) const {
   return positive_int{this->value_ + other.unwrap_nonnegative()};
 }
 
+nonnegative_int &operator+=(nonnegative_int &lhs, positive_int rhs) {
+  return (lhs += rhs.nonnegative_int_from_positive_int());
+}
+
 positive_int &positive_int::operator++() {
   this->value_++;
   this->check_invariant();
@@ -199,12 +207,28 @@ nonnegative_int operator*(nonnegative_int lhs, positive_int rhs) {
   return lhs * rhs.nonnegative_int_from_positive_int();
 }
 
+float positive_int::operator*(float other) const {
+  return this->value_ * other;
+}
+
+float operator*(float lhs, positive_int rhs) {
+  return lhs * rhs.value_;
+}
+
+int positive_int::operator/(int other) const {
+  return (this->value_ / other);
+}
+
 nonnegative_int positive_int::operator/(positive_int other) const {
   return nonnegative_int{this->value_ / other.value_};
 }
 
 nonnegative_int operator/(nonnegative_int lhs, positive_int rhs) {
   return nonnegative_int{lhs.unwrap_nonnegative() / rhs.value_};
+}
+
+int &operator/=(int &lhs, positive_int rhs) {
+  return (lhs /= rhs.value_);
 }
 
 float operator/(float lhs, positive_int rhs) {

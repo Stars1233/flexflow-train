@@ -1,4 +1,5 @@
 #include "op-attrs/ops/linear.h"
+#include "op-attrs/operator_space_to_parallel_tensor_space_mapping.h"
 #include "op-attrs/parallel_tensor_shape.h"
 #include "test/utils/doctest/fmt/expected.h"
 #include "utils/integer_conversions.h"
@@ -326,7 +327,8 @@ TEST_SUITE(FF_TEST_SUITE) {
     OperatorSpaceToParallelTensorSpaceMapping result =
         get_operator_to_input_mapping(attrs, input_dims);
 
-    // TODO(@lockshaw): implement some actual checks here
-    NOT_IMPLEMENTED();
+    ASSERT(get_parallel_tensor_space_for_mapping(result) == input_dims);
+    ASSERT(dim_domain_get_volume(result.raw_mapping.r_domain) ==
+           dim_domain_get_volume(result.raw_mapping.l_domain));
   }
 }

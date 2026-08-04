@@ -1,6 +1,6 @@
 #include "op-attrs/parallel_tensor_dims.h"
-#include "op-attrs/ff_ordered/transform.h"
-#include "op-attrs/ff_ordered/zip.h"
+#include "op-attrs/ff_ordered/ff_ordered_transform.h"
+#include "op-attrs/ff_ordered/ff_ordered_zip.h"
 #include "op-attrs/replica_parallel_dim.h"
 #include "op-attrs/replica_parallel_dim_set.h"
 #include "op-attrs/shard_parallel_dim.h"
@@ -20,8 +20,8 @@ FFOrdered<ShardParallelDim> ff_ordered_shard_dims(ParallelTensorDims const &d) {
 }
 
 FFOrdered<positive_int> ff_ordered_shard_degrees(ParallelTensorDims const &d) {
-  return transform(d.shard_dims,
-                   [](ShardParallelDim const &d) { return d.degree; });
+  return ff_ordered_transform(
+      d.shard_dims, [](ShardParallelDim const &d) { return d.degree; });
 }
 
 std::set<ReplicaParallelDim> replica_dims(ParallelTensorDims const &d) {
@@ -121,7 +121,7 @@ TensorDims get_tensor_dims_unsafe(ParallelTensorDims const &) {
 }
 
 TensorDims get_reduced_dims(ParallelTensorDims const &dims) {
-  FFOrdered<positive_int> dim_sizes = transform(
+  FFOrdered<positive_int> dim_sizes = ff_ordered_transform(
       dims.shard_dims, [](ShardParallelDim const &d) { return d.size; });
   return TensorDims{dim_sizes};
 }

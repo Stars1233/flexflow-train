@@ -5,6 +5,7 @@ features = [
   "eq",
   "hash",
   "fmt",
+  "json_serialize",
   "ord",
 ]
 
@@ -27,6 +28,7 @@ src_includes = [
   "utils/ord/vector.h",
   "utils/fmt/vector.h",
   "utils/hash/vector.h",
+  "utils/json/variant.h",
 ]
 
 [[fields]]

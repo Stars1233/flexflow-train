@@ -75,6 +75,49 @@ struct DataTypeDispatch2 {
   }
 };
 
+template <template <DataType, DataType, DataType> class F>
+struct DataTypeDispatch3 {
+  template <DataType IT>
+  struct InputType {
+
+    template <DataType CT>
+    struct CenterType {
+
+      template <DataType OT>
+      struct OutputType {
+        template <typename... Args>
+        void operator()(Args &&...args) const {
+          F<IT, CT, OT>{}(std::forward<Args>(args)...);
+        }
+      };
+
+      template <typename... Args>
+      void operator()(DataType output_type, Args &&...args) const {
+        dispatch<OutputType>(output_type, std::forward<Args>(args)...);
+      }
+    };
+
+    template <typename... Args>
+    void operator()(DataType center_type,
+                    DataType output_type,
+                    Args &&...args) const {
+      dispatch<CenterType>(
+          center_type, output_type, std::forward<Args>(args)...);
+    }
+  };
+
+  template <typename... Args>
+  void operator()(DataType input_data_type,
+                  DataType center_data_type,
+                  DataType output_data_type,
+                  Args &&...args) {
+    dispatch<InputType>(input_data_type,
+                        center_data_type,
+                        output_data_type,
+                        std::forward<Args>(args)...);
+  }
+};
+
 } // namespace FlexFlow
 
 #endif

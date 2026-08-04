@@ -8,7 +8,7 @@
 using namespace ::FlexFlow;
 
 TEST_SUITE(FF_TEST_SUITE) {
-  TEST_CASE("get_output_shape(ConcatAttrs, std::vector<TensorShape>)") {
+  TEST_CASE("concat_get_output_shape") {
     ConcatAttrs attrs = ConcatAttrs{
         /*axis=*/ff_dim_t{1_n},
         /*num_inputs=*/3_ge2,
@@ -17,11 +17,7 @@ TEST_SUITE(FF_TEST_SUITE) {
     SUBCASE("empty input shapes list passed") {
       std::vector<TensorShape> input_shapes = {};
 
-      std::optional<TensorShape> result =
-          optional_from_expected(get_output_shape(attrs, input_shapes));
-      std::optional<TensorShape> correct = std::nullopt;
-
-      CHECK(result == correct);
+      CHECK_THROWS(concat_get_output_shape(attrs, input_shapes));
     }
 
     positive_int dim0_size = 12_p;
@@ -38,11 +34,7 @@ TEST_SUITE(FF_TEST_SUITE) {
     SUBCASE("single element input shapes list passed") {
       std::vector<TensorShape> input_shapes = {input_shape1};
 
-      std::optional<TensorShape> result =
-          optional_from_expected(get_output_shape(attrs, input_shapes));
-      std::optional<TensorShape> correct = std::nullopt;
-
-      CHECK(result == correct);
+      CHECK_THROWS(concat_get_output_shape(attrs, input_shapes));
     }
 
     TensorShape input_shape2 = TensorShape{
@@ -59,7 +51,7 @@ TEST_SUITE(FF_TEST_SUITE) {
         DataType::FLOAT,
     };
 
-    SUBCASE("input shapes do not shared the same num_dims") {
+    SUBCASE("input shapes do not share the same num_dims") {
       TensorShape mismatched_num_dims = TensorShape{
           TensorDims{FFOrdered{
               dim0_size,
@@ -73,11 +65,7 @@ TEST_SUITE(FF_TEST_SUITE) {
       std::vector<TensorShape> input_shapes = {
           input_shape1, input_shape2, input_shape3, mismatched_num_dims};
 
-      std::optional<TensorShape> result =
-          optional_from_expected(get_output_shape(attrs, input_shapes));
-      std::optional<TensorShape> correct = std::nullopt;
-
-      CHECK(result == correct);
+      CHECK_THROWS(concat_get_output_shape(attrs, input_shapes));
     }
 
     SUBCASE("concat axis is out of bounds") {
@@ -89,20 +77,15 @@ TEST_SUITE(FF_TEST_SUITE) {
       std::vector<TensorShape> input_shapes = {
           input_shape1, input_shape2, input_shape3};
 
-      std::optional<TensorShape> result =
-          optional_from_expected(get_output_shape(attrs, input_shapes));
-      std::optional<TensorShape> correct = std::nullopt;
-
-      CHECK(result == correct);
+      CHECK_THROWS(concat_get_output_shape(attrs, input_shapes));
     }
 
     SUBCASE("input shapes are valid") {
       std::vector<TensorShape> input_shapes = {
           input_shape1, input_shape2, input_shape3};
 
-      tl::expected<TensorShape, std::string> result =
-          get_output_shape(attrs, input_shapes);
-      tl::expected<TensorShape, std::string> correct = TensorShape{
+      TensorShape result = concat_get_output_shape(attrs, input_shapes);
+      TensorShape correct = TensorShape{
           TensorDims{FFOrdered{
               dim0_size,
               14_p + 16_p + 18_p,
@@ -115,7 +98,7 @@ TEST_SUITE(FF_TEST_SUITE) {
     }
   }
 
-  TEST_CASE("get_output_shape(ConcatAttrs, std::vector<ParallelTensorShape>)") {
+  TEST_CASE("concat_get_output_parallel_shape") {
     ConcatAttrs attrs = ConcatAttrs{
         /*axis=*/ff_dim_t{1_n},
         /*num_inputs=*/3_ge2,
@@ -198,9 +181,9 @@ TEST_SUITE(FF_TEST_SUITE) {
             lift_input3(sum_degree, DiscardCopyDegree{1_p}, 1_p, 1_p, 1_p),
         };
 
-        tl::expected<ParallelTensorShape, std::string> result =
-            get_output_shape(attrs, inputs);
-        tl::expected<ParallelTensorShape, std::string> correct =
+        ParallelTensorShape result =
+            concat_get_output_parallel_shape(attrs, inputs);
+        ParallelTensorShape correct =
             lift_output(sum_degree, DiscardCopyDegree{1_p}, 1_p, 1_p, 1_p);
 
         CHECK(result == correct);
@@ -213,11 +196,7 @@ TEST_SUITE(FF_TEST_SUITE) {
             lift_input3(SumDegree{4_p}, DiscardCopyDegree{1_p}, 1_p, 1_p, 1_p),
         };
 
-        std::optional<ParallelTensorShape> result =
-            optional_from_expected(get_output_shape(attrs, inputs));
-        std::optional<ParallelTensorShape> correct = std::nullopt;
-
-        CHECK(result == correct);
+        CHECK_THROWS(concat_get_output_parallel_shape(attrs, inputs));
       }
     }
 
@@ -231,9 +210,9 @@ TEST_SUITE(FF_TEST_SUITE) {
             lift_input3(SumDegree{1_p}, discard_copy_degree, 1_p, 1_p, 1_p),
         };
 
-        tl::expected<ParallelTensorShape, std::string> result =
-            get_output_shape(attrs, inputs);
-        tl::expected<ParallelTensorShape, std::string> correct =
+        ParallelTensorShape result =
+            concat_get_output_parallel_shape(attrs, inputs);
+        ParallelTensorShape correct =
             lift_output(SumDegree{1_p}, discard_copy_degree, 1_p, 1_p, 1_p);
 
         CHECK(result == correct);
@@ -246,11 +225,7 @@ TEST_SUITE(FF_TEST_SUITE) {
             lift_input3(SumDegree{1_p}, DiscardCopyDegree{4_p}, 1_p, 1_p, 1_p),
         };
 
-        std::optional<ParallelTensorShape> result =
-            optional_from_expected(get_output_shape(attrs, inputs));
-        std::optional<ParallelTensorShape> correct = std::nullopt;
-
-        CHECK(result == correct);
+        CHECK_THROWS(concat_get_output_parallel_shape(attrs, inputs));
       }
     }
 
@@ -267,11 +242,7 @@ TEST_SUITE(FF_TEST_SUITE) {
                 SumDegree{1_p}, DiscardCopyDegree{1_p}, 1_p, degree, 1_p),
         };
 
-        std::optional<ParallelTensorShape> result =
-            optional_from_expected(get_output_shape(attrs, inputs));
-        std::optional<ParallelTensorShape> correct = std::nullopt;
-
-        CHECK(result == correct);
+        CHECK_THROWS(concat_get_output_parallel_shape(attrs, inputs));
       }
 
       SUBCASE("not matching") {
@@ -281,11 +252,7 @@ TEST_SUITE(FF_TEST_SUITE) {
             lift_input3(SumDegree{1_p}, DiscardCopyDegree{1_p}, 1_p, 2_p, 1_p),
         };
 
-        std::optional<ParallelTensorShape> result =
-            optional_from_expected(get_output_shape(attrs, inputs));
-        std::optional<ParallelTensorShape> correct = std::nullopt;
-
-        CHECK(result == correct);
+        CHECK_THROWS(concat_get_output_parallel_shape(attrs, inputs));
       }
     }
 
@@ -303,9 +270,9 @@ TEST_SUITE(FF_TEST_SUITE) {
                 SumDegree{1_p}, DiscardCopyDegree{1_p}, degree0, 1_p, degree2),
         };
 
-        tl::expected<ParallelTensorShape, std::string> result =
-            get_output_shape(attrs, inputs);
-        tl::expected<ParallelTensorShape, std::string> correct = lift_output(
+        ParallelTensorShape result =
+            concat_get_output_parallel_shape(attrs, inputs);
+        ParallelTensorShape correct = lift_output(
             SumDegree{1_p}, DiscardCopyDegree{1_p}, degree0, 1_p, degree2);
 
         CHECK(result == correct);
@@ -318,11 +285,7 @@ TEST_SUITE(FF_TEST_SUITE) {
             lift_input3(SumDegree{1_p}, DiscardCopyDegree{1_p}, 4_p, 1_p, 2_p),
         };
 
-        std::optional<ParallelTensorShape> result =
-            optional_from_expected(get_output_shape(attrs, inputs));
-        std::optional<ParallelTensorShape> correct = std::nullopt;
-
-        CHECK(result == correct);
+        CHECK_THROWS(concat_get_output_parallel_shape(attrs, inputs));
       }
     }
 
@@ -338,9 +301,9 @@ TEST_SUITE(FF_TEST_SUITE) {
           lift_input3(sum_degree, discard_copy_degree, degree0, 1_p, degree2),
       };
 
-      tl::expected<ParallelTensorShape, std::string> result =
-          get_output_shape(attrs, inputs);
-      tl::expected<ParallelTensorShape, std::string> correct =
+      ParallelTensorShape result =
+          concat_get_output_parallel_shape(attrs, inputs);
+      ParallelTensorShape correct =
           lift_output(sum_degree, discard_copy_degree, degree0, 1_p, degree2);
 
       CHECK(result == correct);

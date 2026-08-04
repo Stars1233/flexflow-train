@@ -1,6 +1,7 @@
 #include "utils/containers/group_by.h"
 #include "test/utils/doctest/fmt/map.h"
 #include "test/utils/doctest/fmt/set.h"
+#include "test/utils/doctest/fmt/unordered_set.h"
 #include "test/utils/doctest/fmt/vector.h"
 #include <doctest/doctest.h>
 
@@ -32,8 +33,8 @@ TEST_SUITE(FF_TEST_SUITE) {
     CHECK(result == correct);
   }
 
-  TEST_CASE("group_by(std::set<V>, F)") {
-    std::set<int> input = {0, 3, 2, 9, 8};
+  TEST_CASE("group_by(std::unordered_set<V>, F)") {
+    std::unordered_set<int> input = {0, 3, 2, 9, 8};
 
     OneToMany<int, int> result = group_by(input, [](int x) { return x % 3; });
     OneToMany<int, int> correct = {

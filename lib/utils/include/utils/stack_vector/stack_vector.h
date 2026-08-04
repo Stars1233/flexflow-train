@@ -8,6 +8,7 @@
 #include <array>
 #include <cassert>
 #include <fmt/format.h>
+#include <libassert/assert.hpp>
 #include <nlohmann/json.hpp>
 #include <optional>
 #include <rapidcheck.h>
@@ -79,12 +80,13 @@ public:
   }
 
   T const &at(std::size_t idx) const {
-    assert(idx < MAXSIZE);
+    ASSERT(idx < this->size());
     return get_value(this->contents[idx]);
   }
 
   T &at(std::size_t idx) {
-    assert(idx < MAXSIZE);
+    ASSERT(idx < this->size());
+
     return get_value(this->contents[idx]);
   }
 

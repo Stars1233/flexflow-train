@@ -1,0 +1,31 @@
+namespace = "FlexFlow"
+name = "UpsampleAttrs"
+type = "struct"
+features = [
+  "eq",
+  "ord",
+  "hash",
+  "json",
+  "fmt",
+  "rapidcheck",
+]
+docstring = '''
+\brief Compiler-side representation of a <a href="https://docs.pytorch.org/docs/2.13/generated/torch.nn.Upsample.html">Upsample operator</a>.
+
+For details on how operators are represented on the compiler side, see \ref op-attrs-ops.
+'''
+
+includes = [
+  "utils/int_ge_two/int_ge_two.h",
+  "op-attrs/upsample_mode.dtg.h",
+]
+
+src_includes = []
+
+[[fields]]
+name = "scale_factor"
+type = "::FlexFlow::int_ge_two"
+
+[[fields]]
+name = "mode"
+type = "::FlexFlow::UpsampleMode"

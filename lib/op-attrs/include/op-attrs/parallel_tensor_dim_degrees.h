@@ -11,6 +11,9 @@
 
 namespace FlexFlow {
 
+positive_int
+    get_total_degree_of_ptensor_dim_degrees(ParallelTensorDimDegrees const &);
+
 num_ptensor_shard_dims_t
     get_ptensor_dim_degrees_num_shard_dims(ParallelTensorDimDegrees const &);
 num_tensor_dims_t

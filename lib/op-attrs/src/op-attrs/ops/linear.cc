@@ -1,6 +1,6 @@
 #include "op-attrs/ops/linear.h"
-#include "op-attrs/ff_ordered/slice.h"
-#include "op-attrs/ff_ordered/transform.h"
+#include "op-attrs/ff_ordered/ff_ordered_slice.h"
+#include "op-attrs/ff_ordered/ff_ordered_transform.h"
 #include "op-attrs/initializers/kaiming_initializer_mode.h"
 #include "op-attrs/num_ptensor_shard_dims_t.h"
 #include "op-attrs/num_tensor_dims_t.h"
@@ -153,9 +153,9 @@ ParallelTensorDimDegrees
                                         ParallelTensorDimDegrees const &input) {
   SumDegree sum_degree = SumDegree{1_p};
   DiscardCopyDegree discard_copy_degree = DiscardCopyDegree{
-      input.sum_degree.value * product(slice(input.shard_degrees,
-                                             relative_ff_dim_t{0},
-                                             relative_ff_dim_t{-1}))};
+      input.sum_degree.value *
+      product(ff_ordered_slice(
+          input.shard_degrees, relative_ff_dim_t{0}, relative_ff_dim_t{-1}))};
   FFOrdered<positive_int> shard_degrees = FFOrdered<positive_int>{
       input.discard_copy_degree.value,
       input.shard_degrees.at(relative_ff_dim_t{-1}),
@@ -175,8 +175,9 @@ ParallelTensorDimDegrees
   SumDegree sum_degree = SumDegree{
       input.sum_degree.value * input.shard_degrees.at(relative_ff_dim_t{-1}),
   };
-  DiscardCopyDegree discard_copy_degree = DiscardCopyDegree{product(
-      slice(input.shard_degrees, relative_ff_dim_t{0}, relative_ff_dim_t{-1}))};
+  DiscardCopyDegree discard_copy_degree =
+      DiscardCopyDegree{product(ff_ordered_slice(
+          input.shard_degrees, relative_ff_dim_t{0}, relative_ff_dim_t{-1}))};
   FFOrdered<positive_int> shard_degrees =
       FFOrdered<positive_int>{input.discard_copy_degree.value};
 

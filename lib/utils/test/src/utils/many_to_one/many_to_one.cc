@@ -134,9 +134,9 @@ TEST_SUITE(FF_TEST_SUITE) {
     };
 
     std::string result = fmt::to_string(input);
-    std::string correct = "{{{1, 10, 100}, one}, {{2, 20}, two}}";
+    std::string correct = "[[[1,10,100],\"one\"],[[2,20],\"two\"]]";
 
-    CHECK(multiset_of(result) == multiset_of(correct));
+    CHECK(result == correct);
   }
 
   TEST_CASE("many_to_one_from_unstructured_relation") {

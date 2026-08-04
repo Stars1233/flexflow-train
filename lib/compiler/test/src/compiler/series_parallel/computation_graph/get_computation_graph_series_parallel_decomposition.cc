@@ -5,6 +5,7 @@
 #include "models/inception_v3/inception_v3.h"
 #include "models/split_test/split_test.h"
 #include "models/transformer/transformer.h"
+#include "models/yolov10/yolov10.h"
 #include "op-attrs/ops/linear.h"
 #include "pcg/computation_graph.h"
 #include "pcg/computation_graph_builder.h"
@@ -441,6 +442,17 @@ TEST_SUITE(FF_TEST_SUITE) {
 
         CHECK(sp_decomposition.has_value());
       }
+
+      SUBCASE("yolov10x") {
+        ComputationGraph cg = get_yolov10_computation_graph(get_yolov10x_config(
+            /*batch_size=*/8_p,
+            /*end2end=*/false));
+
+        std::optional<SeriesParallelDecomposition> sp_decomposition =
+            get_computation_graph_series_parallel_decomposition(cg);
+
+        CHECK(!sp_decomposition.has_value());
+      }
     }
   }
 
@@ -515,6 +527,15 @@ TEST_SUITE(FF_TEST_SUITE) {
     SUBCASE("dlrm") {
       ComputationGraph cg =
           get_dlrm_computation_graph(get_default_dlrm_config());
+
+      std::string result =
+          render_preprocessed_computation_graph_for_sp_decomposition(cg);
+    }
+
+    SUBCASE("yolov10x") {
+      ComputationGraph cg = get_yolov10_computation_graph(get_yolov10x_config(
+          /*batch_size=*/8_p,
+          /*end2end=*/false));
 
       std::string result =
           render_preprocessed_computation_graph_for_sp_decomposition(cg);

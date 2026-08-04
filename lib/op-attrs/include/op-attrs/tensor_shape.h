@@ -3,6 +3,7 @@
 
 #include "op-attrs/tensor_shape.dtg.h"
 #include "utils/units/num_bytes_t.h"
+#include <optional>
 
 namespace FlexFlow {
 

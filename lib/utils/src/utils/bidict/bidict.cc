@@ -6,8 +6,8 @@
 
 namespace FlexFlow {
 
-using L = ordered_value_type<0>;
-using R = ordered_value_type<1>;
+using L = jsonable_ordered_value_type<0>;
+using R = jsonable_ordered_value_type<1>;
 
 template struct bidict<L, R>;
 

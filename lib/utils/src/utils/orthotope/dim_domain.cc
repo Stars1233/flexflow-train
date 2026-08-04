@@ -7,6 +7,8 @@ using T = ordered_value_type<0>;
 
 template DimDomain<T> empty_dim_domain();
 
+template positive_int dim_domain_get_volume(DimDomain<T> const &);
+
 template nonnegative_int dim_domain_num_dims(DimDomain<T> const &);
 
 template std::set<T> get_domain_dims(DimDomain<T> const &);

@@ -1,30 +1,30 @@
-#include "test/utils/doctest/fmt/map.h"
-#include "utils/containers/binary_merge_maps_with_left_dominating.h"
+#include "utils/containers/binary_merge_unordered_maps_with_left_dominating.h"
+#include "test/utils/doctest/fmt/unordered_map.h"
 #include <doctest/doctest.h>
 #include <string>
 
 using namespace ::FlexFlow;
 
 TEST_SUITE(FF_TEST_SUITE) {
-  TEST_CASE("binary_merge_maps_with_left_dominating") {
-    std::map<int, std::string> l_map = {
+  TEST_CASE("binary_merge_unordered_maps_with_left_dominating") {
+    std::unordered_map<int, std::string> l_map = {
         {1, "one"},
         {2, "left_two"},
     };
 
-    std::map<int, std::string> r_map = {
+    std::unordered_map<int, std::string> r_map = {
         {2, "right_two"},
         {3, "three"},
     };
 
-    std::map<int, std::string> correct = {
+    std::unordered_map<int, std::string> result =
+        binary_merge_unordered_maps_with_left_dominating(l_map, r_map);
+
+    std::unordered_map<int, std::string> correct = {
         {1, "one"},
         {2, "left_two"},
         {3, "three"},
     };
-
-    std::map<int, std::string> result =
-        binary_merge_maps_with_left_dominating(l_map, r_map);
 
     CHECK(result == correct);
   }

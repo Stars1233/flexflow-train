@@ -16,6 +16,7 @@ features = [
   "ord",
   "hash",
   "fmt",
+  "json_serialize",
 ]
 
 includes = [

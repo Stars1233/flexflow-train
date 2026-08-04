@@ -180,10 +180,10 @@ parallel_tensor_guid_t ParallelComputationGraphBuilder::conv2d(
   ParallelTensorShape input_shape = this->get_shape(input);
 
   std::map<TensorSlotName, InitializerAttrs> initializers =
-      get_initializers(attrs,
-                       get_reduced_shape(input_shape),
-                       maybe_kernel_initializer,
-                       maybe_bias_initializer);
+      conv2d_get_initializers(attrs,
+                              get_reduced_shape(input_shape),
+                              maybe_kernel_initializer,
+                              maybe_bias_initializer);
 
   return require_only_key(this->add_layer(layer,
                                           {

@@ -1,5 +1,5 @@
 #include "pcg/parallel_computation_graph/generate_weight_transform.h"
-#include "op-attrs/ff_ordered/enumerate.h"
+#include "op-attrs/ff_ordered/ff_ordered_enumerate.h"
 #include "op-attrs/parallel_tensor_shape.h"
 #include <libassert/assert.hpp>
 
@@ -20,7 +20,7 @@ std::set<ParallelOpAttrs>
   }
 
   for (auto const &[shard_dim, shard_degree] :
-       enumerate(ff_ordered_shard_degrees(goal))) {
+       ff_ordered_enumerate(ff_ordered_shard_degrees(goal))) {
     if (shard_degree != 1) {
       result.insert(ParallelOpAttrs{RepartitionAttrs{shard_dim, shard_degree}});
     }

@@ -5,18 +5,19 @@
 #include "kernels/ff_handle.h"
 #include "op-attrs/ops/element_unary_attrs.dtg.h"
 
-namespace FlexFlow::Kernels::ElementUnary {
+namespace FlexFlow {
 
-void cpu_forward_kernel(ElementUnaryAttrs const &attrs,
-                        GenericTensorAccessorR const &input,
-                        GenericTensorAccessorW const &output);
+void element_unary_cpu_forward_kernel(ElementUnaryAttrs const &attrs,
+                                      GenericTensorAccessorR const &input,
+                                      GenericTensorAccessorW const &output);
 
-void cpu_backward_kernel(ElementUnaryAttrs const &attrs,
-                         GenericTensorAccessorR const &output,
-                         GenericTensorAccessorR const &output_grad,
-                         GenericTensorAccessorR const &input,
-                         GenericTensorAccessorW const &input_grad);
+void element_unary_cpu_backward_kernel(
+    ElementUnaryAttrs const &attrs,
+    GenericTensorAccessorR const &output,
+    GenericTensorAccessorR const &output_grad,
+    GenericTensorAccessorR const &input,
+    GenericTensorAccessorW const &input_grad);
 
-} // namespace FlexFlow::Kernels::ElementUnary
+} // namespace FlexFlow
 
 #endif

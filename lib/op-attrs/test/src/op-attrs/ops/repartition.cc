@@ -29,10 +29,10 @@ TEST_SUITE(FF_TEST_SUITE) {
         DataType::FLOAT,
     };
 
-    tl::expected<ParallelTensorShape, std::string> result =
-        get_output_shape(attrs, input);
+    ParallelTensorShape result =
+        repartition_get_output_parallel_shape(attrs, input);
 
-    tl::expected<ParallelTensorShape, std::string> correct = [&] {
+    ParallelTensorShape correct = [&] {
       ParallelTensorShape output = input;
       output.dims.shard_dims.at(dim).degree *= degree;
       return output;

@@ -15,7 +15,7 @@
 
 #include "task-spec/ops/impl/gather.h"
 #include "kernels/gather_kernels.h"
-#include "op-attrs/ff_ordered/get_idxs.h"
+#include "op-attrs/ff_ordered/ff_ordered_get_idxs.h"
 #include "task-spec/profiling.h"
 #include "utils/nonnegative_int/nonnegative_range.h"
 #include <optional>
@@ -37,7 +37,7 @@ static DeviceSpecificPerDeviceOpState
   ASSERT(get_num_dims(input.shape.dims) == get_num_dims(index.shape.dims));
   ASSERT(get_num_dims(output.shape.dims) == get_num_dims(index.shape.dims));
 
-  for (ff_dim_t i : get_idxs(input.shape.dims.ff_ordered)) {
+  for (ff_dim_t i : ff_ordered_get_idxs(input.shape.dims.ff_ordered)) {
     ASSERT(dim_at_idx(index.shape.dims, i) == dim_at_idx(output.shape.dims, i));
     if (i != attrs.dim) {
       ASSERT(dim_at_idx(input.shape.dims, i) ==

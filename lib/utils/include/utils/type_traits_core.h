@@ -20,6 +20,9 @@ template <class B1, class... Bn>
 struct conjunction<B1, Bn...>
     : std::conditional<bool(B1::value), conjunction<Bn...>, B1>::type {};
 
+template <typename... Ts>
+inline constexpr bool conjunction_v = conjunction<Ts...>::value;
+
 // from https://en.cppreference.com/w/cpp/types/negation
 template <class B>
 struct negation : bool_constant<!bool(B::value)> {};

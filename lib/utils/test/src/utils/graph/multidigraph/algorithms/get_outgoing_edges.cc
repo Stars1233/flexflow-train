@@ -11,7 +11,7 @@
 using namespace FlexFlow;
 
 TEST_SUITE(FF_TEST_SUITE) {
-  TEST_CASE("get_outgoing_edges") {
+  TEST_CASE("get_outgoing_edges (MultiDiGraph)") {
     MultiDiGraph g = MultiDiGraph::create<AdjacencyMultiDiGraph>();
     std::vector<Node> n = add_nodes(g, 3_n);
 

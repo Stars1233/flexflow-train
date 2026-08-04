@@ -13,27 +13,42 @@ namespace FlexFlow {
 std::map<TensorSlotName, IncomingTensorRole>
     get_conv2d_incoming_tensor_roles(Conv2DAttrs const &);
 
-TensorShape get_kernel_shape(Conv2DAttrs const &attrs,
-                             TensorShape const &input);
-TensorShape get_bias_shape(Conv2DAttrs const &attrs, TensorShape const &input);
-TensorShape get_output_shape(Conv2DAttrs const &attrs,
-                             TensorShape const &input);
+TensorShape conv2d_get_kernel_shape(Conv2DAttrs const &attrs,
+                                    TensorShape const &input);
+TensorShape conv2d_get_bias_shape(Conv2DAttrs const &attrs,
+                                  TensorShape const &input);
+TensorShape conv2d_get_output_shape(Conv2DAttrs const &attrs,
+                                    TensorShape const &input);
 
 std::map<TensorSlotName, TensorShape>
-    get_weight_shapes(Conv2DAttrs const &attrs, TensorShape const &input_shape);
+    conv2d_get_weight_shapes(Conv2DAttrs const &attrs,
+                             TensorShape const &input_shape);
 
-ParallelTensorShape get_kernel_shape(Conv2DAttrs const &attrs,
+ParallelTensorDimDegrees conv2d_get_kernel_parallel_dim_degrees(
+    Conv2DAttrs const &attrs,
+    ParallelTensorDimDegrees const &input_dim_degrees);
+ParallelTensorDimDegrees conv2d_get_bias_parallel_dim_degrees(
+    Conv2DAttrs const &attrs,
+    ParallelTensorDimDegrees const &input_dim_degrees);
+ParallelTensorDimDegrees conv2d_get_output_parallel_dim_degrees(
+    Conv2DAttrs const &attrs,
+    ParallelTensorDimDegrees const &input_dim_degrees);
+
+ParallelTensorShape
+    conv2d_get_kernel_parallel_shape(Conv2DAttrs const &attrs,
                                      ParallelTensorShape const &input_shape);
-ParallelTensorShape get_bias_shape(Conv2DAttrs const &attrs,
+ParallelTensorShape
+    conv2d_get_bias_parallel_shape(Conv2DAttrs const &attrs,
                                    ParallelTensorShape const &input_shape);
-ParallelTensorShape get_output_shape(Conv2DAttrs const &attrs,
+ParallelTensorShape
+    conv2d_get_output_parallel_shape(Conv2DAttrs const &attrs,
                                      ParallelTensorShape const &input_shape);
 
 std::map<TensorSlotName, ParallelTensorShape>
-    get_weight_shapes(Conv2DAttrs const &attrs,
-                      ParallelTensorShape const &input_shape);
+    conv2d_get_weight_parallel_shapes(Conv2DAttrs const &attrs,
+                                      ParallelTensorShape const &input_shape);
 
-std::map<TensorSlotName, InitializerAttrs> get_initializers(
+std::map<TensorSlotName, InitializerAttrs> conv2d_get_initializers(
     Conv2DAttrs const &attrs,
     TensorShape const &input_shape,
     std::optional<InitializerAttrs> kernel_initializer = std::nullopt,

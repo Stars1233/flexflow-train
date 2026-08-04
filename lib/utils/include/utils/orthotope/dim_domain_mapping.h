@@ -149,7 +149,7 @@ DimDomainMapping<L, R>
   return DimDomainMapping{
       /*coord_mapping=*/generate_bidict(
           get_coords_in_dim_domain(l_domain),
-          [&](DimCoord<L> const &l_coord) {
+          [&](DimCoord<L> const &l_coord) -> DimCoord<R> {
             return compute_dim_projection(
                 /*projection=*/projection,
                 /*input_coord=*/l_coord,
@@ -164,6 +164,31 @@ DimDomainMapping<L, R>
 }
 
 } // namespace FlexFlow
+
+namespace nlohmann {
+
+template <typename L, typename R>
+struct adl_serializer<::FlexFlow::DimDomainMapping<L, R>> {
+  static ::FlexFlow::DimDomainMapping<L, R> from_json(json const &j) {
+    ASSERT(j.at("__type").template get<std::string>() == "DimDomainMapping");
+    return ::FlexFlow::DimDomainMapping<L, R>{
+        /*coord_mapping=*/j.at("coord_mapping")
+            .template get<::FlexFlow::bidict<::FlexFlow::DimCoord<L>,
+                                             ::FlexFlow::DimCoord<R>>>(),
+        /*l_domain=*/j.at("l_domain").template get<::FlexFlow::DimDomain<L>>(),
+        /*r_domain=*/j.at("r_domain").template get<::FlexFlow::DimDomain<R>>(),
+    };
+  }
+
+  static void to_json(json &j, ::FlexFlow::DimDomainMapping<L, R> const &m) {
+    j["__type"] = "CommunicationEdge";
+    j["coord_mapping"] = m.coord_mapping;
+    j["l_domain"] = m.l_domain;
+    j["r_domain"] = m.r_domain;
+  }
+};
+
+} // namespace nlohmann
 
 namespace std {
 

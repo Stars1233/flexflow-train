@@ -15,7 +15,7 @@
 
 #include "task-spec/ops/impl/layer_norm.h"
 #include "kernels/layer_norm_kernels.h"
-#include "op-attrs/ff_ordered/transform.h"
+#include "op-attrs/ff_ordered/ff_ordered_transform.h"
 #include "op-attrs/ops/layer_norm.h"
 #include "op-attrs/parallel_tensor_shape.h"
 #include "task-spec/profiling.h"

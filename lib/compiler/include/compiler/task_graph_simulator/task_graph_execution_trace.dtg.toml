@@ -5,6 +5,7 @@ type = "struct"
 features = [
   "hash",
   "fmt",
+  "json_serialize",
   "eq"
 ]
 

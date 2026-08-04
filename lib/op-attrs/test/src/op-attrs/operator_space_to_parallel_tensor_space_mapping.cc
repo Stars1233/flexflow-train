@@ -20,8 +20,8 @@ TEST_SUITE(FF_TEST_SUITE) {
     };
 
     OperatorTaskSpace operator_task_space = OperatorTaskSpace{MinimalOrthotope{{
-        3_ge2,
         2_ge2,
+        3_ge2,
     }}};
 
     OperatorSpaceToParallelTensorSpaceMapping result =
@@ -38,10 +38,7 @@ TEST_SUITE(FF_TEST_SUITE) {
                             nonnegative_int shard_coord_entry) {
       return DimCoord<parallel_tensor_dim_idx_t>{{
           {sum_dim_idx(), sum_coord_entry},
-          {discard_copy_dim_idx(), 0_n},
-          {shard_dim_idx(ff_dim_t{0_n}), 0_n},
           {shard_dim_idx(ff_dim_t{1_n}), shard_coord_entry},
-          {shard_dim_idx(ff_dim_t{2_n}), 0_n},
       }};
     };
 
@@ -53,24 +50,21 @@ TEST_SUITE(FF_TEST_SUITE) {
                     DimCoord<operator_task_space_dim_idx_t>,
                     DimCoord<parallel_tensor_dim_idx_t>>{
                     {make_op_coord(0_n, 0_n), make_pt_coord(0_n, 0_n)},
-                    {make_op_coord(0_n, 1_n), make_pt_coord(1_n, 0_n)},
-                    {make_op_coord(1_n, 0_n), make_pt_coord(0_n, 1_n)},
+                    {make_op_coord(1_n, 0_n), make_pt_coord(1_n, 0_n)},
+                    {make_op_coord(0_n, 1_n), make_pt_coord(0_n, 1_n)},
                     {make_op_coord(1_n, 1_n), make_pt_coord(1_n, 1_n)},
-                    {make_op_coord(2_n, 0_n), make_pt_coord(0_n, 2_n)},
-                    {make_op_coord(2_n, 1_n), make_pt_coord(1_n, 2_n)},
+                    {make_op_coord(0_n, 2_n), make_pt_coord(0_n, 2_n)},
+                    {make_op_coord(1_n, 2_n), make_pt_coord(1_n, 2_n)},
                 },
                 /*l_domain=*/
                 DimDomain<operator_task_space_dim_idx_t>{{
-                    {operator_task_space_dim_idx_t{0_n}, 3_p},
-                    {operator_task_space_dim_idx_t{1_n}, 2_p},
+                    {operator_task_space_dim_idx_t{0_n}, 2_p},
+                    {operator_task_space_dim_idx_t{1_n}, 3_p},
                 }},
                 /*r_domain=*/
                 DimDomain<parallel_tensor_dim_idx_t>{{
                     {sum_dim_idx(), 2_p},
-                    {discard_copy_dim_idx(), 1_p},
-                    {shard_dim_idx(ff_dim_t{0_n}), 1_p},
                     {shard_dim_idx(ff_dim_t{1_n}), 3_p},
-                    {shard_dim_idx(ff_dim_t{2_n}), 1_p},
                 }},
             },
         };

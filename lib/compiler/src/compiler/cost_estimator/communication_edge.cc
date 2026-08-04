@@ -49,8 +49,8 @@ std::tuple<MachineSpaceCoordinate const &, MachineSpaceCoordinate const &>
 }
 
 std::string format_as(CommunicationEdge const &e) {
-  return fmt::format(
-      "<CommunicationEdge src={} dst={}>", e.get_src(), e.get_dst());
+  ::nlohmann::json j = e;
+  return j.dump();
 }
 
 std::ostream &operator<<(std::ostream &s, CommunicationEdge const &e) {
@@ -58,6 +58,26 @@ std::ostream &operator<<(std::ostream &s, CommunicationEdge const &e) {
 }
 
 } // namespace FlexFlow
+
+namespace nlohmann {
+
+::FlexFlow::CommunicationEdge
+    adl_serializer<::FlexFlow::CommunicationEdge>::from_json(json const &j) {
+  ASSERT(j.at("__type").template get<std::string>() == "CommunicationEdge");
+  return ::FlexFlow::CommunicationEdge{
+      /*src=*/j.at("src").template get<::FlexFlow::MachineSpaceCoordinate>(),
+      /*dst=*/j.at("dst").template get<::FlexFlow::MachineSpaceCoordinate>(),
+  };
+}
+
+void adl_serializer<::FlexFlow::CommunicationEdge>::to_json(
+    json &j, ::FlexFlow::CommunicationEdge const &e) {
+  j["__type"] = "CommunicationEdge";
+  j["src"] = e.get_src();
+  j["dst"] = e.get_dst();
+}
+
+} // namespace nlohmann
 
 namespace std {
 

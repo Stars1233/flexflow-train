@@ -7,7 +7,7 @@ TEST_SUITE(FF_TEST_SUITE) {
   TEST_CASE_TEMPLATE("ff_ordered_from_map",
                      T,
                      std::map<ff_dim_t, int>,
-                     std::map<ff_dim_t, int>) {
+                     std::unordered_map<ff_dim_t, int>) {
     SUBCASE("input is empty") {
       T m = {};
 

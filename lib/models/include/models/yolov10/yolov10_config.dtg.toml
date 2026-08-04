@@ -1,0 +1,73 @@
+namespace = "FlexFlow"
+name = "YOLOv10Config"
+type = "struct"
+features = [
+  "eq",
+  "ord",
+  "hash",
+  "json",
+  "fmt",
+]
+
+includes = [
+  "<vector>",
+  "<string>",
+  "models/yolov10/yolov10_module.dtg.h",
+  "models/yolov10/yolov10_layer_config.dtg.h",
+  "models/yolov10/yolov10_head_config_v10detect.dtg.h",
+  "utils/positive_int/positive_int.h",
+  "models/yolov10/yolov10_scaling_config.dtg.h",
+]
+
+src_includes = [
+  "utils/fmt/vector.h",
+  "utils/hash/vector.h",
+]
+
+docstring = '''
+\brief The configuration for an ultralytics YoloV10 model.
+
+In the ultralytics module, model configurations are specified via a
+[yaml file](https://github.com/ultralytics/ultralytics/blob/f8ad132a15b5f6818c2ce0647b40dc57e993bf0c/ultralytics/cfg/models/v10/yolov10x.yaml).
+\ref YOLOv10Config roughly emulates the structure of these configurations.
+'''
+
+[[fields]]
+name = "batch_size"
+type = "::FlexFlow::positive_int"
+
+[[fields]]
+name = "image_height"
+type = "::FlexFlow::positive_int"
+
+[[fields]]
+name = "image_width"
+type = "::FlexFlow::positive_int"
+
+[[fields]]
+name = "num_classes"
+type = "::FlexFlow::positive_int"
+
+[[fields]]
+name = "end2end"
+type = "bool"
+docstring = '''
+\brief Enable NMS-free end-to-end training mode.
+
+The corresponding flag in ultralytics can be found 
+<a href="https://github.com/ultralytics/ultralytics/blob/f8ad132a15b5f6818c2ce0647b40dc57e993bf0c/ultralytics/nn/modules/head.py#L95">
+  here
+</a>.
+'''
+
+[[fields]]
+name = "scaling_config"
+type = "::FlexFlow::YOLOv10ScalingConfig"
+
+[[fields]]
+name = "backbone_config"
+type = "std::vector<::FlexFlow::YOLOv10LayerConfig>"
+
+[[fields]]
+name = "head_config"
+type = "::FlexFlow::YOLOv10HeadConfigV10Detect"

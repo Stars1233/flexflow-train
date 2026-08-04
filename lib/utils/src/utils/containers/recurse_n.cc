@@ -7,6 +7,6 @@ namespace FlexFlow {
 using T = value_type<0>;
 using F = std::function<T(T)>; // F :: T -> T
 
-template T recurse_n(F const &f, int n, T const &initial_value);
+template T recurse_n(F const &f, nonnegative_int n, T const &initial_value);
 
 } // namespace FlexFlow

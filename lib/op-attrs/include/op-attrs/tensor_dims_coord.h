@@ -8,6 +8,14 @@ namespace FlexFlow {
 nonnegative_int
     tensor_dims_coord_get_num_dims(TensorDimsCoord const &tensor_dims_coord);
 
+nonnegative_int tensor_dims_coord_at_rel_idx(TensorDimsCoord const &,
+                                             relative_ff_dim_t);
+nonnegative_int &tensor_dims_coord_at_rel_idx(TensorDimsCoord &,
+                                              relative_ff_dim_t);
+
+nonnegative_int tensor_dims_coord_at_idx(TensorDimsCoord const &, ff_dim_t);
+nonnegative_int &tensor_dims_coord_at_idx(TensorDimsCoord &, ff_dim_t);
+
 TensorDimsCoord tensor_dims_coord_drop_dims(
     TensorDimsCoord const &coord,
     std::function<bool(ff_dim_t)> const &should_drop_dim);

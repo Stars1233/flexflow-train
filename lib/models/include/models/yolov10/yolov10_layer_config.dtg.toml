@@ -1,0 +1,53 @@
+namespace = "FlexFlow"
+name = "YOLOv10LayerConfig"
+type = "variant"
+features = [
+  "eq",
+  "ord",
+  "hash",
+  "json",
+  "fmt",
+]
+
+includes = [
+  "models/yolov10/yolov10_layer_config_c2f.dtg.h",
+  "models/yolov10/yolov10_layer_config_c2fcib.dtg.h",
+  "models/yolov10/yolov10_layer_config_concat.dtg.h",
+  "models/yolov10/yolov10_layer_config_conv.dtg.h",
+  "models/yolov10/yolov10_layer_config_psa.dtg.h",
+  "models/yolov10/yolov10_layer_config_scdown.dtg.h",
+  "models/yolov10/yolov10_layer_config_sppf.dtg.h",
+  "models/yolov10/yolov10_layer_config_upsample.dtg.h",
+]
+
+[[values]]
+type = "::FlexFlow::YOLOv10LayerConfigC2f"
+key = "c2f"
+
+[[values]]
+type = "::FlexFlow::YOLOv10LayerConfigC2fCIB"
+key = "c2fcib"
+
+[[values]]
+type = "::FlexFlow::YOLOv10LayerConfigConcat"
+key = "concat"
+
+[[values]]
+type = "::FlexFlow::YOLOv10LayerConfigConv"
+key = "conv"
+
+[[values]]
+type = "::FlexFlow::YOLOv10LayerConfigPSA"
+key = "psa"
+
+[[values]]
+type = "::FlexFlow::YOLOv10LayerConfigSCDown"
+key = "scdown"
+
+[[values]]
+type = "::FlexFlow::YOLOv10LayerConfigSPPF"
+key = "sppf"
+
+[[values]]
+type = "::FlexFlow::YOLOv10LayerConfigUpsample"
+key = "upsample"

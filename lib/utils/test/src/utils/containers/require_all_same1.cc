@@ -3,6 +3,7 @@
 #include "test/utils/doctest/fmt/multiset.h"
 #include "test/utils/doctest/fmt/optional.h"
 #include "test/utils/doctest/fmt/set.h"
+#include "test/utils/doctest/fmt/unordered_set.h"
 #include "test/utils/doctest/fmt/vector.h"
 #include "utils/expected.h"
 #include <doctest/doctest.h>
@@ -17,8 +18,8 @@ TEST_SUITE(FF_TEST_SUITE) {
                      std::vector<int>,
                      std::set<int>,
                      std::multiset<int>,
-                     std::set<int>,
-                     std::multiset<int>) {
+                     std::unordered_set<int>,
+                     std::unordered_multiset<int>) {
     SUBCASE("input is empty") {
       T input = {};
 

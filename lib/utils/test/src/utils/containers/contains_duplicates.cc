@@ -8,7 +8,8 @@ TEST_SUITE(FF_TEST_SUITE) {
                      T,
                      std::vector<int>,
                      std::multiset<int>,
-                     std::multiset<int>) {
+                     std::unordered_multiset<int>) {
+
     SUBCASE("container has duplicates") {
       T input = {2, 7, 3, 4, 2, 1};
 

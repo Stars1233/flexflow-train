@@ -1,7 +1,7 @@
 #ifndef _FLEXFLOW_LIB_UTILS_INCLUDE_UTILS_CONTAINERS_RECURSE_N_H
 #define _FLEXFLOW_LIB_UTILS_INCLUDE_UTILS_CONTAINERS_RECURSE_N_H
 
-#include "utils/exception.h"
+#include "utils/nonnegative_int/nonnegative_int.h"
 
 namespace FlexFlow {
 
@@ -17,11 +17,7 @@ namespace FlexFlow {
  * @throws RuntimeError if n is negative
  */
 template <typename F, typename T>
-T recurse_n(F const &f, int n, T const &initial_value) {
-  if (n < 0) {
-    throw mk_runtime_error(
-        fmt::format("Supplied n={} should be non-negative", n));
-  }
+T recurse_n(F const &f, nonnegative_int n, T const &initial_value) {
   T t = initial_value;
   for (int i = 0; i < n; i++) {
     t = f(t);

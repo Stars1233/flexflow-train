@@ -1,7 +1,9 @@
 namespace = "FlexFlow"
 name = "LossConfig"
 type = "struct"
-features = []
+features = [
+  "json_serialize",
+]
 
 includes = [
   "op-attrs/ops/loss_functions/loss_attrs.dtg.h",

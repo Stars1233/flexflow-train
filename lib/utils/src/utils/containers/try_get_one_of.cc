@@ -6,7 +6,7 @@ namespace FlexFlow {
 
 using T = value_type<0>;
 
-template std::optional<T> try_get_one_of(std::set<T> const &);
+template std::optional<T> try_get_one_of(std::unordered_set<T> const &);
 
 using R = ordered_value_type<0>;
 

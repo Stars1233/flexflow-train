@@ -11,19 +11,15 @@ TEST_SUITE(FF_TEST_SUITE) {
     };
 
     SUBCASE("n = 0") {
-      std::string result = recurse_n(append_bar, 0, std::string("Foo"));
+      std::string result = recurse_n(append_bar, 0_n, std::string("Foo"));
       std::string correct = "Foo";
       CHECK(result == correct);
     }
 
     SUBCASE("n = 3") {
-      std::string result = recurse_n(append_bar, 3, std::string("Foo"));
+      std::string result = recurse_n(append_bar, 3_n, std::string("Foo"));
       std::string correct = "FooBarBarBar";
       CHECK(result == correct);
-    }
-
-    SUBCASE("n < 0") {
-      CHECK_THROWS(recurse_n(append_bar, -1, std::string("Foo")));
     }
   }
 }

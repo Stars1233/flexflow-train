@@ -320,11 +320,11 @@ TEST_SUITE(FF_TEST_SUITE) {
     }
   }
 
-  TEST_CASE("positive_int * positive_int") {
+  TEST_CASE("positive_int times positive_int") {
     CHECK(3_p * 4_p == 12_p);
   }
 
-  TEST_CASE("positive_int *= positive_int") {
+  TEST_CASE("positive_int times= positive_int") {
     positive_int x = 5_p;
 
     SUBCASE("single application") {
@@ -338,7 +338,7 @@ TEST_SUITE(FF_TEST_SUITE) {
     }
   }
 
-  TEST_CASE("positive_int * nonnegative_int") {
+  TEST_CASE("positive_int times nonnegative_int") {
     CHECK(3_p * 4_n == 12_n);
     CHECK(3_p * 0_n == 0_n);
   }
@@ -455,7 +455,7 @@ TEST_SUITE(FF_TEST_SUITE) {
     }
   }
 
-  TEST_CASE("std::hash<nonnegative_int>") {
+  TEST_CASE("std::hash<positive_int>") {
     positive_int nn_int_1a = positive_int{1};
     positive_int nn_int_1b = positive_int{1};
     positive_int nn_int_2 = positive_int{2};

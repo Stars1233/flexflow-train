@@ -6,6 +6,7 @@ features = [
   "hash",
   "ord",
   "fmt",
+  "json_serialize",
 ]
 
 fwd_decls = [
@@ -26,6 +27,7 @@ src_includes = [
   "utils/fmt/variant.h",
   "utils/fmt/multiset.h",
   "utils/hash/multiset.h",
+  "utils/json/variant.h",
 ]
 
 [[fields]]

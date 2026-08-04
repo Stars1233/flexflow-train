@@ -22,6 +22,8 @@ public:
 std::string format_as(InitOpTaskImplFunction const &x);
 std::ostream &operator<<(std::ostream &s, InitOpTaskImplFunction const &x);
 
+void to_json(nlohmann::json &, InitOpTaskImplFunction const &);
+
 } // namespace FlexFlow
 
 namespace std {

@@ -234,6 +234,10 @@ real_type_t<DT> accessor_get_only_value(GenericTensorAccessorR const &acc) {
   return *static_cast<real_type_t<DT> const *>(acc.ptr);
 }
 
+void to_json(nlohmann::json &, GenericTensorAccessorR const &);
+
+void to_json(nlohmann::json &, GenericTensorAccessorW const &);
+
 } // namespace FlexFlow
 
 namespace std {

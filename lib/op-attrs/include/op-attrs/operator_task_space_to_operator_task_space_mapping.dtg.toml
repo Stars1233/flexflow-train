@@ -4,7 +4,8 @@ type = "struct"
 features = [
   "eq",
   "hash",
-  "fmt"
+  "fmt",
+  "json_serialize"
 ]
 
 includes = [

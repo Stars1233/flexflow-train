@@ -15,6 +15,9 @@ void tensor_accessor_elementwise_add_to(GenericTensorAccessorR const &lhs,
                                         GenericTensorAccessorR const &rhs,
                                         GenericTensorAccessorW const &output);
 
+void tensor_accessor_elementwise_add_to_inplace(
+    GenericTensorAccessorR const &lhs, GenericTensorAccessorW const &output);
+
 GenericTensorAccessorW
     tensor_accessor_elementwise_subtract(GenericTensorAccessorR const &lhs,
                                          GenericTensorAccessorR const &rhs,
@@ -42,6 +45,14 @@ GenericTensorAccessorW tensor_accessor_matmul(GenericTensorAccessorR const &lhs,
 void tensor_accessor_matmul_to(GenericTensorAccessorR const &lhs,
                                GenericTensorAccessorR const &rhs,
                                GenericTensorAccessorW const &output);
+
+void tensor_accessor_batch_matmul(GenericTensorAccessorR const &lhs,
+                                  GenericTensorAccessorR const &rhs,
+                                  GenericTensorAccessorW const &output);
+
+void tensor_accessor_batch_matmul_to(GenericTensorAccessorR const &lhs,
+                                     GenericTensorAccessorR const &rhs,
+                                     GenericTensorAccessorW const &output);
 
 } // namespace FlexFlow
 

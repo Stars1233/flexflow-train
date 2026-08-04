@@ -29,3 +29,8 @@ type = "::FlexFlow::ff_dim_t"
 [[fields]]
 name = "end_dim"
 type = "::FlexFlow::ff_dim_t"
+docstring = '''
+\brief The last dimension to flatten.
+
+\note This is inclusive!
+'''

@@ -9,7 +9,7 @@ TEST_SUITE(FF_TEST_SUITE) {
   TEST_CASE_TEMPLATE("try_at(T, K)",
                      T,
                      std::map<int, std::string>,
-                     std::map<int, std::string>) {
+                     std::unordered_map<int, std::string>) {
     T m = {{1, "one"}, {2, "two"}};
 
     SUBCASE("map contains key") {

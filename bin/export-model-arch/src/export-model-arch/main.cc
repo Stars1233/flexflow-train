@@ -7,6 +7,7 @@
 #include "models/inception_v3/inception_v3.h"
 #include "models/split_test/split_test.h"
 #include "models/transformer/transformer.h"
+#include "models/yolov10/yolov10.h"
 #include "op-attrs/computation_graph_op_attrs.h"
 #include "pcg/computation_graph.h"
 #include "pcg/file_format/v1/v1_computation_graph.h"
@@ -77,6 +78,10 @@ tl::expected<ComputationGraph, std::string>
     return get_split_test_computation_graph(batch_size);
   } else if (model_name == "single_operator") {
     return get_single_operator_computation_graph();
+  } else if (model_name == "yolov10x") {
+    return get_yolov10_computation_graph(get_yolov10x_config(
+        /*batch_size=*/8_p,
+        /*end2end=*/false));
   } else {
     return tl::unexpected(fmt::format("Unknown model name: {}", model_name));
   }
@@ -150,7 +155,8 @@ int main(int argc, char **argv) {
                                             "bert",
                                             "dlrm",
                                             "split_test",
-                                            "single_operator"};
+                                            "single_operator",
+                                            "yolov10x"};
   CLIArgumentKey key_model_name = cli_add_positional_argument(
       cli,
       CLIPositionalArgumentSpec{

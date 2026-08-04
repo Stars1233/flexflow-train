@@ -6,7 +6,7 @@
 using namespace ::FlexFlow;
 
 TEST_SUITE(FF_TEST_SUITE) {
-  TEST_CASE("binary_merge_maps_with") {
+  TEST_CASE("binary_merge_unordered_maps_with") {
     auto fail_if_called = [](std::string const &,
                              std::string const &) -> std::string { PANIC(); };
 

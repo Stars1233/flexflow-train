@@ -8,6 +8,7 @@
 #include "utils/graph/labelled_kwarg_dataflow_graph/algorithms/view_as_labelled_open_kwarg_dataflow_graph.h"
 #include "utils/graph/labelled_open_kwarg_dataflow_graph/algorithms/find_isomorphism_between_labelled_open_kwarg_dataflow_graphs.h"
 #include "utils/graph/labelled_open_kwarg_dataflow_graph/algorithms/get_labelled_open_kwarg_dataflow_graph_data.h"
+#include "utils/graph/labelled_open_kwarg_dataflow_graph/algorithms/labelled_open_kwarg_dataflow_graph_view_as_dot.h"
 #include "utils/graph/labelled_open_kwarg_dataflow_graph/algorithms/rewrite_labelled_open_kwarg_dataflow_graph_node_labels.h"
 #include "utils/graph/labelled_open_kwarg_dataflow_graph/algorithms/view_from_labelled_open_kwarg_dataflow_graph_data.h"
 #include "utils/graph/node/algorithms.h"
@@ -224,39 +225,47 @@ bool sub_pcgs_are_isomorphic(SubParallelComputationGraph const &lhs,
       .has_value();
 }
 
-std::string as_dot(SubParallelComputationGraph const &spcg) {
-  NOT_IMPLEMENTED();
-  // std::function<std::string(ParallelLayerAttrs const &)> get_node_label =
-  //     [](ParallelLayerAttrs const &a) -> std::string {
-  //   RecordFormatter r = as_dot(a.op_attrs);
-  //
-  //   if (a.name.has_value()) {
-  //     RecordFormatter rr;
-  //     rr << "Name" << a.name.value();
-  //     r << rr;
-  //   }
-  //
-  //   std::ostringstream oss;
-  //   oss << r;
-  //   return oss.str();
-  // };
-  //
-  // std::function<std::string(ParallelTensorAttrs const &)> get_input_label =
-  //     [](ParallelTensorAttrs const &a) -> std::string {
-  //   RecordFormatter r;
-  //
-  //   r << fmt::to_string(a.shape);
-  //
-  //   std::ostringstream oss;
-  //   oss << r;
-  //   return oss.str();
-  // };
-  //
-  // return as_dot(spcg.raw_graph, get_node_label, get_input_label);
+std::string sub_pcg_as_dot(SubParallelComputationGraph const &spcg) {
+  std::function<nlohmann::json(ParallelLayerAttrs const &)> render_node_label =
+      [](ParallelLayerAttrs const &a) -> nlohmann::json {
+    nlohmann::json result = pcg_op_attrs_as_dot_json(a.op_attrs);
+
+    if (a.name.has_value()) {
+      result["Name"] = a.name.value();
+    }
+
+    return result;
+  };
+
+  std::function<nlohmann::json(ParallelTensorAttrs const &)>
+      render_input_label = [](ParallelTensorAttrs const &a) -> nlohmann::json {
+    RecordFormatter r = mk_empty_record(Orientation::HORIZONTAL);
+
+    r << fmt::to_string(a.shape);
+
+    std::ostringstream oss;
+    oss << r;
+    return oss.str();
+  };
+
+  std::function<nlohmann::json(TensorSlotName const &)> render_slot_name =
+      [](TensorSlotName const &slot_name) -> nlohmann::json {
+    return fmt::to_string(slot_name);
+  };
+
+  std::function<std::vector<TensorSlotName>(std::set<TensorSlotName> const &)>
+      order_slots = [](std::set<TensorSlotName> const &slot_names)
+      -> std::vector<TensorSlotName> { return sorted(slot_names); };
+
+  return labelled_open_kwarg_dataflow_graph_view_as_dot(spcg.raw_graph,
+                                                        render_node_label,
+                                                        render_input_label,
+                                                        render_slot_name,
+                                                        order_slots);
 }
 
 void debug_print_dot(SubParallelComputationGraph const &spcg) {
-  std::cout << as_dot(spcg) << std::endl;
+  std::cout << sub_pcg_as_dot(spcg) << std::endl;
 }
 
 } // namespace FlexFlow

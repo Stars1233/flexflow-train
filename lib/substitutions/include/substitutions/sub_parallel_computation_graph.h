@@ -61,7 +61,7 @@ bool sub_pcgs_are_isomorphic(SubParallelComputationGraph const &,
 SubParallelComputationGraph
     without_layer_names(SubParallelComputationGraph const &);
 
-std::string as_dot(SubParallelComputationGraph const &);
+std::string sub_pcg_as_dot(SubParallelComputationGraph const &);
 void debug_print_dot(SubParallelComputationGraph const &);
 
 } // namespace FlexFlow

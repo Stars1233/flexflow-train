@@ -564,11 +564,11 @@ TEST_SUITE(FF_TEST_SUITE) {
                     c2,
                 },
                 {
-                    TensorSlotName::OUTPUT_1,
+                    TensorSlotName::OUTPUT_01,
                     c3,
                 },
                 {
-                    TensorSlotName::OUTPUT_2,
+                    TensorSlotName::OUTPUT_02,
                     c4,
                 },
             },
@@ -685,18 +685,18 @@ TEST_SUITE(FF_TEST_SUITE) {
           /*outputs=*/
           {
               {
-                  mk_slot(TensorSlotName::OUTPUT_1),
+                  mk_slot(TensorSlotName::OUTPUT_01),
                   mk_op_value(20,
-                              TensorSlotName::OUTPUT_1,
-                              TensorSlotName::OUTPUT_1,
+                              TensorSlotName::OUTPUT_01,
+                              TensorSlotName::OUTPUT_01,
                               node_mapping,
                               std::nullopt),
               },
               {
-                  mk_slot(TensorSlotName::OUTPUT_2),
+                  mk_slot(TensorSlotName::OUTPUT_02),
                   mk_op_value(20,
-                              TensorSlotName::OUTPUT_2,
-                              TensorSlotName::OUTPUT_2,
+                              TensorSlotName::OUTPUT_02,
+                              TensorSlotName::OUTPUT_02,
                               node_mapping,
                               std::nullopt),
               },
@@ -721,10 +721,10 @@ TEST_SUITE(FF_TEST_SUITE) {
                     TensorSlotName::INPUT, input_shard_coord, node_mapping),
                 mk_sharding_info(
                     TensorSlotName::WEIGHT, weight_shard_coord, node_mapping),
-                mk_sharding_info(TensorSlotName::OUTPUT_1,
+                mk_sharding_info(TensorSlotName::OUTPUT_01,
                                  output_1_shard_coord,
                                  node_mapping),
-                mk_sharding_info(TensorSlotName::OUTPUT_2,
+                mk_sharding_info(TensorSlotName::OUTPUT_02,
                                  output_2_shard_coord,
                                  node_mapping),
             },

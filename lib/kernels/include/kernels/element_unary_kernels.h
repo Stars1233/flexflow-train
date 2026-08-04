@@ -8,15 +8,15 @@
 #include "kernels/ff_handle.h"
 #include "op-attrs/ops/element_unary_attrs.dtg.h"
 
-namespace FlexFlow::Kernels::ElementUnary {
+namespace FlexFlow {
 
 std::optional<ElementUnaryPerDeviceState>
-    init_kernel(DeviceType device_type,
-                TensorShape const &input_shape,
-                TensorShape const &output_shape,
-                ElementUnaryAttrs const &attrs);
+    element_unary_init_kernel(DeviceType device_type,
+                              TensorShape const &input_shape,
+                              TensorShape const &output_shape,
+                              ElementUnaryAttrs const &attrs);
 
-void forward_kernel(
+void element_unary_forward_kernel(
     device_stream_t const &stream,
     std::optional<ElementUnaryPerDeviceState> const &device_state,
     ElementUnaryAttrs const &attrs,
@@ -24,7 +24,7 @@ void forward_kernel(
     GenericTensorAccessorR const &input,
     GenericTensorAccessorW const &output);
 
-void backward_kernel(
+void element_unary_backward_kernel(
     device_stream_t const &stream,
     std::optional<ElementUnaryPerDeviceState> const &device_state,
     ElementUnaryAttrs const &attrs,
@@ -34,10 +34,10 @@ void backward_kernel(
     GenericTensorAccessorR const &input,
     GenericTensorAccessorW const &input_grad);
 
-void cleanup_kernel(
+void element_unary_cleanup_kernel(
     DeviceType device_type,
     std::optional<ElementUnaryPerDeviceState> &per_device_state);
 
-} // namespace FlexFlow::Kernels::ElementUnary
+} // namespace FlexFlow
 
 #endif

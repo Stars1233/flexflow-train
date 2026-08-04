@@ -1,6 +1,7 @@
 #include "utils/graph/digraph/algorithms/get_imm_post_dominators_map.h"
 #include "utils/graph/algorithms.h"
 #include "utils/graph/instances/adjacency_digraph.h"
+#include "utils/json/optional.h"
 #include <doctest/doctest.h>
 
 using namespace ::FlexFlow;

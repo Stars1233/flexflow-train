@@ -6,6 +6,7 @@
 #include "utils/containers/concat_vectors.h"
 #include "utils/containers/filter_values.h"
 #include "utils/containers/filtrans.h"
+#include "utils/containers/get_element_counts.h"
 #include "utils/containers/get_only.h"
 #include "utils/containers/map_values.h"
 #include "utils/containers/repeat_element.h"
@@ -26,6 +27,7 @@
 #include "utils/graph/kwarg_dataflow_graph/algorithms/get_kwarg_dataflow_subgraph_incoming_edges.h"
 #include "utils/graph/kwarg_dataflow_graph/algorithms/get_kwarg_dataflow_subgraph_outgoing_edges.h"
 #include "utils/graph/kwarg_dataflow_graph/algorithms/get_outgoing_kwarg_dataflow_outputs_for_node.h"
+#include "utils/graph/kwarg_dataflow_graph/algorithms/get_unused_kwarg_dataflow_values.h"
 #include "utils/graph/labelled_dataflow_graph/algorithms/find_isomorphism.h"
 #include "utils/graph/labelled_dataflow_graph/algorithms/rewrite_node_labels.h"
 #include "utils/graph/labelled_dataflow_graph/algorithms/view_as_labelled_open_dataflow_graph.h"
@@ -230,6 +232,14 @@ std::map<tensor_guid_t, TensorAttrs>
   return all_tensor_attrs;
 }
 
+std::set<tensor_guid_t> cg_get_unused_tensors(ComputationGraph const &cg) {
+  return transform(
+      get_unused_kwarg_dataflow_values(cg.raw_graph),
+      [&](KwargDataflowOutput<TensorSlotName> const &o) -> tensor_guid_t {
+        return tensor_guid_t{o};
+      });
+}
+
 std::set<ComputationGraphEdge>
     get_subgraph_incoming_edges(ComputationGraph const &cg,
                                 std::set<layer_guid_t> const &subgraph_nodes) {
@@ -315,6 +325,17 @@ ComputationGraph without_layer_names(ComputationGraph const &cg) {
                                                          TensorSlotName>>(
               relabelled),
   };
+}
+
+std::map<OperatorType, positive_int>
+    operator_type_counts_in_computation_graph(ComputationGraph const &cg) {
+  std::vector<layer_guid_t> layers = vector_of(get_layers(cg));
+  std::vector<OperatorType> operator_types =
+      transform(layers, [&](layer_guid_t const &l) -> OperatorType {
+        return get_op_type(get_layer_attrs(cg, l).op_attrs);
+      });
+
+  return get_element_counts(operator_types);
 }
 
 bool computation_graphs_are_isomorphic(ComputationGraph const &lhs,

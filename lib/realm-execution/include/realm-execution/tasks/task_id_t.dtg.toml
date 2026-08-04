@@ -112,6 +112,12 @@ name = "POOL2D_FWD_TASK_ID"
 name = "POOL2D_BWD_TASK_ID"
 
 [[values]]
+name = "BATCHMATMUL_FWD_TASK_ID"
+
+[[values]]
+name = "BATCHMATMUL_BWD_TASK_ID"
+
+[[values]]
 name = "BATCHNORM_INIT_TASK_ID"
 
 [[values]]
@@ -197,6 +203,12 @@ name = "TRANSPOSE_FWD_TASK_ID"
 
 [[values]]
 name = "TRANSPOSE_BWD_TASK_ID"
+
+[[values]]
+name = "UPSAMPLE_FWD_TASK_ID"
+
+[[values]]
+name = "UPSAMPLE_BWD_TASK_ID"
 
 [[values]]
 name = "ATTENTION_INIT_TASK_ID"

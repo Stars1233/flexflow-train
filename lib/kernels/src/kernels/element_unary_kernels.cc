@@ -2,15 +2,15 @@
 #include "kernels/element_unary_kernels_cpu.h"
 #include "kernels/element_unary_kernels_gpu.h"
 
-namespace FlexFlow::Kernels::ElementUnary {
+namespace FlexFlow {
 
 std::optional<ElementUnaryPerDeviceState>
-    init_kernel(DeviceType device_type,
-                TensorShape const &input_shape,
-                TensorShape const &output_shape,
-                ElementUnaryAttrs const &attrs) {
+    element_unary_init_kernel(DeviceType device_type,
+                              TensorShape const &input_shape,
+                              TensorShape const &output_shape,
+                              ElementUnaryAttrs const &attrs) {
   if (device_type == DeviceType::GPU) {
-    return gpu_init_kernel(
+    return element_unary_gpu_init_kernel(
         /*input_shape=*/input_shape,
         /*output_shape=*/output_shape,
         /*attrs=*/attrs);
@@ -20,7 +20,7 @@ std::optional<ElementUnaryPerDeviceState>
   }
 }
 
-void forward_kernel(
+void element_unary_forward_kernel(
     device_stream_t const &stream,
     std::optional<ElementUnaryPerDeviceState> const &per_device_state,
     ElementUnaryAttrs const &attrs,
@@ -28,7 +28,7 @@ void forward_kernel(
     GenericTensorAccessorR const &input,
     GenericTensorAccessorW const &output) {
   if (stream.is_gpu()) {
-    gpu_forward_kernel(
+    element_unary_gpu_forward_kernel(
         /*stream=*/stream.require_gpu(),
         /*per_device_state=*/per_device_state.value(),
         /*attrs=*/attrs,
@@ -39,14 +39,14 @@ void forward_kernel(
     ASSERT(stream.is_cpu());
     ASSERT(per_device_state == std::nullopt);
     ASSERT(handle.is_for_cpu());
-    cpu_forward_kernel(
+    element_unary_cpu_forward_kernel(
         /*attrs=*/attrs,
         /*input=*/input,
         /*output=*/output);
   }
 }
 
-void backward_kernel(
+void element_unary_backward_kernel(
     device_stream_t const &stream,
     std::optional<ElementUnaryPerDeviceState> const &per_device_state,
     ElementUnaryAttrs const &attrs,
@@ -56,7 +56,7 @@ void backward_kernel(
     GenericTensorAccessorR const &input,
     GenericTensorAccessorW const &input_grad) {
   if (stream.is_gpu()) {
-    gpu_backward_kernel(
+    element_unary_gpu_backward_kernel(
         /*stream=*/stream.require_gpu(),
         /*per_device_state=*/per_device_state.value(),
         /*attrs=*/attrs,
@@ -69,7 +69,7 @@ void backward_kernel(
     ASSERT(stream.is_cpu());
     ASSERT(per_device_state == std::nullopt);
     ASSERT(handle.is_for_cpu());
-    cpu_backward_kernel(
+    element_unary_cpu_backward_kernel(
         /*attrs=*/attrs,
         /*output=*/output,
         /*output_grad=*/output_grad,
@@ -78,15 +78,15 @@ void backward_kernel(
   }
 }
 
-void cleanup_kernel(
+void element_unary_cleanup_kernel(
     DeviceType device_type,
     std::optional<ElementUnaryPerDeviceState> &per_device_state) {
   if (device_type == DeviceType::GPU) {
-    gpu_cleanup_kernel(per_device_state.value());
+    element_unary_gpu_cleanup_kernel(per_device_state.value());
   } else {
     ASSERT(device_type == DeviceType::CPU);
     ASSERT(per_device_state == std::nullopt);
   }
 }
 
-} // namespace FlexFlow::Kernels::ElementUnary
+} // namespace FlexFlow

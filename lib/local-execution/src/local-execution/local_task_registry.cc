@@ -2,6 +2,7 @@
 #include "op-attrs/computation_graph_op_attrs.dtg.h"
 #include "task-spec/loss_functions.h"
 #include "task-spec/ops/impl/attention.h"
+#include "task-spec/ops/impl/batch_matmul.h"
 #include "task-spec/ops/impl/batch_norm.h"
 #include "task-spec/ops/impl/broadcast.h"
 #include "task-spec/ops/impl/cast.h"
@@ -23,6 +24,7 @@
 #include "task-spec/ops/impl/split.h"
 #include "task-spec/ops/impl/topk.h"
 #include "task-spec/ops/impl/transpose.h"
+#include "task-spec/ops/impl/upsample.h"
 #include "task-spec/optimizer.h"
 #include "task-spec/task_impl_function.dtg.h"
 #include "utils/exception.h"
@@ -36,6 +38,7 @@ std::optional<TaskImplFunction>
     get_init_task_impl_for_op_attrs(ComputationGraphOpAttrs const &op_attrs) {
 
   return op_attrs.visit<std::optional<TaskImplFunction>>(overload{
+      [](BatchMatmulAttrs const &) { return std::nullopt; },
       [](BatchNormAttrs const &) { return get_batch_norm_init_task_impl(); },
       [](BroadcastAttrs const &) { return std::nullopt; },
       [](CastAttrs const &) { return std::nullopt; },
@@ -66,6 +69,7 @@ std::optional<TaskImplFunction>
       [](SplitAttrs const &) { return std::nullopt; },
       [](TopKAttrs const &) { return std::nullopt; },
       [](TransposeAttrs const &) { return std::nullopt; },
+      [](UpsampleAttrs const &) { return std::nullopt; },
       [](WeightAttrs const &) { return std::nullopt; },
   });
 }
@@ -74,6 +78,7 @@ std::optional<TaskImplFunction>
     get_fwd_task_impl_for_op_attrs(ComputationGraphOpAttrs const &op_attrs) {
 
   return op_attrs.visit<std::optional<TaskImplFunction>>(overload{
+      [](BatchMatmulAttrs const &) { return get_batch_matmul_fwd_task_impl(); },
       [](BatchNormAttrs const &) { return get_batch_norm_fwd_task_impl(); },
       [](BroadcastAttrs const &) { return get_broadcast_fwd_task_impl(); },
       [](CastAttrs const &) { return get_cast_fwd_task_impl(); },
@@ -104,6 +109,7 @@ std::optional<TaskImplFunction>
       [](SplitAttrs const &) { return get_split_fwd_task_impl(); },
       [](TopKAttrs const &) { return get_topk_fwd_task_impl(); },
       [](TransposeAttrs const &) { return get_transpose_fwd_task_impl(); },
+      [](UpsampleAttrs const &) { return get_upsample_fwd_task_impl(); },
       [](WeightAttrs const &) { return std::nullopt; },
   });
 }
@@ -112,6 +118,7 @@ std::optional<TaskImplFunction>
     get_bwd_task_impl_for_op_attrs(ComputationGraphOpAttrs const &op_attrs) {
 
   return op_attrs.visit<std::optional<TaskImplFunction>>(overload{
+      [](BatchMatmulAttrs const &) { return get_batch_matmul_bwd_task_impl(); },
       [](BatchNormAttrs const &) { return get_batch_norm_bwd_task_impl(); },
       [](BroadcastAttrs const &) { return get_broadcast_bwd_task_impl(); },
       [](CastAttrs const &) { return get_cast_bwd_task_impl(); },
@@ -142,6 +149,7 @@ std::optional<TaskImplFunction>
       [](SplitAttrs const &) { return get_split_bwd_task_impl(); },
       [](TopKAttrs const &) { return get_topk_bwd_task_impl(); },
       [](TransposeAttrs const &) { return get_transpose_bwd_task_impl(); },
+      [](UpsampleAttrs const &) { return get_upsample_bwd_task_impl(); },
       [](WeightAttrs const &) { return std::nullopt; },
   });
 }

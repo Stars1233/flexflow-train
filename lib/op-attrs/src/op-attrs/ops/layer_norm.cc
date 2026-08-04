@@ -1,6 +1,6 @@
 #include "op-attrs/ops/layer_norm.h"
+#include "op-attrs/ff_ordered/ff_ordered_get_idxs.h"
 #include "op-attrs/ff_ordered/ff_ordered_of.h"
-#include "op-attrs/ff_ordered/get_idxs.h"
 #include "op-attrs/parallel_tensor_shape.h"
 #include "op-attrs/tensor_dims.h"
 #include "op-attrs/tensor_shape.h"
@@ -75,7 +75,7 @@ tl::expected<TensorShape, std::string>
   }
 
   std::vector<ff_dim_t> non_layer_norm_dim_idxs = filter(
-      vector_of(get_idxs(input_shape.dims.ff_ordered)),
+      vector_of(ff_ordered_get_idxs(input_shape.dims.ff_ordered)),
       [&](ff_dim_t const &dim_idx) { return !contains(attrs.axes, dim_idx); });
   std::vector<positive_int> raw_weight_dims =
       transform(non_layer_norm_dim_idxs, [&](ff_dim_t const &dim_idx) {
@@ -189,7 +189,7 @@ tl::expected<ParallelTensorShape, std::string>
   }
 
   std::vector<ff_dim_t> non_layer_norm_dim_idxs = filter(
-      vector_of(get_idxs(input_shape.dims.shard_dims)),
+      vector_of(ff_ordered_get_idxs(input_shape.dims.shard_dims)),
       [&](ff_dim_t const &dim_idx) { return !contains(attrs.axes, dim_idx); });
   std::vector<ShardParallelDim> raw_weight_shard_dims =
       transform(non_layer_norm_dim_idxs, [&](ff_dim_t const &dim_idx) {

@@ -70,6 +70,15 @@ positive_int num_tasks(OperatorTaskSpace const &op_task_space) {
   return minimal_orthotope_get_volume(op_task_space.degrees);
 }
 
+positive_int
+    op_task_space_dim_size_for_idx(OperatorTaskSpace const &op_task_space,
+                                   operator_task_space_dim_idx_t idx) {
+  int_ge_two dim_size =
+      op_task_space.degrees.dims.at(idx.raw_idx.int_from_nonnegative_int());
+
+  return dim_size.positive_int_from_int_ge_two();
+}
+
 MinimalDimDomain<operator_task_space_dim_idx_t>
     minimal_dim_domain_from_operator_task_space(
         OperatorTaskSpace const &operator_task_space) {

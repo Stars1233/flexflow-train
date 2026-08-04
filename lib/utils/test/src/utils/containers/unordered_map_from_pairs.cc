@@ -1,6 +1,6 @@
-#include "test/utils/doctest/fmt/map.h"
+#include "utils/containers/unordered_map_from_pairs.h"
+#include "test/utils/doctest/fmt/unordered_map.h"
 #include "utils/containers/contains.h"
-#include "utils/containers/map_from_pairs.h"
 #include <doctest/doctest.h>
 #include <string>
 #include <vector>
@@ -8,15 +8,16 @@
 using namespace ::FlexFlow;
 
 TEST_SUITE(FF_TEST_SUITE) {
-  TEST_CASE("map_from_pairs") {
+  TEST_CASE("unordered_map_from_pairs") {
     SUBCASE("nonempty input") {
       std::vector<std::pair<int, std::string>> input = {
           {1, "hello"},
           {3, "world"},
       };
 
-      std::map<int, std::string> result = map_from_pairs(input);
-      std::map<int, std::string> correct = {
+      std::unordered_map<int, std::string> result =
+          unordered_map_from_pairs(input);
+      std::unordered_map<int, std::string> correct = {
           {1, "hello"},
           {3, "world"},
       };
@@ -27,8 +28,9 @@ TEST_SUITE(FF_TEST_SUITE) {
     SUBCASE("empty input") {
       std::vector<std::pair<int, std::string>> input = {};
 
-      std::map<int, std::string> result = map_from_pairs(input);
-      std::map<int, std::string> correct = {};
+      std::unordered_map<int, std::string> result =
+          unordered_map_from_pairs(input);
+      std::unordered_map<int, std::string> correct = {};
 
       CHECK(result == correct);
     }
@@ -40,12 +42,14 @@ TEST_SUITE(FF_TEST_SUITE) {
           {1, "b"},
       };
 
-      std::map<int, std::string> result = map_from_pairs(input);
+      std::unordered_map<int, std::string> result =
+          unordered_map_from_pairs(input);
 
-      std::vector<std::map<int, std::string>> possible_correct_values = {
-          {{1, "a"}, {2, "c"}},
-          {{1, "b"}, {2, "c"}},
-      };
+      std::vector<std::unordered_map<int, std::string>>
+          possible_correct_values = {
+              {{1, "a"}, {2, "c"}},
+              {{1, "b"}, {2, "c"}},
+          };
 
       CHECK(contains(possible_correct_values, result));
     }

@@ -84,12 +84,19 @@ std::set<DimCoord<T>> get_coords_in_dim_domain(DimDomain<T> const &dim_domain) {
                    return set_of(nonnegative_range(component_size));
                  });
 
-  return set_of(transform(get_all_assignments(component_possible_values),
-                          [](std::map<T, nonnegative_int> const &assignment) {
-                            return DimCoord<T>{
-                                assignment,
-                            };
-                          }));
+  std::set<DimCoord<T>> result =
+      set_of(transform(get_all_assignments(component_possible_values),
+                       [](std::map<T, nonnegative_int> const &assignment) {
+                         return DimCoord<T>{
+                             assignment,
+                         };
+                       }));
+
+  ASSERT(all_of(result, [&](DimCoord<T> const &c) -> bool {
+    return dim_domain_contains_coord(dim_domain, c);
+  }));
+
+  return result;
 }
 
 template <typename T>

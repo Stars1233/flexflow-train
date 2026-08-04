@@ -1,0 +1,27 @@
+namespace = "FlexFlow"
+name = "YOLOv10LayerConfigPSA"
+type = "struct"
+features = [
+  "eq",
+  "ord",
+  "hash",
+  "json",
+  "fmt",
+  "rapidcheck",
+]
+
+includes = [
+  "utils/positive_int/positive_int.h",
+  "models/yolov10/yolov10_tensor_idx_t.dtg.h",
+]
+
+src_includes = [
+]
+
+[[fields]]
+name = "input_tensor_idx"
+type = "::FlexFlow::yolov10_tensor_idx_t"
+
+[[fields]]
+name = "num_output_channels"
+type = "::FlexFlow::positive_int"

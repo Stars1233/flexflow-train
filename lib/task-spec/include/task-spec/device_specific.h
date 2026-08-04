@@ -2,8 +2,10 @@
 #define _FLEXFLOW_LOCAL_EXECUTION_DEVICE_SPECIFIC_H
 
 #include "task-spec/global_device_id_t.dtg.h"
+#include "utils/exception.h"
 #include "utils/hash/tuple.h"
 #include <libassert/assert.hpp>
+#include <nlohmann/json.hpp>
 
 namespace FlexFlow {
 
@@ -72,6 +74,11 @@ private:
 template <typename T>
 std::ostream &operator<<(std::ostream &s, DeviceSpecific<T> const &d) {
   return (s << fmt::to_string(d));
+}
+
+template <typename T>
+void to_json(nlohmann::json &j, DeviceSpecific<T> const &d) {
+  NOT_IMPLEMENTED();
 }
 
 } // namespace FlexFlow

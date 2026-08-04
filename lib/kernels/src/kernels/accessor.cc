@@ -1,7 +1,7 @@
 #include "kernels/accessor.h"
 #include "kernels/allocation.h"
 #include "kernels/datatype_dispatch.h"
-#include "op-attrs/ff_ordered/get_idxs.h"
+#include "op-attrs/ff_ordered/ff_ordered_get_idxs.h"
 #include "op-attrs/tensor_dims_coord.h"
 #include "op-attrs/tensor_shape.h"
 #include "utils/containers/reversed.h"
@@ -20,7 +20,8 @@ nonnegative_int calculate_accessor_offset(TensorDimsCoord const &coord,
   nonnegative_int offset = 0_n;
   positive_int multiplier = 1_p;
 
-  for (ff_dim_t dim : reversed(vector_of(get_idxs(tensor_dims.ff_ordered)))) {
+  for (ff_dim_t dim :
+       reversed(vector_of(ff_ordered_get_idxs(tensor_dims.ff_ordered)))) {
     ASSERT(coord.ff_ordered.at(dim) < dim_at_idx(tensor_dims, dim),
            "Out of bounds access",
            dim);
@@ -332,6 +333,20 @@ bool accessors_have_same_shape(GenericTensorAccessorW const &acc1,
 
 template int32_t
     accessor_get_only_value<DataType::INT32>(GenericTensorAccessorR const &);
+
+void to_json(nlohmann::json &j, GenericTensorAccessorR const &acc) {
+  j["__type"] = "GenericTensorAccessorR";
+  j["shape"] = acc.shape;
+  j["device_type"] = acc.device_type;
+  j["ptr"] = fmt::format("{:p}", acc.ptr);
+}
+
+void to_json(nlohmann::json &j, GenericTensorAccessorW const &acc) {
+  j["__type"] = "GenericTensorAccessorW";
+  j["shape"] = acc.shape;
+  j["device_type"] = acc.device_type;
+  j["ptr"] = fmt::format("{:p}", acc.ptr);
+}
 
 } // namespace FlexFlow
 

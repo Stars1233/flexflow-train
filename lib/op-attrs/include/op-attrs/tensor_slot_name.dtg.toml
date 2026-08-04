@@ -57,46 +57,70 @@ name = "VALUE"
 name = "LOGIT"
 
 [[values]]
-name = "INPUT_0"
+name = "INPUT_00"
 
 [[values]]
-name = "INPUT_1"
+name = "INPUT_01"
 
 [[values]]
-name = "INPUT_2"
+name = "INPUT_02"
 
 [[values]]
-name = "INPUT_3"
+name = "INPUT_03"
 
 [[values]]
-name = "INPUT_4"
+name = "INPUT_04"
 
 [[values]]
-name = "INPUT_5"
+name = "INPUT_05"
 
 [[values]]
-name = "INPUT_6"
+name = "INPUT_06"
 
 [[values]]
-name = "INPUT_7"
+name = "INPUT_07"
 
 [[values]]
-name = "OUTPUT_0"
+name = "INPUT_08"
 
 [[values]]
-name = "OUTPUT_1"
+name = "INPUT_09"
 
 [[values]]
-name = "OUTPUT_2"
+name = "INPUT_10"
 
 [[values]]
-name = "OUTPUT_3"
+name = "INPUT_11"
 
 [[values]]
-name = "OUTPUT_4"
+name = "INPUT_12"
 
 [[values]]
-name = "OUTPUT_5"
+name = "INPUT_13"
+
+[[values]]
+name = "INPUT_14"
+
+[[values]]
+name = "INPUT_15"
+
+[[values]]
+name = "OUTPUT_00"
+
+[[values]]
+name = "OUTPUT_01"
+
+[[values]]
+name = "OUTPUT_02"
+
+[[values]]
+name = "OUTPUT_03"
+
+[[values]]
+name = "OUTPUT_04"
+
+[[values]]
+name = "OUTPUT_05"
 
 [[values]]
 name = "SCALE"

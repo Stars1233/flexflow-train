@@ -1,10 +1,10 @@
 #include "op-attrs/tensor_dims.h"
-#include "op-attrs/ff_ordered/enumerate.h"
-#include "op-attrs/ff_ordered/filtrans.h"
-#include "op-attrs/ff_ordered/get_idxs.h"
-#include "op-attrs/ff_ordered/slice.h"
-#include "op-attrs/ff_ordered/zip.h"
-#include "op-attrs/ff_ordered/zip_with.h"
+#include "op-attrs/ff_ordered/ff_ordered_enumerate.h"
+#include "op-attrs/ff_ordered/ff_ordered_filtrans.h"
+#include "op-attrs/ff_ordered/ff_ordered_get_idxs.h"
+#include "op-attrs/ff_ordered/ff_ordered_slice.h"
+#include "op-attrs/ff_ordered/ff_ordered_zip.h"
+#include "op-attrs/ff_ordered/ff_ordered_zip_with.h"
 #include "op-attrs/replica_parallel_dim_set.h"
 #include "op-attrs/shard_parallel_dim.dtg.h"
 #include "utils/containers/all_are_true.h"
@@ -28,7 +28,7 @@ FFOrdered<positive_int> const &ff_ordered(TensorDims const &dims) {
 }
 
 bool tensor_dims_has_dim(TensorDims const &tensor_dims, ff_dim_t dim) {
-  return contains(get_idxs(tensor_dims.ff_ordered), dim);
+  return contains(ff_ordered_get_idxs(tensor_dims.ff_ordered), dim);
 }
 
 num_tensor_dims_t get_num_dims(TensorDims const &dims) {
@@ -98,7 +98,7 @@ bool tensor_dims_contains_coord(TensorDims const &tensor_dims,
                                 TensorDimsCoord const &coord) {
   ASSERT(coord.ff_ordered.size() == get_num_dims(tensor_dims));
 
-  return all_are_true(zip_with(
+  return all_are_true(ff_ordered_zip_with(
       coord.ff_ordered,
       tensor_dims.ff_ordered,
       [](nonnegative_int const &coord_entry, positive_int const &dim_size) {
@@ -120,22 +120,22 @@ TensorDimsCoord get_broadcast_src_coord(TensorDims const &input_dims,
       -1 * get_num_dims(input_dims).int_from_num_tensor_dims()};
 
   FFOrdered<nonnegative_int> trailing_entries =
-      slice(dst_coord.ff_ordered, trailing_start_idx);
+      ff_ordered_slice(dst_coord.ff_ordered, trailing_start_idx);
 
   FFOrdered<positive_int> trailing_dims =
-      slice(output_dims.ff_ordered, trailing_start_idx);
+      ff_ordered_slice(output_dims.ff_ordered, trailing_start_idx);
 
   TensorDimsCoord result = TensorDimsCoord{
-      zip_with(trailing_entries,
-               input_dims.ff_ordered,
-               [](nonnegative_int const &coord_entry,
-                  positive_int const &input_dim_size) {
-                 if (input_dim_size == 1) {
-                   return 0_n;
-                 } else {
-                   return coord_entry;
-                 }
-               }),
+      ff_ordered_zip_with(trailing_entries,
+                          input_dims.ff_ordered,
+                          [](nonnegative_int const &coord_entry,
+                             positive_int const &input_dim_size) {
+                            if (input_dim_size == 1) {
+                              return 0_n;
+                            } else {
+                              return coord_entry;
+                            }
+                          }),
   };
 
   ASSERT(tensor_dims_contains_coord(input_dims, result),
@@ -165,7 +165,7 @@ std::set<TensorDimsCoord>
 }
 
 std::set<ff_dim_t> get_ff_dim_t_set(TensorDims const &tensor_dims) {
-  return set_of(get_idxs(tensor_dims.ff_ordered));
+  return set_of(ff_ordered_get_idxs(tensor_dims.ff_ordered));
 }
 
 std::optional<TensorDims>
@@ -185,7 +185,7 @@ TensorDims tensor_dims_drop_dims(
     TensorDims const &dims,
     std::function<bool(ff_dim_t)> const &should_drop_dim) {
   std::vector<positive_int> result;
-  for (ff_dim_t idx : get_idxs(dims.ff_ordered)) {
+  for (ff_dim_t idx : ff_ordered_get_idxs(dims.ff_ordered)) {
     if (!should_drop_dim(idx)) {
       result.push_back(dims.ff_ordered.at(idx));
     }
@@ -198,7 +198,7 @@ TensorDims slice_tensor_dims(TensorDims const &dims,
                              relative_ff_dim_t const &start,
                              std::optional<relative_ff_dim_t> const &stop) {
   return TensorDims{
-      slice(dims.ff_ordered, start, stop),
+      ff_ordered_slice(dims.ff_ordered, start, stop),
   };
 }
 
@@ -206,7 +206,7 @@ TensorDims slice_tensor_dims(TensorDims const &dims,
                              ff_dim_t const &start,
                              std::optional<ff_dim_t> const &stop) {
   return TensorDims{
-      slice(dims.ff_ordered, start, stop),
+      ff_ordered_slice(dims.ff_ordered, start, stop),
   };
 }
 

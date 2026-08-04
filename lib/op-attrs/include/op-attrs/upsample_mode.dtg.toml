@@ -1,0 +1,28 @@
+namespace = "FlexFlow"
+name = "UpsampleMode"
+type = "enum"
+features = [
+  "hash",
+  "json",
+  "rapidcheck",
+  "fmt",
+]
+docstring = '''
+\brief Possible values for the <tt>mode</tt> argument of \ref ::FlexFlow::UpsampleAttrs, chosen to match
+<a href="https://docs.pytorch.org/docs/2.13/generated/torch.nn.Upsample.html">pytorch's Upsample operator</a>.
+'''
+
+[[values]]
+name = "NEAREST"
+
+[[values]]
+name = "LINEAR"
+
+[[values]]
+name = "BILINEAR"
+
+[[values]]
+name = "BICUBIC"
+
+[[values]]
+name = "TRILINEAR"

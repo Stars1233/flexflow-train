@@ -3,12 +3,12 @@
 
 #include "op-attrs/ops/combine_attrs.dtg.h"
 #include "op-attrs/parallel_tensor_shape.dtg.h"
-#include <tl/expected.hpp>
 
 namespace FlexFlow {
 
-tl::expected<ParallelTensorShape, std::string>
-    get_output_shape(CombineAttrs const &, ParallelTensorShape const &);
+ParallelTensorShape
+    combine_get_output_parallel_shape(CombineAttrs const &,
+                                      ParallelTensorShape const &);
 
 } // namespace FlexFlow
 

@@ -1,5 +1,6 @@
 #include "utils/dot/dot_html_table_cell_contents.h"
 #include "utils/dot/dot_html_table.dtg.h"
+#include "utils/exception.h"
 
 namespace FlexFlow {
 
@@ -57,6 +58,19 @@ std::string format_as(DotHtmlTableCellContents const &c) {
 
 std::ostream &operator<<(std::ostream &s, DotHtmlTableCellContents const &x) {
   return (s << fmt::to_string(x));
+}
+
+void to_json(nlohmann::json &j, DotHtmlTableCellContents const &c) {
+  j["__type"] = "DotHtmlTableCellContents";
+  if (c.is_simple()) {
+    j["type"] = "simple";
+    j["value"] = c.require_simple();
+  } else {
+    ASSERT(c.is_nested());
+
+    j["type"] = "nested";
+    j["value"] = c.require_nested();
+  }
 }
 
 } // namespace FlexFlow

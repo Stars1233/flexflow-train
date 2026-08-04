@@ -1,8 +1,8 @@
 #ifndef _FLEXFLOW_LIB_REALM_EXECUTION_INCLUDE_REALM_EXECUTION_FMT_REALM_INSTANCE_H
 #define _FLEXFLOW_LIB_REALM_EXECUTION_INCLUDE_REALM_EXECUTION_FMT_REALM_INSTANCE_H
 
+#include "realm-execution/json/realm_instance.h"
 #include "realm-execution/realm.h"
-#include "utils/check_fmtable.h"
 #include <fmt/format.h>
 #include <utility>
 
@@ -17,9 +17,10 @@ struct formatter<::FlexFlow::Realm::RegionInstance,
   template <typename FormatContext>
   auto format(::FlexFlow::Realm::RegionInstance const &m, FormatContext &ctx)
       -> decltype(ctx.out()) {
-    std::string result = fmt::format("<RegionInstance {}>", m.id);
 
-    return formatter<std::string>::format(result, ctx);
+    ::nlohmann::json j = m;
+
+    return formatter<std::string>::format(j.dump(), ctx);
   }
 };
 

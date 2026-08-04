@@ -1,6 +1,8 @@
 #include "utils/containers/inplace_filter.h"
 #include "test/utils/doctest/fmt/map.h"
 #include "test/utils/doctest/fmt/set.h"
+#include "test/utils/doctest/fmt/unordered_map.h"
+#include "test/utils/doctest/fmt/unordered_set.h"
 #include "test/utils/doctest/fmt/vector.h"
 #include "test/utils/rapidcheck.h"
 #include <doctest/doctest.h>
@@ -12,9 +14,9 @@ TEST_SUITE(FF_TEST_SUITE) {
                      T,
                      std::vector<int>,
                      std::set<std::string>,
-                     std::set<std::string>,
+                     std::unordered_set<std::string>,
                      std::map<int, int>,
-                     std::map<int, std::string>) {
+                     std::unordered_map<int, std::string>) {
     RC_SUBCASE("inplace_filter returns empty for predicate always_false",
                [](T t) {
                  auto always_false = [](auto const &) { return false; };
@@ -49,12 +51,12 @@ TEST_SUITE(FF_TEST_SUITE) {
     CHECK(input == correct);
   }
 
-  TEST_CASE("inplace_filter(std::set &, F)") {
-    std::set<int> input = {3, 2, 5, 8};
+  TEST_CASE("inplace_filter(std::unordered_set &, F)") {
+    std::unordered_set<int> input = {3, 2, 5, 8};
     auto predicate = [](int x) { return x % 2 == 0; };
 
     inplace_filter(input, predicate);
-    std::set<int> correct = {2, 8};
+    std::unordered_set<int> correct = {2, 8};
     CHECK(input == correct);
   }
 
@@ -77,8 +79,8 @@ TEST_SUITE(FF_TEST_SUITE) {
     CHECK(input == correct);
   }
 
-  TEST_CASE("inplace_filter(std::map &, F)") {
-    std::map<int, std::string> input = {
+  TEST_CASE("inplace_filter(std::unordered_map &, F)") {
+    std::unordered_map<int, std::string> input = {
         {3, "4"},
         {1, "1"},
         {2, "9"},
@@ -89,7 +91,7 @@ TEST_SUITE(FF_TEST_SUITE) {
     };
 
     inplace_filter(input, predicate);
-    std::map<int, std::string> correct = {
+    std::unordered_map<int, std::string> correct = {
         {3, "4"},
         {2, "9"},
     };

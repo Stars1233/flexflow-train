@@ -11,15 +11,21 @@ features = [
 ]
 
 includes = [
-  "utils/stack_vector/stack_vector.h",
+  "<vector>",
   "op-attrs/ff_dim_t.h",
   "op-attrs/ff_dim_t.dtg.h",
-  "utils/nonnegative_int/nonnegative_int.h",
+  "utils/positive_int/positive_int.h",
+]
+
+src_includes = [
+  "utils/fmt/vector.h",
+  "utils/hash/vector.h",
+  "utils/ord/vector.h",
 ]
 
 [[fields]]
 name = "splits"
-type = "::FlexFlow::stack_vector<::FlexFlow::nonnegative_int, MAX_NUM_OUTPUTS>"
+type = "std::vector<::FlexFlow::positive_int>"
 
 [[fields]]
 name = "axis"

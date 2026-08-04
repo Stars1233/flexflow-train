@@ -63,6 +63,16 @@ OperatorSpaceToParallelTensorSpaceMapping get_identity_mapping(
       bidict_from_keys_and_values(op_minimal_domain_dims,
                                   pt_minimal_domain_dims);
 
+  for (std::pair<operator_task_space_dim_idx_t, parallel_tensor_dim_idx_t> const
+           &p : projection) {
+    positive_int op_task_space_dim_size =
+        op_task_space_dim_size_for_idx(operator_task_space, p.first);
+    positive_int parallel_tensor_space_dim_size =
+        get_degree_for_parallel_tensor_dim_idx(parallel_tensor_dim_degrees,
+                                               p.second);
+    ASSERT(op_task_space_dim_size == parallel_tensor_space_dim_size);
+  }
+
   return operator_ptensor_space_mapping_from_projection(
       DimProjection{EqProjection{projection}},
       operator_task_space,

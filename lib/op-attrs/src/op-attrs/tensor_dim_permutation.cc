@@ -1,6 +1,7 @@
 #include "op-attrs/tensor_dim_permutation.h"
 #include "op-attrs/ff_ordered/ff_ordered_from_map.h"
 #include "op-attrs/ff_ordered/map_from_ff_ordered.h"
+#include "op-attrs/tensor_dims.h"
 #include "utils/bidict/algorithms/bidict_from_keys_and_values.h"
 #include "utils/bidict/algorithms/exhaustive_relational_join.h"
 #include "utils/bidict/algorithms/left_entries.h"
@@ -111,11 +112,12 @@ static FFOrdered<T> permute_ff_ordered(TensorDimPermutation const &permutation,
                                        FFOrdered<T> const &ff_ordered) {
   return ff_ordered_from_map(
       map_keys(map_from_ff_ordered(ff_ordered),
-               [&](ff_dim_t k) { return permutation.at_l(k); }));
+               [&](ff_dim_t k) { return permutation.at_r(k); }));
 }
 
 TensorDims permute_tensor_dims(TensorDimPermutation const &permutation,
                                TensorDims const &dims) {
+  ASSERT(permutation.num_tensor_dims() == get_num_dims(dims));
 
   return TensorDims{
       permute_ff_ordered(permutation, dims.ff_ordered),

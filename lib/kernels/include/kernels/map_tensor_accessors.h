@@ -158,6 +158,87 @@ GenericTensorAccessorW map_tensor_accessors2(GenericTensorAccessorR const &lhs,
   return output;
 }
 
+template <DataType DTL, DataType DTC, DataType DTR>
+struct CPUMapTensorAccessors3 {
+  template <typename F,
+            typename Out = std::invoke_result_t<F,
+                                                real_type_t<DTL>,
+                                                real_type_t<DTC>,
+                                                real_type_t<DTR>>>
+  void operator()(GenericTensorAccessorR const &lhs,
+                  GenericTensorAccessorR const &chs,
+                  GenericTensorAccessorR const &rhs,
+                  GenericTensorAccessorW &output,
+                  F &&f) {
+
+    TensorDims dims = require_all_same1(std::vector{
+        lhs.shape.dims,
+        chs.shape.dims,
+        rhs.shape.dims,
+        output.shape.dims,
+    });
+
+    ASSERT(lhs.device_type == DeviceType::CPU);
+    ASSERT(chs.device_type == DeviceType::CPU);
+    ASSERT(rhs.device_type == DeviceType::CPU);
+    ASSERT(output.device_type == DeviceType::CPU);
+
+    for (TensorDimsCoord const &coord : get_tensor_dims_coord_set(dims)) {
+      output.at<type_to_data_type_enum_v<Out>>(coord) =
+          f(lhs.at<DTL>(coord), chs.at<DTC>(coord), rhs.at<DTR>(coord));
+    }
+  }
+};
+
+template <typename F>
+void map_tensor_accessors3_to(GenericTensorAccessorR const &lhs,
+                              GenericTensorAccessorR const &chs,
+                              GenericTensorAccessorR const &rhs,
+                              DataType output_data_type,
+                              F &&f,
+                              GenericTensorAccessorW const &output) {
+  TensorDims output_dims =
+      require_same(lhs.shape.dims, chs.shape.dims, rhs.shape.dims);
+
+  Allocator cpu_allocator = create_local_cpu_memory_allocator();
+  GenericTensorAccessorR lhs_cpu =
+      copy_tensor_accessor_r_to_cpu_if_necessary(lhs, cpu_allocator);
+  GenericTensorAccessorR chs_cpu =
+      copy_tensor_accessor_r_to_cpu_if_necessary(chs, cpu_allocator);
+  GenericTensorAccessorR rhs_cpu =
+      copy_tensor_accessor_r_to_cpu_if_necessary(rhs, cpu_allocator);
+  GenericTensorAccessorW output_cpu =
+      cpu_allocator.allocate_tensor(TensorShape{output_dims, output_data_type});
+
+  DataTypeDispatch3<CPUMapTensorAccessors3>{}(lhs.shape.data_type,
+                                              chs.shape.data_type,
+                                              rhs.shape.data_type,
+                                              lhs_cpu,
+                                              chs_cpu,
+                                              rhs_cpu,
+                                              output_cpu,
+                                              f);
+
+  return copy_accessor_data_to_l_from_r(output, output_cpu);
+}
+
+template <typename F>
+GenericTensorAccessorW map_tensor_accessors3(GenericTensorAccessorR const &lhs,
+                                             GenericTensorAccessorR const &chs,
+                                             GenericTensorAccessorR const &rhs,
+                                             DataType output_data_type,
+                                             F &&f,
+                                             Allocator &output_allocator) {
+  TensorDims output_dims = require_same(lhs.shape.dims, rhs.shape.dims);
+
+  GenericTensorAccessorW output = output_allocator.allocate_tensor(
+      TensorShape{output_dims, output_data_type});
+
+  map_tensor_accessors3_to(lhs, chs, rhs, output_data_type, f, output);
+
+  return output;
+}
+
 } // namespace FlexFlow
 
 #endif

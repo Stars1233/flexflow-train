@@ -2,6 +2,7 @@
 #define _FLEXFLOW_OP_ATTRS_GET_OP_TYPE_H
 
 #include "op-attrs/ops/attention_attrs.dtg.h"
+#include "op-attrs/ops/batch_matmul_attrs.dtg.h"
 #include "op-attrs/ops/batch_norm_attrs.dtg.h"
 #include "op-attrs/ops/broadcast_attrs.dtg.h"
 #include "op-attrs/ops/cast_attrs.dtg.h"
@@ -29,10 +30,12 @@
 #include "op-attrs/ops/split_attrs.dtg.h"
 #include "op-attrs/ops/topk_attrs.dtg.h"
 #include "op-attrs/ops/transpose_attrs.dtg.h"
+#include "op-attrs/ops/upsample_attrs.dtg.h"
 #include "op-attrs/ops/weight_attrs.dtg.h"
 
 namespace FlexFlow {
 
+OperatorType get_op_type(BatchMatmulAttrs const &);
 OperatorType get_op_type(BatchNormAttrs const &);
 OperatorType get_op_type(BroadcastAttrs const &);
 OperatorType get_op_type(CastAttrs const &);
@@ -57,6 +60,7 @@ OperatorType get_op_type(SplitAttrs const &);
 OperatorType get_op_type(SoftmaxAttrs const &);
 OperatorType get_op_type(TopKAttrs const &);
 OperatorType get_op_type(TransposeAttrs const &);
+OperatorType get_op_type(UpsampleAttrs const &);
 OperatorType get_op_type(WeightAttrs const &);
 
 OperatorType get_op_type(CombineAttrs const &);

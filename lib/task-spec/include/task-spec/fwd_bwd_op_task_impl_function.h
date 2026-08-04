@@ -21,6 +21,8 @@ struct FwdBwdOpTaskImplFunction {
 std::string format_as(FwdBwdOpTaskImplFunction const &x);
 std::ostream &operator<<(std::ostream &s, FwdBwdOpTaskImplFunction const &x);
 
+void to_json(nlohmann::json &, FwdBwdOpTaskImplFunction const &);
+
 } // namespace FlexFlow
 
 ///\cond

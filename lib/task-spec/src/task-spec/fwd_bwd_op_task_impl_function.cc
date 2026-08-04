@@ -44,6 +44,12 @@ std::ostream &operator<<(std::ostream &s, FwdBwdOpTaskImplFunction const &x) {
   return s << fmt::to_string(x);
 }
 
+void to_json(nlohmann::json &j, FwdBwdOpTaskImplFunction const &x) {
+  j["__type"] = "FwdBwdOpTaskImplFunction";
+  j["function_ptr"] =
+      fmt::format("{:p}", reinterpret_cast<void *>(x.function_ptr));
+}
+
 } // namespace FlexFlow
 
 ///\cond

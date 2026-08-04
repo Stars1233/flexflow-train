@@ -7,7 +7,7 @@
 using namespace ::FlexFlow;
 
 TEST_SUITE(FF_TEST_SUITE) {
-  TEST_CASE("get_outgoing_edges") {
+  TEST_CASE("get_outgoing_edges (DiGraph)") {
     DiGraph g = DiGraph::create<AdjacencyDiGraph>();
 
     std::vector<Node> n = add_nodes(g, 6);

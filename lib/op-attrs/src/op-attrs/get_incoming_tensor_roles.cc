@@ -6,6 +6,7 @@
 #include "op-attrs/ops/linear.h"
 #include "op-attrs/pcg_operator_attrs.h"
 #include "op-attrs/tensor_slot_name.h"
+#include "utils/containers/slice.h"
 #include "utils/overload.h"
 
 namespace FlexFlow {
@@ -20,6 +21,12 @@ std::map<TensorSlotName, IncomingTensorRole>
     get_incoming_tensor_roles(PCGOperatorAttrs const &pcg_op_attrs) {
   return pcg_op_attrs.visit<std::map<TensorSlotName, IncomingTensorRole>>(
       overload{
+          [](BatchMatmulAttrs const &attrs) {
+            return std::map<TensorSlotName, IncomingTensorRole>{
+                {TensorSlotName::LHS_INPUT, IncomingTensorRole::INPUT},
+                {TensorSlotName::RHS_INPUT, IncomingTensorRole::INPUT},
+            };
+          },
           [](BatchNormAttrs const &attrs) {
             return get_batch_norm_incoming_tensor_roles(attrs);
           },
@@ -38,8 +45,10 @@ std::map<TensorSlotName, IncomingTensorRole>
                 {TensorSlotName::INPUT, IncomingTensorRole::INPUT},
             };
           },
-          [&](ConcatAttrs const &) {
-            return generate_map(get_variadic_inputs_slot_name_sequence(),
+          [&](ConcatAttrs const &attrs) {
+            return generate_map(slice(get_variadic_inputs_slot_name_sequence(),
+                                      0,
+                                      attrs.num_inputs.int_from_int_ge_two()),
                                 [](TensorSlotName) -> IncomingTensorRole {
                                   return IncomingTensorRole::INPUT;
                                 });
@@ -147,6 +156,11 @@ std::map<TensorSlotName, IncomingTensorRole>
             };
           },
           [](TransposeAttrs const &) {
+            return std::map<TensorSlotName, IncomingTensorRole>{
+                {TensorSlotName::INPUT, IncomingTensorRole::INPUT},
+            };
+          },
+          [](UpsampleAttrs const &) {
             return std::map<TensorSlotName, IncomingTensorRole>{
                 {TensorSlotName::INPUT, IncomingTensorRole::INPUT},
             };

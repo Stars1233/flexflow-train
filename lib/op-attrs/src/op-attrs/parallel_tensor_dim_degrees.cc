@@ -1,6 +1,6 @@
 #include "op-attrs/parallel_tensor_dim_degrees.h"
 #include "op-attrs/ff_ordered/ff_ordered_from_map.h"
-#include "op-attrs/ff_ordered/get_idxs.h"
+#include "op-attrs/ff_ordered/ff_ordered_get_idxs.h"
 #include "op-attrs/num_tensor_dims_t.h"
 #include "op-attrs/parallel_tensor_dim_idx_t.dtg.h"
 #include "op-attrs/parallel_tensor_dim_idx_t.h"
@@ -12,6 +12,7 @@
 #include "utils/containers/get_all_assignments.h"
 #include "utils/containers/map_keys.h"
 #include "utils/containers/map_values.h"
+#include "utils/containers/product.h"
 #include "utils/containers/range.h"
 #include "utils/containers/set_of.h"
 #include "utils/containers/set_union.h"
@@ -21,6 +22,12 @@
 #include "utils/orthotope/minimal_dim_domain.h"
 
 namespace FlexFlow {
+
+positive_int get_total_degree_of_ptensor_dim_degrees(
+    ParallelTensorDimDegrees const &degrees) {
+  return degrees.sum_degree.value * degrees.discard_copy_degree.value *
+         product(degrees.shard_degrees);
+}
 
 num_ptensor_shard_dims_t get_ptensor_dim_degrees_num_shard_dims(
     ParallelTensorDimDegrees const &degrees) {
@@ -60,7 +67,7 @@ std::set<parallel_tensor_dim_idx_t> get_nontrivial_parallel_tensor_dim_indices(
   }
 
   std::set<parallel_tensor_dim_idx_t> nontrivial_shard_dims = filtrans(
-      get_idxs(degrees.shard_degrees),
+      ff_ordered_get_idxs(degrees.shard_degrees),
       [&](ff_dim_t const &dim) -> std::optional<parallel_tensor_dim_idx_t> {
         if (degrees.shard_degrees.at(dim) > 1) {
           return parallel_tensor_dim_idx_t{dim};
@@ -93,10 +100,9 @@ std::map<parallel_tensor_dim_idx_t, positive_int>
        degrees.discard_copy_degree.value},
   };
 
-  std::map<ff_dim_t, positive_int> shard_dim_degrees =
-      generate_map(get_idxs(degrees.shard_degrees), [&](ff_dim_t const &dim) {
-        return degrees.shard_degrees.at(dim);
-      });
+  std::map<ff_dim_t, positive_int> shard_dim_degrees = generate_map(
+      ff_ordered_get_idxs(degrees.shard_degrees),
+      [&](ff_dim_t const &dim) { return degrees.shard_degrees.at(dim); });
 
   return binary_merge_disjoint_maps(
       /*lhs=*/replica_dim_degrees,

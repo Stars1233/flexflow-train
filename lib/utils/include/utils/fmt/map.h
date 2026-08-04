@@ -1,12 +1,12 @@
 #ifndef _FLEXFLOW_LIB_UTILS_INCLUDE_UTILS_FMT_MAP_H
 #define _FLEXFLOW_LIB_UTILS_INCLUDE_UTILS_FMT_MAP_H
 
-#include "utils/check_fmtable.h"
-#include "utils/containers/sorted.h"
 #include "utils/fmt/pair.h"
 #include "utils/join_strings.h"
+#include "utils/json/check_is_json_serializable.h"
 #include <fmt/format.h>
 #include <map>
+#include <nlohmann/json.hpp>
 
 namespace fmt {
 
@@ -19,15 +19,11 @@ struct formatter<
   template <typename FormatContext>
   auto format(::std::map<K, V> const &m, FormatContext &ctx) const
       -> decltype(ctx.out()) {
-    CHECK_FMTABLE(K);
-    CHECK_FMTABLE(V);
+    CHECK_IS_JSON_SERIALIZABLE(K);
+    CHECK_IS_JSON_SERIALIZABLE(V);
 
-    std::string result = ::FlexFlow::join_strings(
-        m.cbegin(), m.cend(), ", ", [](std::pair<K, V> const &p) {
-          return fmt::to_string(p);
-        });
-
-    return formatter<std::string>::format("{" + result + "}", ctx);
+    ::nlohmann::json j = m;
+    return formatter<std::string>::format(j.dump(), ctx);
   }
 };
 
@@ -37,8 +33,8 @@ namespace FlexFlow {
 
 template <typename K, typename V>
 std::ostream &operator<<(std::ostream &s, std::map<K, V> const &m) {
-  CHECK_FMTABLE(K);
-  CHECK_FMTABLE(V);
+  CHECK_IS_JSON_SERIALIZABLE(K);
+  CHECK_IS_JSON_SERIALIZABLE(V);
 
   return s << fmt::to_string(m);
 }

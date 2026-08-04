@@ -5,6 +5,7 @@
 #include "utils/containers/contains.h"
 #include "utils/containers/filter.h"
 #include "utils/containers/filter_keys.h"
+#include "utils/containers/filter_values.h"
 #include "utils/containers/set_intersection.h"
 #include "utils/containers/set_of.h"
 #include "utils/containers/set_union.h"
@@ -13,6 +14,7 @@
 #include "utils/fmt/set.h"
 #include "utils/hash-utils.h"
 #include "utils/hash/set.h"
+#include "utils/json/optional.h"
 #include "utils/optional.h"
 #include <optional>
 #include <set>
@@ -155,6 +157,12 @@ query_set<T> query_union(query_set<T> const &lhs, query_set<T> const &rhs) {
     return query_set<T>::match_values_in(
         set_of(set_union(allowed_values(lhs), allowed_values(rhs))));
   }
+}
+
+template <typename T>
+void to_json(nlohmann::json &j, query_set<T> const &q) {
+  j["__type"] = "query_set";
+  j["value"] = q.value();
 }
 
 } // namespace FlexFlow

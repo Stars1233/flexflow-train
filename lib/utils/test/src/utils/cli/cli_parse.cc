@@ -413,7 +413,7 @@ TEST_SUITE(FF_TEST_SUITE) {
     }
   }
 
-  TEST_CASE("cli_parse(CLISpec, int argc, char const * const *argv)") {
+  TEST_CASE("cli_parse(CLISpec, int argc, char const star const star argv)") {
     // most cases are checked in the other overload,
     // i.e., cli_parse(CLISpec, std::vector<string>),
     // so here we just throw in a single check to make sure

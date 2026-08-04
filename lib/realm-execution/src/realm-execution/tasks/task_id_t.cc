@@ -32,6 +32,7 @@ std::optional<task_id_t>
     get_init_task_id_for_op_attrs(PCGOperatorAttrs const &op_attrs) {
 
   return op_attrs.visit<std::optional<task_id_t>>(overload{
+      [](BatchMatmulAttrs const &) { return std::nullopt; },
       [](BatchNormAttrs const &) { return task_id_t::BATCHNORM_INIT_TASK_ID; },
       [](BroadcastAttrs const &) { return std::nullopt; },
       [](CastAttrs const &) { return std::nullopt; },
@@ -70,6 +71,7 @@ std::optional<task_id_t>
       [](SplitAttrs const &) { return std::nullopt; },
       [](TopKAttrs const &) { return std::nullopt; },
       [](TransposeAttrs const &) { return std::nullopt; },
+      [](UpsampleAttrs const &) { return std::nullopt; },
       [](WeightAttrs const &) { return std::nullopt; },
   });
 }
@@ -78,6 +80,9 @@ std::optional<task_id_t>
     get_fwd_task_id_for_op_attrs(PCGOperatorAttrs const &op_attrs) {
 
   return op_attrs.visit<std::optional<task_id_t>>(overload{
+      [](BatchMatmulAttrs const &) {
+        return task_id_t::BATCHMATMUL_FWD_TASK_ID;
+      },
       [](BatchNormAttrs const &) { return task_id_t::BATCHNORM_FWD_TASK_ID; },
       [](BroadcastAttrs const &) { return task_id_t::BROADCAST_FWD_TASK_ID; },
       [](CastAttrs const &) { return task_id_t::CAST_FWD_TASK_ID; },
@@ -116,6 +121,7 @@ std::optional<task_id_t>
       [](SplitAttrs const &) { return task_id_t::SPLIT_FWD_TASK_ID; },
       [](TopKAttrs const &) { return task_id_t::TOPK_FWD_TASK_ID; },
       [](TransposeAttrs const &) { return task_id_t::TRANSPOSE_FWD_TASK_ID; },
+      [](UpsampleAttrs const &) { return task_id_t::UPSAMPLE_FWD_TASK_ID; },
       [](WeightAttrs const &) { return std::nullopt; },
   });
 }
@@ -124,6 +130,9 @@ std::optional<task_id_t>
     get_bwd_task_id_for_op_attrs(PCGOperatorAttrs const &op_attrs) {
 
   return op_attrs.visit<std::optional<task_id_t>>(overload{
+      [](BatchMatmulAttrs const &) {
+        return task_id_t::BATCHMATMUL_BWD_TASK_ID;
+      },
       [](BatchNormAttrs const &) { return task_id_t::BATCHNORM_BWD_TASK_ID; },
       [](BroadcastAttrs const &) { return task_id_t::BROADCAST_BWD_TASK_ID; },
       [](CastAttrs const &) { return task_id_t::CAST_BWD_TASK_ID; },
@@ -162,6 +171,7 @@ std::optional<task_id_t>
       [](SplitAttrs const &) { return task_id_t::SPLIT_BWD_TASK_ID; },
       [](TopKAttrs const &) { return task_id_t::TOPK_BWD_TASK_ID; },
       [](TransposeAttrs const &) { return task_id_t::TRANSPOSE_BWD_TASK_ID; },
+      [](UpsampleAttrs const &) { return task_id_t::UPSAMPLE_BWD_TASK_ID; },
       [](WeightAttrs const &) { return std::nullopt; },
   });
 }

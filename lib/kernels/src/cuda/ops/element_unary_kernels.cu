@@ -20,8 +20,6 @@
 #include <optional>
 
 namespace FlexFlow {
-namespace Kernels {
-namespace ElementUnary {
 
 static bool use_cudnn(OperatorType op_type) {
   switch (op_type) {
@@ -49,9 +47,9 @@ static bool use_scalar(OperatorType op_type) {
 }
 
 static ElementUnaryPerDeviceState
-    gpu_init_kernel(TensorShape const &input_shape,
-                    TensorShape const &output_shape,
-                    OperatorType op_type) {
+    element_unary_gpu_init_kernel(TensorShape const &input_shape,
+                                  TensorShape const &output_shape,
+                                  OperatorType op_type) {
 
   ffTensorDescriptor_t inputTensor;
   ffTensorDescriptor_t outputTensor;
@@ -94,10 +92,12 @@ static ElementUnaryPerDeviceState
   };
 }
 
-ElementUnaryPerDeviceState gpu_init_kernel(TensorShape const &input_shape,
-                                           TensorShape const &output_shape,
-                                           ElementUnaryAttrs const &attrs) {
-  return gpu_init_kernel(input_shape, output_shape, get_op_type(attrs));
+ElementUnaryPerDeviceState
+    element_unary_gpu_init_kernel(TensorShape const &input_shape,
+                                  TensorShape const &output_shape,
+                                  ElementUnaryAttrs const &attrs) {
+  return element_unary_gpu_init_kernel(
+      input_shape, output_shape, get_op_type(attrs));
 }
 
 template <typename T>
@@ -343,12 +343,13 @@ struct BackwardKernel {
   }
 };
 
-void gpu_forward_kernel(ffStream_t stream,
-                        ElementUnaryPerDeviceState const &device_state,
-                        ElementUnaryAttrs const &attrs,
-                        PerDeviceFFHandle const &handle,
-                        GenericTensorAccessorR const &input,
-                        GenericTensorAccessorW const &output) {
+void element_unary_gpu_forward_kernel(
+    ffStream_t stream,
+    ElementUnaryPerDeviceState const &device_state,
+    ElementUnaryAttrs const &attrs,
+    PerDeviceFFHandle const &handle,
+    GenericTensorAccessorR const &input,
+    GenericTensorAccessorW const &output) {
   DataTypeDispatch1<ForwardKernel>{}(input.shape.data_type,
                                      stream,
                                      device_state,
@@ -359,14 +360,15 @@ void gpu_forward_kernel(ffStream_t stream,
                                      output);
 }
 
-void gpu_backward_kernel(ffStream_t stream,
-                         ElementUnaryPerDeviceState const &device_state,
-                         ElementUnaryAttrs const &attrs,
-                         PerDeviceFFHandle const &handle,
-                         GenericTensorAccessorR const &output,
-                         GenericTensorAccessorR const &output_grad,
-                         GenericTensorAccessorR const &input,
-                         GenericTensorAccessorW const &input_grad) {
+void element_unary_gpu_backward_kernel(
+    ffStream_t stream,
+    ElementUnaryPerDeviceState const &device_state,
+    ElementUnaryAttrs const &attrs,
+    PerDeviceFFHandle const &handle,
+    GenericTensorAccessorR const &output,
+    GenericTensorAccessorR const &output_grad,
+    GenericTensorAccessorR const &input,
+    GenericTensorAccessorW const &input_grad) {
   DataTypeDispatch1<BackwardKernel>{}(input.shape.data_type,
                                       stream,
                                       device_state,
@@ -379,10 +381,9 @@ void gpu_backward_kernel(ffStream_t stream,
                                       input_grad);
 }
 
-void gpu_cleanup_kernel(ElementUnaryPerDeviceState &per_device_state) {
+void element_unary_gpu_cleanup_kernel(
+    ElementUnaryPerDeviceState &per_device_state) {
   NOT_IMPLEMENTED();
 }
 
-} // namespace ElementUnary
-} // namespace Kernels
 } // namespace FlexFlow

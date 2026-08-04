@@ -8,12 +8,12 @@
 
 namespace FlexFlow {
 
-TensorShape get_output_shape(FlatAttrs const &, TensorShape const &);
+TensorShape flat_get_output_shape(FlatAttrs const &, TensorShape const &);
 ParallelTensorDimDegrees
-    get_output_parallel_dim_degrees(FlatAttrs const &,
-                                    ParallelTensorDimDegrees const &);
-ParallelTensorShape get_output_shape(FlatAttrs const &,
-                                     ParallelTensorShape const &);
+    flat_get_output_parallel_dim_degrees(FlatAttrs const &,
+                                         ParallelTensorDimDegrees const &);
+ParallelTensorShape flat_get_output_parallel_shape(FlatAttrs const &,
+                                                   ParallelTensorShape const &);
 
 } // namespace FlexFlow
 

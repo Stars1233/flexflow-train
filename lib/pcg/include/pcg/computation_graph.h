@@ -54,6 +54,8 @@ std::set<tensor_guid_t> get_all_tensors(ComputationGraph const &);
 std::map<tensor_guid_t, TensorAttrs>
     get_all_tensor_attrs(ComputationGraph const &);
 
+std::set<tensor_guid_t> cg_get_unused_tensors(ComputationGraph const &);
+
 std::set<ComputationGraphEdge>
     get_subgraph_incoming_edges(ComputationGraph const &,
                                 std::set<layer_guid_t> const &);
@@ -72,6 +74,9 @@ layer_guid_t get_layer_by_name(ComputationGraph const &cg,
                                std::string const &name);
 
 ComputationGraph without_layer_names(ComputationGraph const &);
+
+std::map<OperatorType, positive_int>
+    operator_type_counts_in_computation_graph(ComputationGraph const &);
 
 bool computation_graphs_are_isomorphic(ComputationGraph const &,
                                        ComputationGraph const &);

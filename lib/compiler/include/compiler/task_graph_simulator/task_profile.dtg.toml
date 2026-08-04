@@ -6,6 +6,7 @@ features = [
   "eq",
   "hash",
   "fmt",
+  "json_serialize",
   "ord"
 ]
 

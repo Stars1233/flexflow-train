@@ -43,6 +43,12 @@ std::ostream &operator<<(std::ostream &s, GenericTaskImplFunction const &x) {
   return s << fmt::to_string(x);
 }
 
+void to_json(nlohmann::json &j, GenericTaskImplFunction const &x) {
+  j["__type"] = "GenericTaskImplFunction";
+  j["function_ptr"] =
+      fmt::format("{:p}", reinterpret_cast<void *>(x.function_ptr));
+}
+
 } // namespace FlexFlow
 
 ///\cond
