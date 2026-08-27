@@ -4,13 +4,8 @@ type = "struct"
 features = []
 
 includes = [
-  "kernels/ff_handle.h",
   "kernels/device.h",
 ]
-
-[[fields]]
-name = "handle"
-type = "::FlexFlow::PerDeviceFFHandle"
 
 [[fields]]
 name = "inputLHSTensor"

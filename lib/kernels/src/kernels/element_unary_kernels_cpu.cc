@@ -163,8 +163,7 @@ void element_unary_cpu_backward_kernel(
           /*f=*/element_function,
           /*output_allocator=*/cpu_allocator));
 
-  return tensor_accessor_elementwise_multiply_to(
-      output_grad, df_dx, input_grad);
+  tensor_accessor_elementwise_multiply_to(output_grad, df_dx, input_grad);
 }
 
 } // namespace FlexFlow

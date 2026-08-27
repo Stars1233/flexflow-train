@@ -4,29 +4,28 @@
 #include "kernels/accessor.h"
 #include "kernels/device.h"
 #include "kernels/element_unary_per_device_state.dtg.h"
-#include "kernels/ff_handle.h"
 #include "op-attrs/ops/element_unary_attrs.dtg.h"
 
 namespace FlexFlow {
 
 ElementUnaryPerDeviceState
-    element_unary_gpu_init_kernel(TensorShape const &input_shape,
-                                  TensorShape const &output_shape,
-                                  ElementUnaryAttrs const &attrs);
+    element_unary_gpu_init_kernel(ElementUnaryAttrs const &attrs,
+                                  TensorShape const &input_shape,
+                                  TensorShape const &output_shape);
 
 void element_unary_gpu_forward_kernel(
     ffStream_t stream,
+    PerDeviceFFHandle const &handle,
     ElementUnaryPerDeviceState const &per_device_state,
     ElementUnaryAttrs const &attrs,
-    PerDeviceFFHandle const &handle,
     GenericTensorAccessorR const &input,
     GenericTensorAccessorW const &output);
 
 void element_unary_gpu_backward_kernel(
     ffStream_t stream,
+    PerDeviceFFHandle const &handle,
     ElementUnaryPerDeviceState const &per_device_state,
     ElementUnaryAttrs const &attrs,
-    PerDeviceFFHandle const &handle,
     GenericTensorAccessorR const &output,
     GenericTensorAccessorR const &output_grad,
     GenericTensorAccessorR const &input,

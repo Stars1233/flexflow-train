@@ -1,55 +1,48 @@
 #ifndef _FLEXFLOW_OPS_KERNELS_ELEMENT_BINARY_KERNELS_H
 #define _FLEXFLOW_OPS_KERNELS_ELEMENT_BINARY_KERNELS_H
 
-#include "kernels/device.h"
+#include "kernels/accessor.h"
 #include "kernels/device_handle_t.dtg.h"
 #include "kernels/device_stream_t.dtg.h"
 #include "kernels/element_binary_per_device_state.dtg.h"
-#include "kernels/ff_handle.h"
-#include "op-attrs/datatype.h"
-#include "op-attrs/operator_type.h"
+#include "op-attrs/ops/element_binary_attrs.dtg.h"
 #include "op-attrs/tensor_shape.dtg.h"
 #include "pcg/device_type.dtg.h"
 
-namespace FlexFlow::Kernels::ElementBinary {
+namespace FlexFlow {
 
 std::optional<ElementBinaryPerDeviceState>
-    init_kernel(DeviceType device_type,
-                device_handle_t const &handle,
-                OperatorType op_type,
-                bool should_broadcast_lhs,
-                bool should_broadcast_rhs,
-                TensorShape const &lhs_shape,
-                TensorShape const &rhs_shape,
-                TensorShape const &output_shape);
+    element_binary_init_kernel(DeviceType device_type,
+                               ElementBinaryAttrs const &attrs,
+                               TensorShape const &lhs_shape,
+                               TensorShape const &rhs_shape,
+                               TensorShape const &output_shape);
 
-void forward_kernel(
+void element_binary_forward_kernel(
     device_stream_t const &stream,
+    device_handle_t const &handle,
     std::optional<ElementBinaryPerDeviceState> const &per_device_state,
-    float const *lhs_ptr,
-    float const *rhs_ptr,
-    float *out_ptr,
-    OperatorType op_type,
-    bool broadcast_inputLHS,
-    device_handle_t const &handle);
+    ElementBinaryAttrs const &attrs,
+    GenericTensorAccessorR const &lhs,
+    GenericTensorAccessorR const &rhs,
+    GenericTensorAccessorW const &output);
 
-void backward_kernel(
+void element_binary_backward_kernel(
     device_stream_t const &stream,
+    device_handle_t const &handle,
     std::optional<ElementBinaryPerDeviceState> const &per_device_state,
-    float const *out_grad_ptr,
-    float const *lhs_ptr,
-    float const *rhs_ptr,
-    float *lhs_grad_ptr,
-    float *rhs_grad_ptr,
-    OperatorType op_type,
-    bool broadcast_inputLHS,
-    bool broadcast_inputRHS,
-    device_handle_t const &handle);
+    ElementBinaryAttrs const &attrs,
+    GenericTensorAccessorR const &output,
+    GenericTensorAccessorR const &output_grad,
+    GenericTensorAccessorR const &lhs,
+    GenericTensorAccessorW const &lhs_grad,
+    GenericTensorAccessorR const &rhs,
+    GenericTensorAccessorW const &rhs_grad);
 
-void cleanup_kernel(
+void element_binary_cleanup_kernel(
     DeviceType device_type,
     std::optional<ElementBinaryPerDeviceState> const &per_device_state);
 
-} // namespace FlexFlow::Kernels::ElementBinary
+} // namespace FlexFlow
 
 #endif

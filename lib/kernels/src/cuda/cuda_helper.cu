@@ -240,17 +240,22 @@ ffCudnnDataType_t ff_to_cudnn_datatype(DataType flexflow_data_type) {
 ffStatus_t
     cudnnSetTensorDescriptorFromTensorShape(cudnnTensorDescriptor_t tensor,
                                             TensorShape const &shape) {
+  ASSERT(get_num_dims(shape.dims) <= 4,
+         "cudnnSetTensorDescriptorFromTensorShape only supports tensors of up "
+         "to 4 dimensions",
+         shape);
+
   return cudnnSetTensor4dDescriptor(
       tensor,
       CUDNN_TENSOR_NCHW,
       ff_to_cudnn_datatype(shape.data_type),
-      try_dim_at_idx(shape.dims, relative_ff_dim_t{3})
+      try_dim_at_idx(shape.dims, relative_ff_dim_t{0})
           .value_or(1_p)
           .int_from_positive_int(),
-      try_dim_at_idx(shape.dims, relative_ff_dim_t{3})
+      try_dim_at_idx(shape.dims, relative_ff_dim_t{1})
           .value_or(1_p)
           .int_from_positive_int(),
-      try_dim_at_idx(shape.dims, relative_ff_dim_t{3})
+      try_dim_at_idx(shape.dims, relative_ff_dim_t{2})
           .value_or(1_p)
           .int_from_positive_int(),
       try_dim_at_idx(shape.dims, relative_ff_dim_t{3})

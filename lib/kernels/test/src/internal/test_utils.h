@@ -37,6 +37,10 @@ void print_2d_tensor_accessor_contents(GenericTensorAccessorR const &accessor,
 bool accessors_are_equal(GenericTensorAccessorR const &accessor_a,
                          GenericTensorAccessorR const &accessor_b);
 
+bool accessors_within_epsilon(GenericTensorAccessorR const &accessor_a,
+                              GenericTensorAccessorR const &accessor_b,
+                              float epsilon);
+
 GenericTensorAccessorW create_filled_accessor_w(TensorShape const &shape,
                                                 Allocator &allocator,
                                                 DataTypeValue val);

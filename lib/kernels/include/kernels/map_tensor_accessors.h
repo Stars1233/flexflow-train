@@ -229,7 +229,8 @@ GenericTensorAccessorW map_tensor_accessors3(GenericTensorAccessorR const &lhs,
                                              DataType output_data_type,
                                              F &&f,
                                              Allocator &output_allocator) {
-  TensorDims output_dims = require_same(lhs.shape.dims, rhs.shape.dims);
+  TensorDims output_dims =
+      require_same(lhs.shape.dims, chs.shape.dims, rhs.shape.dims);
 
   GenericTensorAccessorW output = output_allocator.allocate_tensor(
       TensorShape{output_dims, output_data_type});

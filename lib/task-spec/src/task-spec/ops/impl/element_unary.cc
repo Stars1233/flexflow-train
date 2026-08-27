@@ -17,7 +17,7 @@ static DeviceSpecificPerDeviceOpState
 
   std::optional<ElementUnaryPerDeviceState> per_device_state =
       element_unary_init_kernel(
-          kernel_device_type, input_shape, output_shape, attrs);
+          kernel_device_type, attrs, input_shape, output_shape);
 
   return DeviceSpecificPerDeviceOpState{
       acc.make_device_specific(per_device_state),
@@ -26,8 +26,10 @@ static DeviceSpecificPerDeviceOpState
 
 static std::optional<milliseconds_t>
     forward_task_impl(TaskArgumentAccessor const &acc) {
-  auto input = acc.get_tensor<Permissions::RO>(TensorSlotName::INPUT);
-  auto output = acc.get_tensor<Permissions::WO>(TensorSlotName::OUTPUT);
+  GenericTensorAccessorR input =
+      acc.get_tensor<Permissions::RO>(TensorSlotName::INPUT);
+  GenericTensorAccessorW output =
+      acc.get_tensor<Permissions::WO>(TensorSlotName::OUTPUT);
   ElementUnaryAttrs attrs = acc.get_op_attrs().require_element_unary();
 
   device_handle_t handle = acc.get_ff_handle();
@@ -41,19 +43,22 @@ static std::optional<milliseconds_t>
                  profiling,
                  kernel_device_type,
                  "[ElementUnary] forward_time = {:.2lf}ms\n",
+                 handle,
                  per_device_state,
                  attrs,
-                 handle,
                  input,
                  output);
 }
 
 static std::optional<milliseconds_t>
     backward_task_impl(TaskArgumentAccessor const &acc) {
-  auto input = acc.get_tensor<Permissions::RO>(TensorSlotName::INPUT);
-  auto input_grad = acc.get_tensor_grad<Permissions::RW>(TensorSlotName::INPUT);
-  auto output = acc.get_tensor<Permissions::RO>(TensorSlotName::OUTPUT);
-  auto output_grad =
+  GenericTensorAccessorR input =
+      acc.get_tensor<Permissions::RO>(TensorSlotName::INPUT);
+  GenericTensorAccessorW input_grad =
+      acc.get_tensor_grad<Permissions::RW>(TensorSlotName::INPUT);
+  GenericTensorAccessorR output =
+      acc.get_tensor<Permissions::RO>(TensorSlotName::OUTPUT);
+  GenericTensorAccessorR output_grad =
       acc.get_tensor_grad<Permissions::RO>(TensorSlotName::OUTPUT);
 
   ElementUnaryAttrs attrs = acc.get_op_attrs().require_element_unary();
@@ -68,9 +73,9 @@ static std::optional<milliseconds_t>
                  profiling,
                  kernel_device_type,
                  "[ElementUnary] backward_time = {:.2lf}ms\n",
+                 handle,
                  per_device_state,
                  attrs,
-                 handle,
                  output,
                  output_grad,
                  input,

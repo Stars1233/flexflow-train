@@ -1,25 +1,25 @@
 #ifndef _FLEXFLOW_LIB_KERNELS_INCLUDE_KERNELS_ELEMENT_BINARY_KERNELS_CPU_H
 #define _FLEXFLOW_LIB_KERNELS_INCLUDE_KERNELS_ELEMENT_BINARY_KERNELS_CPU_H
 
-#include "op-attrs/operator_type.dtg.h"
+#include "kernels/accessor.h"
+#include "op-attrs/ops/element_binary_attrs.dtg.h"
 
-namespace FlexFlow::Kernels::ElementBinary {
+namespace FlexFlow {
 
-void cpu_forward_kernel(float const *lhs_ptr,
-                        float const *rhs_ptr,
-                        float *out_ptr,
-                        OperatorType op_type,
-                        bool broadcast_inputLHS);
+void element_binary_cpu_forward_kernel(ElementBinaryAttrs const &attrs,
+                                       GenericTensorAccessorR const &lhs,
+                                       GenericTensorAccessorR const &rhs,
+                                       GenericTensorAccessorW const &output);
 
-void cpu_backward_kernel(float const *out_grad_ptr,
-                         float const *lhs_ptr,
-                         float const *rhs_ptr,
-                         float *lhs_grad_ptr,
-                         float *rhs_grad_ptr,
-                         OperatorType op_type,
-                         bool broadcast_inputLHS,
-                         bool broadcast_inputRHS);
+void element_binary_cpu_backward_kernel(
+    ElementBinaryAttrs const &attrs,
+    GenericTensorAccessorR const &output,
+    GenericTensorAccessorR const &output_grad,
+    GenericTensorAccessorR const &lhs,
+    GenericTensorAccessorW const &lhs_grad,
+    GenericTensorAccessorR const &rhs,
+    GenericTensorAccessorW const &rhs_grad);
 
-} // namespace FlexFlow::Kernels::ElementBinary
+} // namespace FlexFlow
 
 #endif

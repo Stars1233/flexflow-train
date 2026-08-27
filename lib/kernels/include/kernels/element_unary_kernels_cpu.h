@@ -2,7 +2,6 @@
 #define _FLEXFLOW_LIB_KERNELS_INCLUDE_KERNELS_ELEMENT_UNARY_KERNELS_CPU_H
 
 #include "kernels/accessor.h"
-#include "kernels/ff_handle.h"
 #include "op-attrs/ops/element_unary_attrs.dtg.h"
 
 namespace FlexFlow {

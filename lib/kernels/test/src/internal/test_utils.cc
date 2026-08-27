@@ -1,5 +1,8 @@
 #include "internal/test_utils.h"
 #include "kernels/fill_tensor_accessor.h"
+#include "kernels/map_tensor_accessors.h"
+#include "kernels/tensor_accessor_binary_ops.h"
+#include "kernels/tensor_accessor_reductions.h"
 #include "op-attrs/tensor_shape.h"
 #include "utils/containers/require_all_same1.h"
 #include "utils/join_strings.h"
@@ -130,6 +133,20 @@ bool accessors_are_equal(GenericTensorAccessorR const &accessor_a,
 
   return DataTypeDispatch1<AccessorsAreEqual>{}(
       accessor_a.shape.data_type, accessor_a, accessor_b);
+}
+
+bool accessors_within_epsilon(GenericTensorAccessorR const &accessor_a,
+                              GenericTensorAccessorR const &accessor_b,
+                              float epsilon) {
+  ASSERT(accessor_a.shape == accessor_b.shape,
+         "accessors_are_equal expects accessors to have the same shape");
+
+  Allocator cpu_allocator = create_local_cpu_memory_allocator();
+  GenericTensorAccessorW diff = tensor_accessor_elementwise_subtract(
+      accessor_a, accessor_b, cpu_allocator);
+  GenericTensorAccessorW within_epsilon = map_tensor_accessor(
+      diff, [&](float x) { return std::abs(x) < epsilon; }, cpu_allocator);
+  return tensor_accessor_all(within_epsilon);
 }
 
 template <DataType DT>

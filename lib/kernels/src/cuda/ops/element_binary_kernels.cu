@@ -17,12 +17,10 @@
 #include "kernels/element_binary_kernels_gpu.h"
 #include "kernels/ff_handle.h"
 #include "op-attrs/datatype.h"
-#include "op-attrs/operator_type.h"
+#include "op-attrs/get_op_type.h"
 #include "utils/exception.h"
 
 namespace FlexFlow {
-namespace Kernels {
-namespace ElementBinary {
 
 __global__ void elewise_binary_backward_kernel(size_t volume,
                                                float const alpha,
@@ -80,13 +78,11 @@ __global__ void elewise_binary_backward_kernel(size_t volume,
   }
 }
 
-ElementBinaryPerDeviceState gpu_init_kernel(PerDeviceFFHandle handle,
-                                            OperatorType op_type,
-                                            bool should_broadcast_lhs,
-                                            bool should_broadcast_rhs,
-                                            TensorShape const &lhs_shape,
-                                            TensorShape const &rhs_shape,
-                                            TensorShape const &output_shape) {
+ElementBinaryPerDeviceState
+    element_binary_gpu_init_kernel(ElementBinaryAttrs const &attrs,
+                                   TensorShape const &lhs_shape,
+                                   TensorShape const &rhs_shape,
+                                   TensorShape const &output_shape) {
   ffTensorDescriptor_t inputLHSTensor;
   ffTensorDescriptor_t inputRHSTensor;
   ffTensorDescriptor_t outputTensor;
@@ -100,7 +96,7 @@ ElementBinaryPerDeviceState gpu_init_kernel(PerDeviceFFHandle handle,
   checkCUDNN(cudnnCreateOpTensorDescriptor(&opDesc));
   checkCUDNN(cudnnCreateReduceTensorDescriptor(&reduceAddDesc));
 
-  switch (op_type) {
+  switch (get_op_type(attrs)) {
     case OperatorType::EW_ADD:
     case OperatorType::EW_SUB:
       mode = CUDNN_OP_TENSOR_ADD;
@@ -133,7 +129,6 @@ ElementBinaryPerDeviceState gpu_init_kernel(PerDeviceFFHandle handle,
       cudnnSetTensorDescriptorFromTensorShape(outputTensor, output_shape));
 
   ElementBinaryPerDeviceState per_device_state = ElementBinaryPerDeviceState{
-      /*handle=*/handle,
       /*inputLHSTensor=*/inputLHSTensor,
       /*inputRHSTensor=*/inputRHSTensor,
       /*outputTensor=*/outputTensor,
@@ -143,16 +138,17 @@ ElementBinaryPerDeviceState gpu_init_kernel(PerDeviceFFHandle handle,
   return per_device_state;
 }
 
-void gpu_forward_kernel(cudaStream_t stream,
-                        ElementBinaryPerDeviceState const &m,
-                        float const *lhs_ptr,
-                        float const *rhs_ptr,
-                        float *out_ptr,
-                        OperatorType op_type,
-                        bool broadcast_inputLHS,
-                        PerDeviceFFHandle handle) {
+void element_binary_gpu_forward_kernel(
+    ffStream_t stream,
+    PerDeviceFFHandle const &handle,
+    ElementBinaryPerDeviceState const &per_device_state,
+    ElementBinaryAttrs const &attrs,
+    GenericTensorAccessorR const &lhs,
+    GenericTensorAccessorR const &rhs,
+    GenericTensorAccessorW const &output) {
   checkCUBLAS(cublasSetStream(handle.blas, stream));
   checkCUDNN(cudnnSetStream(handle.dnn, stream));
+  OperatorType op_type = get_op_type(attrs);
   float alpha1 = 1.0f, alpha2 = 1.0f, beta = 0.0f;
   switch (op_type) {
     case OperatorType::EW_SUB:
@@ -168,232 +164,235 @@ void gpu_forward_kernel(cudaStream_t stream,
   }
   // cudnn currently does not support broadcasting the first input in
   // cudnnOpTensor
-  if (broadcast_inputLHS) {
+  if (attrs.should_broadcast_lhs) {
     // currently only handle add and sub
     assert(op_type == OperatorType::EW_SUB || op_type == OperatorType::EW_ADD ||
            op_type == OperatorType::EW_MUL);
     if (op_type == OperatorType::EW_SUB || op_type == OperatorType::EW_ADD) {
       // output = (beta*output + alpha1*input1) + beta*output = input1
       checkCUDNN(cudnnOpTensor(handle.dnn,
-                               m.opDesc,
+                               per_device_state.opDesc,
                                &beta,
-                               m.outputTensor,
-                               out_ptr,
+                               per_device_state.outputTensor,
+                               output.get_float_ptr(),
                                &alpha1,
-                               m.inputLHSTensor,
-                               lhs_ptr,
+                               per_device_state.inputLHSTensor,
+                               lhs.get_float_ptr(),
                                &beta,
-                               m.outputTensor,
-                               out_ptr));
+                               per_device_state.outputTensor,
+                               output.get_float_ptr()));
       // output = (beta*output + alpha2*input2) + alpha1*output = alpha2*input2
       // + alpha1*input1
       checkCUDNN(cudnnOpTensor(handle.dnn,
-                               m.opDesc,
+                               per_device_state.opDesc,
                                &beta,
-                               m.outputTensor,
-                               out_ptr,
+                               per_device_state.outputTensor,
+                               output.get_float_ptr(),
                                &alpha2,
-                               m.inputRHSTensor,
-                               rhs_ptr,
+                               per_device_state.inputRHSTensor,
+                               rhs.get_float_ptr(),
                                &alpha1,
-                               m.outputTensor,
-                               out_ptr));
+                               per_device_state.outputTensor,
+                               output.get_float_ptr()));
     } else if (op_type == OperatorType::EW_MUL) {
-      checkCUDNN(cudnnSetOpTensorDescriptor(m.opDesc,
+      checkCUDNN(cudnnSetOpTensorDescriptor(per_device_state.opDesc,
                                             CUDNN_OP_TENSOR_ADD,
                                             CUDNN_DATA_FLOAT,
                                             CUDNN_PROPAGATE_NAN));
       // output = (beta*output + alpha1*input1) + beta*output = input1
       checkCUDNN(cudnnOpTensor(handle.dnn,
-                               m.opDesc,
+                               per_device_state.opDesc,
                                &beta,
-                               m.outputTensor,
-                               out_ptr,
+                               per_device_state.outputTensor,
+                               output.get_float_ptr(),
                                &alpha1,
-                               m.inputLHSTensor,
-                               lhs_ptr,
+                               per_device_state.inputLHSTensor,
+                               lhs.get_float_ptr(),
                                &beta,
-                               m.outputTensor,
-                               out_ptr));
-      checkCUDNN(cudnnSetOpTensorDescriptor(m.opDesc,
+                               per_device_state.outputTensor,
+                               output.get_float_ptr()));
+      checkCUDNN(cudnnSetOpTensorDescriptor(per_device_state.opDesc,
                                             CUDNN_OP_TENSOR_MUL,
                                             CUDNN_DATA_FLOAT,
                                             CUDNN_PROPAGATE_NAN));
       // output = (alpha1*output * alpha2*input2) + beta*output
       checkCUDNN(cudnnOpTensor(handle.dnn,
-                               m.opDesc,
+                               per_device_state.opDesc,
                                &alpha1,
-                               m.outputTensor,
-                               out_ptr,
+                               per_device_state.outputTensor,
+                               output.get_float_ptr(),
                                &alpha2,
-                               m.inputRHSTensor,
-                               rhs_ptr,
+                               per_device_state.inputRHSTensor,
+                               rhs.get_float_ptr(),
                                &beta,
-                               m.outputTensor,
-                               out_ptr));
+                               per_device_state.outputTensor,
+                               output.get_float_ptr()));
     }
   } else {
     checkCUDNN(cudnnOpTensor(handle.dnn,
-                             m.opDesc,
+                             per_device_state.opDesc,
                              &alpha1,
-                             m.inputLHSTensor,
-                             lhs_ptr,
+                             per_device_state.inputLHSTensor,
+                             lhs.get_float_ptr(),
                              &alpha2,
-                             m.inputRHSTensor,
-                             rhs_ptr,
+                             per_device_state.inputRHSTensor,
+                             rhs.get_float_ptr(),
                              &beta,
-                             m.outputTensor,
-                             out_ptr));
+                             per_device_state.outputTensor,
+                             output.get_float_ptr()));
   }
 }
 
-void gpu_backward_kernel(cudaStream_t stream,
-                         ElementBinaryPerDeviceState const &m,
-                         float const *out_grad_ptr,
-                         float const *lhs_ptr,
-                         float const *rhs_ptr,
-                         float *lhs_grad_ptr,
-                         float *rhs_grad_ptr,
-                         OperatorType op_type,
-                         bool broadcast_inputLHS,
-                         bool broadcast_inputRHS,
-                         PerDeviceFFHandle handle) {
+void element_binary_gpu_backward_kernel(
+    ffStream_t stream,
+    PerDeviceFFHandle const &handle,
+    ElementBinaryPerDeviceState const &per_device_state,
+    ElementBinaryAttrs const &attrs,
+    GenericTensorAccessorR const &output,
+    GenericTensorAccessorR const &output_grad,
+    GenericTensorAccessorR const &lhs,
+    GenericTensorAccessorW const &lhs_grad,
+    GenericTensorAccessorR const &rhs,
+    GenericTensorAccessorW const &rhs_grad) {
   checkCUBLAS(cublasSetStream(handle.blas, stream));
   checkCUDNN(cudnnSetStream(handle.dnn, stream));
 
+  OperatorType op_type = get_op_type(attrs);
   if (op_type == OperatorType::EW_ADD || op_type == OperatorType::EW_SUB) {
     float alpha = 1.0f, beta = 1.0f;
-    if (lhs_grad_ptr != nullptr) {
-      if (broadcast_inputLHS) {
+    if (lhs_grad.get_float_ptr() != nullptr) {
+      if (attrs.should_broadcast_lhs) {
         checkCUDNN(cudnnReduceTensor(handle.dnn,
-                                     m.reduceAddDesc,
+                                     per_device_state.reduceAddDesc,
                                      nullptr /*indices*/,
                                      0 /*indicesSizeInBytes*/,
                                      handle.workSpace,
                                      handle.workSpaceSize,
                                      &alpha,
-                                     m.outputTensor,
-                                     out_grad_ptr,
+                                     per_device_state.outputTensor,
+                                     output_grad.get_float_ptr(),
                                      &beta,
-                                     m.inputLHSTensor,
-                                     lhs_grad_ptr));
+                                     per_device_state.inputLHSTensor,
+                                     lhs_grad.get_float_ptr()));
       } else {
         checkCUDNN(cudnnAddTensor(handle.dnn,
                                   &alpha,
-                                  m.outputTensor,
-                                  out_grad_ptr,
+                                  per_device_state.outputTensor,
+                                  output_grad.get_float_ptr(),
                                   &beta,
-                                  m.inputLHSTensor,
-                                  lhs_grad_ptr));
+                                  per_device_state.inputLHSTensor,
+                                  lhs_grad.get_float_ptr()));
       }
     }
     if (op_type == OperatorType::EW_SUB) {
       alpha = -1.0f;
     }
-    if (rhs_grad_ptr != nullptr) {
-      if (broadcast_inputRHS) {
+    if (rhs_grad.get_float_ptr() != nullptr) {
+      if (attrs.should_broadcast_rhs) {
         checkCUDNN(cudnnReduceTensor(handle.dnn,
-                                     m.reduceAddDesc,
+                                     per_device_state.reduceAddDesc,
                                      nullptr /*indices*/,
                                      0 /*indicesSizeInBytes*/,
                                      handle.workSpace,
                                      handle.workSpaceSize,
                                      &alpha,
-                                     m.outputTensor,
-                                     out_grad_ptr,
+                                     per_device_state.outputTensor,
+                                     output_grad.get_float_ptr(),
                                      &beta,
-                                     m.inputRHSTensor,
-                                     rhs_grad_ptr));
+                                     per_device_state.inputRHSTensor,
+                                     rhs_grad.get_float_ptr()));
       } else {
         checkCUDNN(cudnnAddTensor(handle.dnn,
                                   &alpha,
-                                  m.outputTensor,
-                                  out_grad_ptr,
+                                  per_device_state.outputTensor,
+                                  output_grad.get_float_ptr(),
                                   &beta,
-                                  m.inputRHSTensor,
-                                  rhs_grad_ptr));
+                                  per_device_state.inputRHSTensor,
+                                  rhs_grad.get_float_ptr()));
       }
     }
   } else if (op_type == OperatorType::EW_MUL) {
     float alpha1 = 1.0f, alpha2 = 1.0f, beta = 1.0f, zero = 0.0f;
-    if (lhs_grad_ptr != nullptr) {
-      if (broadcast_inputLHS) {
+    if (lhs_grad.get_float_ptr() != nullptr) {
+      if (attrs.should_broadcast_lhs) {
         checkCUDNN(cudnnOpTensor(handle.dnn,
-                                 m.opDesc,
+                                 per_device_state.opDesc,
                                  &alpha1,
-                                 m.outputTensor,
-                                 out_grad_ptr,
+                                 per_device_state.outputTensor,
+                                 output_grad.get_float_ptr(),
                                  &alpha2,
-                                 m.inputRHSTensor,
-                                 rhs_ptr,
+                                 per_device_state.inputRHSTensor,
+                                 rhs.get_float_ptr(),
                                  &zero,
-                                 m.outputTensor,
+                                 per_device_state.outputTensor,
                                  handle.workSpace));
         checkCUDNN(cudnnReduceTensor(
             handle.dnn,
-            m.reduceAddDesc,
+            per_device_state.reduceAddDesc,
             nullptr /*indices*/,
             0 /*indicesSizeInBytes*/,
-            (void *)((char *)handle.workSpace + sizeof(*out_grad_ptr)),
-            handle.workSpaceSize - sizeof(*out_grad_ptr),
+            (void *)((char *)handle.workSpace +
+                     sizeof(*output_grad.get_float_ptr())),
+            handle.workSpaceSize - sizeof(*output_grad.get_float_ptr()),
             &alpha1,
-            m.outputTensor,
+            per_device_state.outputTensor,
             handle.workSpace,
             &beta,
-            m.inputLHSTensor,
-            lhs_grad_ptr));
+            per_device_state.inputLHSTensor,
+            lhs_grad.get_float_ptr()));
       } else {
         checkCUDNN(cudnnOpTensor(handle.dnn,
-                                 m.opDesc,
+                                 per_device_state.opDesc,
                                  &alpha1,
-                                 m.outputTensor,
-                                 out_grad_ptr,
+                                 per_device_state.outputTensor,
+                                 output_grad.get_float_ptr(),
                                  &alpha2,
-                                 m.inputRHSTensor,
-                                 rhs_ptr,
+                                 per_device_state.inputRHSTensor,
+                                 rhs.get_float_ptr(),
                                  &beta,
-                                 m.inputLHSTensor,
-                                 lhs_grad_ptr));
+                                 per_device_state.inputLHSTensor,
+                                 lhs_grad.get_float_ptr()));
       }
     }
-    if (rhs_grad_ptr != nullptr) {
-      if (broadcast_inputRHS) {
+    if (rhs_grad.get_float_ptr() != nullptr) {
+      if (attrs.should_broadcast_rhs) {
         checkCUDNN(cudnnOpTensor(handle.dnn,
-                                 m.opDesc,
+                                 per_device_state.opDesc,
                                  &alpha1,
-                                 m.outputTensor,
-                                 out_grad_ptr,
+                                 per_device_state.outputTensor,
+                                 output_grad.get_float_ptr(),
                                  &alpha2,
-                                 m.inputLHSTensor,
-                                 lhs_ptr,
+                                 per_device_state.inputLHSTensor,
+                                 lhs.get_float_ptr(),
                                  &zero,
-                                 m.outputTensor,
+                                 per_device_state.outputTensor,
                                  handle.workSpace));
         checkCUDNN(cudnnReduceTensor(
             handle.dnn,
-            m.reduceAddDesc,
+            per_device_state.reduceAddDesc,
             nullptr /*indices*/,
             0 /*indicesSizeInBytes*/,
-            (void *)((char *)handle.workSpace + sizeof(*out_grad_ptr)),
-            handle.workSpaceSize - sizeof(*out_grad_ptr),
+            (void *)((char *)handle.workSpace +
+                     sizeof(*output_grad.get_float_ptr())),
+            handle.workSpaceSize - sizeof(*output_grad.get_float_ptr()),
             &alpha1,
-            m.outputTensor,
+            per_device_state.outputTensor,
             handle.workSpace,
             &beta,
-            m.inputRHSTensor,
-            rhs_grad_ptr));
+            per_device_state.inputRHSTensor,
+            rhs_grad.get_float_ptr()));
       } else {
         checkCUDNN(cudnnOpTensor(handle.dnn,
-                                 m.opDesc,
+                                 per_device_state.opDesc,
                                  &alpha1,
-                                 m.outputTensor,
-                                 out_grad_ptr,
+                                 per_device_state.outputTensor,
+                                 output_grad.get_float_ptr(),
                                  &alpha2,
-                                 m.inputLHSTensor,
-                                 lhs_ptr,
+                                 per_device_state.inputLHSTensor,
+                                 lhs.get_float_ptr(),
                                  &beta,
-                                 m.inputRHSTensor,
-                                 rhs_grad_ptr));
+                                 per_device_state.inputRHSTensor,
+                                 rhs_grad.get_float_ptr()));
       }
     }
   } else if (op_type == OperatorType::EW_MIN ||
@@ -403,8 +402,12 @@ void gpu_backward_kernel(cudaStream_t stream,
     int n;
     int dims[MAX_TENSOR_DIM];
     int strides[MAX_TENSOR_DIM];
-    checkCUDNN(cudnnGetTensorNdDescriptor(
-        m.outputTensor, MAX_TENSOR_DIM, &dataType, &n, dims, strides));
+    checkCUDNN(cudnnGetTensorNdDescriptor(per_device_state.outputTensor,
+                                          MAX_TENSOR_DIM,
+                                          &dataType,
+                                          &n,
+                                          dims,
+                                          strides));
     size_t volume = 1;
     for (int i = 0; i < n; i++) {
       volume *= dims[i];
@@ -416,20 +419,19 @@ void gpu_backward_kernel(cudaStream_t stream,
                                                alpha,
                                                beta,
                                                op_type,
-                                               out_grad_ptr,
-                                               lhs_ptr,
-                                               rhs_ptr,
-                                               lhs_grad_ptr,
-                                               rhs_grad_ptr);
+                                               output_grad.get_float_ptr(),
+                                               lhs.get_float_ptr(),
+                                               rhs.get_float_ptr(),
+                                               lhs_grad.get_float_ptr(),
+                                               rhs_grad.get_float_ptr());
   } else {
     assert(false && "Unsupported ElementWise Binary Type");
   }
 }
 
-void gpu_cleanup_kernel(ElementBinaryPerDeviceState const &per_device_state) {
+void element_binary_gpu_cleanup_kernel(
+    ElementBinaryPerDeviceState const &per_device_state) {
   NOT_IMPLEMENTED();
 }
 
-} // namespace ElementBinary
-} // namespace Kernels
 } // namespace FlexFlow
