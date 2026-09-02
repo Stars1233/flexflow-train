@@ -13,7 +13,7 @@ template <typename K,
 bidict<K2, V2> transform(bidict<K, V> const &m, F &&f) {
   bidict<K2, V2> result;
   for (auto const &[k, v] : m) {
-    result.equate(f(k, v));
+    result.equate_strict(f(k, v));
   }
   return result;
 }

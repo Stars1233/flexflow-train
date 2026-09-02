@@ -14,7 +14,7 @@ bidict<K2, V> bidict_filtrans_keys(bidict<K, V> const &m, F &&f) {
   for (auto const &[k, v] : m) {
     std::optional<K2> new_k = f(k);
     if (new_k.has_value()) {
-      result.equate(new_k.value(), v);
+      result.equate_strict(new_k.value(), v);
     }
   }
   return result;

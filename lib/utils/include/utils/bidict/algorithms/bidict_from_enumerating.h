@@ -29,7 +29,7 @@ bidict<nonnegative_int, T>
   bidict<nonnegative_int, T> result;
   nonnegative_int idx = 0_n;
   for (T const &t : s) {
-    result.equate(idx, t);
+    result.equate_strict(idx, t);
     idx++;
   }
 

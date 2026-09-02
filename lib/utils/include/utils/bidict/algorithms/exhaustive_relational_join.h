@@ -16,7 +16,7 @@ bidict<T1, T3> exhaustive_relational_join(bidict<T1, T2> const &fst,
   bidict<T1, T3> result;
 
   for (auto const &[v1, v2] : fst) {
-    result.equate({v1, snd.at_l(v2)});
+    result.equate_strict({v1, snd.at_l(v2)});
   }
 
   return result;

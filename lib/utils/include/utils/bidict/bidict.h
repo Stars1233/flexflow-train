@@ -30,7 +30,7 @@ struct bidict {
   template <typename InputIt>
   bidict(InputIt first, InputIt last) {
     for (auto it = first; it != last; it++) {
-      this->equate(it->first, it->second);
+      this->equate_strict(it->first, it->second);
     }
   }
 
@@ -47,37 +47,40 @@ struct bidict {
   }
 
   void erase_l(L const &l) {
-    this->fwd_map.erase(l);
-    for (auto const &kv : this->bwd_map) {
-      if (kv.second == l) {
-        bwd_map.erase(kv.first);
-        break;
-      }
+    if (this->contains_l(l)) {
+      R r = this->at_l(l);
+      this->fwd_map.erase(l);
+      this->bwd_map.erase(r);
     }
   }
 
   void erase_r(R const &r) {
-    this->bwd_map.erase(r);
-    for (auto const &kv : this->fwd_map) {
-      if (kv.second == r) {
-        fwd_map.erase(kv.first);
-        break;
-      }
+    if (this->contains_r(r)) {
+      L l = this->at_r(r);
+      this->fwd_map.erase(l);
+      this->bwd_map.erase(r);
     }
   }
 
   void equate(L const &l, R const &r) {
-    fwd_map.insert({l, r});
-    bwd_map.insert({r, l});
+    bool contains_l = this->contains_l(l);
+    bool contains_r = this->contains_r(r);
 
-    this->check_invariants();
+    if (contains_l != contains_r || (contains_l && this->at_l(l) != r)) {
+      this->erase_l(l);
+      this->erase_r(r);
+      contains_l = contains_r = false;
+    }
+
+    if (!contains_l) {
+      ASSERT(!contains_r);
+      fwd_map.insert({l, r});
+      bwd_map.insert({r, l});
+    }
   }
 
   void equate(std::pair<L, R> const &lr) {
-    fwd_map.insert(lr);
-    bwd_map.insert({lr.second, lr.first});
-
-    this->check_invariants();
+    this->equate(lr.first, lr.second);
   }
 
   void equate_strict(L const &l, R const &r) {
@@ -86,7 +89,8 @@ struct bidict {
     if (this->contains_l(l)) {
       ASSERT(this->at_l(l) == r);
     } else {
-      this->equate(l, r);
+      fwd_map.insert({l, r});
+      bwd_map.insert({r, l});
     }
   }
 
@@ -238,7 +242,9 @@ struct bidict {
   }
 
   bidict(std::map<L, R> const &fwd_map, std::map<R, L> const &bwd_map)
-      : fwd_map(fwd_map), bwd_map(bwd_map) {}
+      : fwd_map(fwd_map), bwd_map(bwd_map) {
+    this->check_invariants();
+  }
 
   bool operator<(bidict<L, R> const &other) const {
     return this->fwd_map < other.fwd_map;

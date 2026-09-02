@@ -44,11 +44,7 @@ bidict<L, R> bidict_from_unstructured_relation(
     ASSERT(duplicated_element_counts.empty(), duplicated_element_counts);
   }
 
-  bidict<L, R> result;
-  for (auto const &lr : relation) {
-    result.equate_strict(lr);
-  }
-  return result;
+  return bidict<L, R>{relation.begin(), relation.end()};
 }
 
 } // namespace FlexFlow

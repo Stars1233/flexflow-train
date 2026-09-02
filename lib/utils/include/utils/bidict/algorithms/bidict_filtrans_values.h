@@ -14,7 +14,7 @@ bidict<K, V2> bidict_filtrans_values(bidict<K, V> const &m, F &&f) {
   for (auto const &[k, v] : m) {
     std::optional<V2> new_v = f(v);
     if (new_v.has_value()) {
-      result.equate(k, new_v.value());
+      result.equate_strict(k, new_v.value());
     }
   }
   return result;

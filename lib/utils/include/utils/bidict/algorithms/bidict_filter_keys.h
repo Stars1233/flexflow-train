@@ -10,7 +10,7 @@ bidict<K, V> bidict_filter_keys(bidict<K, V> const &m, F &&f) {
   bidict<K, V> result;
   for (auto const &kv : m) {
     if (f(kv.first)) {
-      result.equate(kv);
+      result.equate_strict(kv);
     }
   }
   return result;
