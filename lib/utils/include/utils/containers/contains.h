@@ -7,7 +7,7 @@ namespace FlexFlow {
 
 template <typename Container>
 bool contains(Container const &c, typename Container::value_type const &e) {
-  return find<Container>(c, e) != c.cend();
+  return find(c, e) != c.cend();
 }
 
 } // namespace FlexFlow
