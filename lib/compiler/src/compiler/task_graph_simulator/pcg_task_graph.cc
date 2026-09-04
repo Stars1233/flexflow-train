@@ -33,7 +33,7 @@ PCGTaskGraph
         get_mapped_runtime_only_op_cost_estimate_key_for_layer(pcg, layer, mv);
     Node node = digraph.add_node();
     node_to_task.insert({node, PCGTask{op_key}});
-    node_to_layer.equate_strict(node, layer);
+    node_to_layer.equate(node, layer);
     node_to_devices[node] =
         get_machine_space_coordinates(get_operator_task_space(pcg, layer),
                                       machine_mapping.machine_views.at(layer));

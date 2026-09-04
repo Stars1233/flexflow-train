@@ -24,10 +24,10 @@ bidict<K, V> binary_merge_disjoint_bidicts(bidict<K, V> const &lhs,
 
   bidict<K, V> result;
   for (auto const &kv : lhs) {
-    result.equate_strict(kv.first, kv.second);
+    result.equate(kv.first, kv.second);
   }
   for (auto const &kv : rhs) {
-    result.equate_strict(kv.first, kv.second);
+    result.equate(kv.first, kv.second);
   }
 
   return result;

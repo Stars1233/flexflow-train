@@ -11,7 +11,7 @@ bidict<L, R> filter_bidict(bidict<L, R> const &b, F &&f) {
 
   for (std::pair<L, R> const &p : b) {
     if (f(p.first, p.second)) {
-      result.equate_strict(p.first, p.second);
+      result.equate(p.first, p.second);
     }
   }
 

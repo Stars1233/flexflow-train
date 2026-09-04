@@ -105,31 +105,10 @@ TEST_SUITE(FF_TEST_SUITE) {
     }
 
     SUBCASE("bidict::equate") {
-      CHECK(dict.at_l(1) == "one");
-      CHECK(dict.at_r("one") == 1);
-      CHECK(dict.at_l(2) == "two");
-      CHECK(dict.at_r("two") == 2);
-
-      dict.equate(1, "three");
-      CHECK(dict.at_l(1) == "three");
-      CHECK(dict.at_r("three") == 1);
-      CHECK_THROWS(dict.at_r("one"));
-      CHECK(dict.at_l(2) == "two");
-      CHECK(dict.at_r("two") == 2);
+      CHECK_THROWS(dict.equate(1, "three"));
+      CHECK_THROWS(dict.equate(3, "two"));
 
       dict.equate(3, "three");
-      CHECK(dict.at_l(3) == "three");
-      CHECK(dict.at_r("three") == 3);
-      CHECK_THROWS(dict.at_l(1));
-      CHECK(dict.at_l(2) == "two");
-      CHECK(dict.at_r("two") == 2);
-    }
-
-    SUBCASE("bidict::equate_strict") {
-      CHECK_THROWS(dict.equate_strict(1, "three"));
-      CHECK_THROWS(dict.equate_strict(3, "two"));
-
-      dict.equate_strict(3, "three");
       CHECK(dict.at_l(3) == "three");
       CHECK(dict.at_r("three") == 3);
     }

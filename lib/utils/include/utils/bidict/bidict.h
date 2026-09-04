@@ -30,7 +30,7 @@ struct bidict {
   template <typename InputIt>
   bidict(InputIt first, InputIt last) {
     for (auto it = first; it != last; it++) {
-      this->equate_strict(it->first, it->second);
+      this->equate(it->first, it->second);
     }
   }
 
@@ -63,27 +63,6 @@ struct bidict {
   }
 
   void equate(L const &l, R const &r) {
-    bool contains_l = this->contains_l(l);
-    bool contains_r = this->contains_r(r);
-
-    if (contains_l != contains_r || (contains_l && this->at_l(l) != r)) {
-      this->erase_l(l);
-      this->erase_r(r);
-      contains_l = contains_r = false;
-    }
-
-    if (!contains_l) {
-      ASSERT(!contains_r);
-      fwd_map.insert({l, r});
-      bwd_map.insert({r, l});
-    }
-  }
-
-  void equate(std::pair<L, R> const &lr) {
-    this->equate(lr.first, lr.second);
-  }
-
-  void equate_strict(L const &l, R const &r) {
     ASSERT(this->contains_l(l) == this->contains_r(r));
 
     if (this->contains_l(l)) {
@@ -94,8 +73,8 @@ struct bidict {
     }
   }
 
-  void equate_strict(std::pair<L, R> const &lr) {
-    this->equate_strict(lr.first, lr.second);
+  void equate(std::pair<L, R> const &lr) {
+    this->equate(lr.first, lr.second);
   }
 
   bool operator==(bidict<L, R> const &other) const {

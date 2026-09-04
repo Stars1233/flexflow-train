@@ -15,7 +15,7 @@ bidict<K2, V2>
     bidict_transform_keys_and_values(bidict<K, V> const &m, KF &&kf, VF &&vf) {
   bidict<K2, V2> result;
   for (auto const &kv : m) {
-    result.equate_strict(kf(kv.first), vf(kv.second));
+    result.equate(kf(kv.first), vf(kv.second));
   }
   return result;
 }
