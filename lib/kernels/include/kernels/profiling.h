@@ -5,6 +5,7 @@
 #include "kernels/device_stream_t.h"
 #include "kernels/profiling_settings.dtg.h"
 #include "pcg/device_type.dtg.h"
+#include "utils/nonnegative_int/nonnegative_range.h"
 #include "utils/units/milliseconds_t.h"
 #include <libassert/assert.hpp>
 
@@ -17,8 +18,8 @@ std::optional<milliseconds_t> profiling_wrapper(F const &f,
                                                 Ts &&...ts) {
   if (enable_profiling) {
     ProfilingSettings settings = ProfilingSettings{
-        /*warmup_iters=*/0,
-        /*measure_iters=*/1,
+        /*warmup_iters=*/0_n,
+        /*measure_iters=*/1_p,
     };
     return profiling_wrapper<F, Ts...>(f, settings, std::forward<Ts>(ts)...);
   } else {
@@ -28,15 +29,10 @@ std::optional<milliseconds_t> profiling_wrapper(F const &f,
 }
 
 template <typename F, typename... Ts>
-std::optional<milliseconds_t>
-    profiling_wrapper(F const &f,
-                      ProfilingSettings const &settings,
-                      DeviceType device_type,
-                      Ts &&...ts) {
-  if (settings.measure_iters <= 0) {
-    return std::nullopt;
-  }
-
+milliseconds_t profiling_wrapper(F const &f,
+                                 ProfilingSettings const &settings,
+                                 DeviceType device_type,
+                                 Ts &&...ts) {
   if (device_type == DeviceType::GPU) {
     return gpu_profiling_wrapper(f, settings, std::forward<Ts>(ts)...);
   } else {
@@ -49,8 +45,6 @@ template <typename F, typename... Ts>
 milliseconds_t cpu_profiling_wrapper(F const &f,
                                      ProfilingSettings const &settings,
                                      Ts &&...ts) {
-  ASSERT(settings.measure_iters > 0);
-
   device_stream_t stream = get_cpu_device_stream();
 
   using TimePoint = std::chrono::time_point<std::chrono::steady_clock>;
@@ -58,7 +52,8 @@ milliseconds_t cpu_profiling_wrapper(F const &f,
   std::optional<TimePoint> start = std::nullopt;
   std::optional<TimePoint> end = std::nullopt;
 
-  for (int i = 0; i < settings.warmup_iters + settings.measure_iters; i++) {
+  for (nonnegative_int i :
+       nonnegative_range(settings.warmup_iters + settings.measure_iters)) {
     if (i == settings.warmup_iters) {
       start = std::chrono::steady_clock::now();
     }
@@ -67,7 +62,8 @@ milliseconds_t cpu_profiling_wrapper(F const &f,
   end = std::chrono::steady_clock::now();
 
   std::chrono::duration<double, std::milli> avg_duration =
-      (end.value() - start.value()) / settings.measure_iters;
+      (end.value() - start.value()) /
+      settings.measure_iters.int_from_positive_int();
 
   return milliseconds_t{
       static_cast<float>(avg_duration.count()),
@@ -78,15 +74,14 @@ template <typename F, typename... Ts>
 milliseconds_t gpu_profiling_wrapper(F const &f,
                                      ProfilingSettings const &settings,
                                      Ts &&...ts) {
-  ASSERT(settings.measure_iters > 0);
-
   device_stream_t stream = get_gpu_device_stream();
 
   ffEvent_t t_start, t_end;
   checkCUDA(ffEventCreate(&t_start));
   checkCUDA(ffEventCreate(&t_end));
 
-  for (int i = 0; i < settings.warmup_iters + settings.measure_iters; i++) {
+  for (nonnegative_int i :
+       nonnegative_range(settings.warmup_iters + settings.measure_iters)) {
     if (i == settings.warmup_iters) {
       checkCUDA(ffEventRecord(t_start, stream.require_gpu()));
     }
@@ -100,7 +95,7 @@ milliseconds_t gpu_profiling_wrapper(F const &f,
   checkCUDA(ffEventDestroy(t_start));
   checkCUDA(ffEventDestroy(t_end));
   return milliseconds_t{
-      elapsed / settings.measure_iters,
+      elapsed / settings.measure_iters.int_from_positive_int(),
   };
 }
 
